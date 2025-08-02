@@ -9,7 +9,6 @@
             font-family: Arial, sans-serif; 
             text-align: center; 
             padding: 20px; 
-            /* Estilos para la imagen de fondo */
             background-image: url('https://i.pinimg.com/originals/ef/f7/89/eff7891dfee4d2c4035a32bd345d205d.jpg');
             background-repeat: no-repeat;
             background-size: cover;
@@ -73,223 +72,503 @@
         const questions = [
             {
                 q: "¿Quiénes fueron Adán y Eva según la Biblia?",
-                a: "Los primeros seres humanos, creados por Dios, cuya desobediencia causó el pecado original y la caída de la humanidad.",
+                hint: "Su desobediencia tuvo una consecuencia espiritual para toda la humanidad.",
                 options: [
-                    "Los primeros seres humanos, que desobedecieron a Dios y fueron expulsados del paraíso, trayendo consigo el dolor y la muerte.",
-                    "Los padres de la fe, cuyo acto de desobediencia fue el primer pecado de la humanidad y un ejemplo de la lucha del hombre contra el mal.",
-                    "Los primeros seres humanos, creados por Dios, cuya desobediencia causó el pecado original y la caída de la humanidad.",
-                    "Figuras simbólicas de la humanidad, que representan la lucha entre el bien y el mal, creados por Dios para vivir en armonía en el jardín."
-                ],
-                hint: "Su desobediencia tuvo una consecuencia espiritual para toda la humanidad."
+                    {
+                        text: "Las primeras figuras de la creación, que desobedecieron a Dios y fueron expulsados del paraíso, trayendo consigo el dolor y la muerte.",
+                        isCorrect: false,
+                        explanation: "Esta opción omite la consecuencia teológica más importante: la introducción del pecado original. La expulsión y el sufrimiento son resultados de ello."
+                    },
+                    {
+                        text: "Los padres de la fe, cuyo acto de desobediencia fue el primer pecado de la humanidad y un ejemplo de la lucha del hombre contra el mal.",
+                        isCorrect: false,
+                        explanation: "El título de 'Padre de la fe' se atribuye a Abraham, no a Adán y Eva. Su desobediencia no es un ejemplo de lucha, sino de la caída."
+                    },
+                    {
+                        text: "Los primeros seres humanos, creados por Dios, cuya desobediencia causó el pecado original y la caída de la humanidad.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Figuras simbólicas de la humanidad, que representan la lucha entre el bien y el mal, creados por Dios para vivir en armonía en el jardín.",
+                        isCorrect: false,
+                        explanation: "Aunque su historia tiene un simbolismo profundo, la tradición bíblica los presenta como personas históricas. La opción no es 100% precisa."
+                    }
+                ]
             },
             {
                 q: "¿Qué representa el arcoíris en la historia de Noé?",
-                a: "La señal de la primera alianza de Dios con la humanidad, prometiendo que no volverá a destruir la tierra con un diluvio.",
+                hint: "Es un pacto con un significado muy específico.",
                 options: [
-                    "El final de la tormenta y la promesa de que Dios nunca más enviará lluvias sobre la tierra.",
-                    "La señal de la primera alianza de Dios con la humanidad, prometiendo que no volverá a destruir la tierra con un diluvio.",
-                    "Un símbolo de la victoria de Noé sobre las fuerzas del mal en la tierra y el perdón de los pecados de la humanidad.",
-                    "La señal del pacto de Dios con la familia de Noé, que solo se aplica a su descendencia y no al resto del mundo."
-                ],
-                hint: "Es un pacto con un significado muy específico."
+                    {
+                        text: "El final de la tormenta y la promesa de que Dios nunca más enviará lluvias sobre la tierra.",
+                        isCorrect: false,
+                        explanation: "La promesa no es contra 'lluvias', sino contra una destrucción de la tierra por un 'diluvio'. Las lluvias son necesarias para la vida."
+                    },
+                    {
+                        text: "La señal de la primera alianza de Dios con la humanidad, prometiendo que no volverá a destruir la tierra con un diluvio.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Un símbolo de la victoria de Noé sobre las fuerzas del mal en la tierra y el perdón de los pecados de la humanidad.",
+                        isCorrect: false,
+                        explanation: "El arcoíris es una alianza de Dios, no una victoria de Noé. El perdón de los pecados se logra a través de Jesucristo."
+                    },
+                    {
+                        text: "La señal del pacto de Dios con la familia de Noé, que solo se aplica a su descendencia y no al resto del mundo.",
+                        isCorrect: false,
+                        explanation: "El pacto es explícitamente con toda la humanidad y 'con todo ser vivo', no solo con la descendencia de Noé."
+                    }
+                ]
             },
             {
                 q: "¿Por qué Abraham es llamado “Padre de la fe”?",
-                a: "Porque confió en Dios incluso en lo imposible, como tener un hijo en la vejez y aceptar sacrificarlo.",
+                hint: "Se destacó por su confianza absoluta en las promesas de Dios.",
                 options: [
-                    "Porque él fue el primer hombre en escribir los mandamientos de Dios y en predicar el monoteísmo.",
-                    "Porque su fe fue probada en múltiples ocasiones, y siempre mostró una obediencia total y sin dudar.",
-                    "Porque confió en Dios incluso en lo imposible, como tener un hijo en la vejez y aceptar sacrificarlo.",
-                    "Porque fundó la nación de Israel y estableció los rituales de sacrificio para el culto a Dios."
-                ],
-                hint: "Se destacó por su confianza absoluta en las promesas de Dios."
+                    {
+                        text: "Porque él fue el primer hombre en escribir los mandamientos de Dios y en predicar el monoteísmo.",
+                        isCorrect: false,
+                        explanation: "Abraham no escribió los mandamientos (lo hizo Moisés) y la idea del monoteísmo ya existía en la relación de Dios con Adán y Noé."
+                    },
+                    {
+                        text: "Porque su fe fue probada en múltiples ocasiones, y siempre mostró una obediencia total y sin dudar.",
+                        isCorrect: false,
+                        explanation: "Si bien su obediencia fue grande, en algunas ocasiones Abraham dudó o actuó con temor, por ejemplo, cuando mintió sobre Sara en Egipto."
+                    },
+                    {
+                        text: "Porque confió en Dios incluso en lo imposible, como tener un hijo en la vejez y aceptar sacrificarlo.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Porque fundó la nación de Israel y estableció los rituales de sacrificio para el culto a Dios.",
+                        isCorrect: false,
+                        explanation: "Abraham no fundó la nación de Israel (lo hizo Jacob) ni estableció los rituales de sacrificio, que fueron dados a Moisés."
+                    }
+                ]
             },
             {
                 q: "¿Qué le pidió Dios a Abraham respecto a Isaac?",
-                a: "Que lo sacrificara como una prueba de fe definitiva, aunque luego detuvo el acto para reafirmar el pacto.",
+                hint: "Una prueba que demostró su total obediencia.",
                 options: [
-                    "Que lo hiciera un profeta y le diera un nombre nuevo en su honor, como señal del pacto con Dios.",
-                    "Que lo sacrificara como una prueba de fe definitiva, aunque luego detuvo el acto para reafirmar el pacto.",
-                    "Que lo bendijera en la tumba de Raquel, en el templo de la ciudad de Siquem, como señal de obediencia.",
-                    "Que lo enviara a Egipto para que aprendiera sabiduría y se convirtiera en un gran líder espiritual."
-                ],
-                hint: "Una prueba que demostró su total obediencia."
+                    {
+                        text: "Que lo hiciera un profeta y le diera un nombre nuevo en su honor, como señal del pacto con Dios.",
+                        isCorrect: false,
+                        explanation: "Aunque Isaac fue importante para el pacto, Dios no le pidió esto a Abraham. Isaac no fue nombrado profeta en el Antiguo Testamento."
+                    },
+                    {
+                        text: "Que lo sacrificara como una prueba de fe definitiva, aunque luego detuvo el acto para reafirmar el pacto.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Que lo bendijera en la tumba de Raquel, en el templo de la ciudad de Siquem, como señal de obediencia.",
+                        isCorrect: false,
+                        explanation: "Raquel fue la esposa de Jacob (nieto de Abraham), y el templo en Siquem fue construido mucho después."
+                    },
+                    {
+                        text: "Que lo enviara a Egipto para que aprendiera sabiduría y se convirtiera en un gran líder espiritual.",
+                        isCorrect: false,
+                        explanation: "Fue José, bisnieto de Abraham, quien fue a Egipto y se convirtió en líder. A Isaac no le fue pedido esto."
+                    }
+                ]
             },
             {
                 q: "¿Qué significa el cambio de nombre de Jacob a Israel?",
-                a: "Significa “el que lucha con Dios” y representa su transformación espiritual de ser engañador a tener una nueva relación con Dios.",
+                hint: "El nuevo nombre describe la batalla que tuvo y su nueva identidad.",
                 options: [
-                    "El nuevo nombre “Israel” significa “Guardián de la fe”, significando su papel como protector del pacto.",
-                    "Es un nombre que significa “hijo de Abraham”, para reforzar su linaje patriarcal como descendiente del primer pacto.",
-                    "Significa “el que lucha con Dios” y representa su transformación espiritual de ser engañador a tener una nueva relación con Dios.",
-                    "El cambio de nombre fue para que su pueblo lo recordara como el primer rey de Israel."
-                ],
-                hint: "El nuevo nombre describe la batalla que tuvo y su nueva identidad."
+                    {
+                        text: "El nuevo nombre “Israel” significa “Guardián de la fe”, significando su papel como protector del pacto.",
+                        isCorrect: false,
+                        explanation: "El significado literal de Israel es 'el que lucha con Dios' o 'luchó con Dios', no 'Guardián de la fe'."
+                    },
+                    {
+                        text: "Es un nombre que significa “hijo de Abraham”, para reforzar su linaje patriarcal como descendiente del primer pacto.",
+                        isCorrect: false,
+                        explanation: "El nombre 'Israel' no significa 'hijo de Abraham'. Jacob ya era descendiente de Abraham por linaje."
+                    },
+                    {
+                        text: "Significa “el que lucha con Dios” y representa su transformación espiritual de ser engañador a tener una nueva relación con Dios.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "El cambio de nombre fue para que su pueblo lo recordara como el primer rey de Israel.",
+                        isCorrect: false,
+                        explanation: "Jacob no fue el primer rey de Israel; ese título fue para Saúl, varios siglos después."
+                    }
+                ]
             },
             {
                 q: "¿Qué hizo José “el soñador”?",
-                a: "Fue vendido por sus hermanos, llegó a ser gobernador de Egipto y, guiado por Dios, perdonó a su familia para salvarlos de la hambruna.",
+                hint: "Su historia se centra en el perdón y la providencia de Dios.",
                 options: [
-                    "Lideró el éxodo del pueblo de Israel de la esclavitud en Egipto después de las plagas.",
-                    "Fue vendido por sus hermanos, llegó a ser gobernador de Egipto y, guiado por Dios, perdonó a su familia para salvarlos de la hambruna.",
-                    "Fue un profeta que fundó el templo de Betel en el desierto para el culto a Dios.",
-                    "Fue un esclavo que permaneció en la servidumbre toda su vida, pero mantuvo su fe inquebrantable."
-                ],
-                hint: "Su historia se centra en el perdón y la providencia de Dios."
+                    {
+                        text: "Lideró el éxodo del pueblo de Israel de la esclavitud en Egipto después de las plagas.",
+                        isCorrect: false,
+                        explanation: "Fue Moisés quien lideró el éxodo de los israelitas de Egipto, no José."
+                    },
+                    {
+                        text: "Fue vendido por sus hermanos, llegó a ser gobernador de Egipto y, guiado por Dios, perdonó a su familia para salvarlos de la hambruna.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Fue un profeta que fundó el templo de Betel en el desierto para el culto a Dios.",
+                        isCorrect: false,
+                        explanation: "José no fundó el templo de Betel; este lugar fue establecido por su padre Jacob."
+                    },
+                    {
+                        text: "Fue un esclavo que permaneció en la servidumbre toda su vida, pero mantuvo su fe inquebrantable.",
+                        isCorrect: false,
+                        explanation: "José pasó de ser esclavo a ser gobernador de Egipto, no permaneció en la servidumbre."
+                    }
+                ]
             },
             {
                 q: "¿Qué hizo Moisés por el pueblo de Israel?",
-                a: "Lo liberó de la esclavitud en Egipto y recibió de Dios la Ley en el Monte Sinaí para guiar a su pueblo.",
+                hint: "Es el líder del Éxodo y mediador de la Ley.",
                 options: [
-                    "Lo liberó de la esclavitud en Egipto y recibió de Dios la Ley en el Monte Sinaí para guiar a su pueblo.",
-                    "Escribió los salmos de lamentación durante la destrucción de Jerusalén en el exilio.",
-                    "Construyó el Arca de la Alianza y llevó a la gente a través del Mar Rojo.",
-                    "Fundó el cristianismo después de su resurrección y predicó en las ciudades de Judea."
-                ],
-                hint: "Es el líder del Éxodo y mediador de la Ley."
+                    {
+                        text: "Lo liberó de la esclavitud en Egipto y recibió de Dios la Ley en el Monte Sinaí para guiar a su pueblo.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Escribió los salmos de lamentación durante la destrucción de Jerusalén en el exilio.",
+                        isCorrect: false,
+                        explanation: "Los salmos de lamentación fueron escritos por el Rey David y otros autores, mucho tiempo después de Moisés."
+                    },
+                    {
+                        text: "Construyó el Arca de la Alianza y llevó a la gente a través del Mar Rojo.",
+                        isCorrect: false,
+                        explanation: "Moisés cruzó el Mar Rojo, pero el Arca de la Alianza fue construida bajo su dirección, no por él mismo."
+                    },
+                    {
+                        text: "Fundó el cristianismo después de su resurrección y predicó en las ciudades de Judea.",
+                        isCorrect: false,
+                        explanation: "Moisés murió antes de que el cristianismo existiera. Este fue fundado por Jesucristo, que resucitó y predicó en Judea."
+                    }
+                ]
             },
             {
                 q: "¿Dónde y cómo recibió Moisés los 10 Mandamientos?",
-                a: "En el Monte Sinaí, directamente de Dios, en forma de tablas de piedra como la ley para su pueblo.",
+                hint: "Ocurrió en una montaña y de una manera muy física.",
                 options: [
-                    "En Jerusalén, por medio de unos ángeles que descendieron en una nube de humo.",
-                    "En el Monte Sinaí, directamente de Dios, en forma de tablas de piedra como la ley para su pueblo.",
-                    "En Egipto, después de que los sacerdotes del Faraón le revelaran un sueño divino.",
-                    "En Belén, tras tener una visión de la zarza ardiente en una cueva."
-                ],
-                hint: "Ocurrió en una montaña y de una manera muy física."
+                    {
+                        text: "En Jerusalén, por medio de unos ángeles que descendieron en una nube de humo.",
+                        isCorrect: false,
+                        explanation: "Los mandamientos fueron entregados en el Monte Sinaí, no en Jerusalén."
+                    },
+                    {
+                        text: "En el Monte Sinaí, directamente de Dios, en forma de tablas de piedra como la ley para su pueblo.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "En Egipto, después de que los sacerdotes del Faraón le revelaran un sueño divino.",
+                        isCorrect: false,
+                        explanation: "Moisés recibió la ley después de salir de Egipto, en el desierto, no de los sacerdotes egipcios."
+                    },
+                    {
+                        text: "En Belén, tras tener una visión de la zarza ardiente en una cueva.",
+                        isCorrect: false,
+                        explanation: "La zarza ardiente apareció antes de los mandamientos, y en el Monte Horeb, no en Belén."
+                    }
+                ]
             },
             {
                 q: "Menciona 3 características del pueblo de Israel según la Biblia.",
-                a: "Elegidos por Dios, herederos de los patriarcas y llamados a ser santos y un ejemplo para las naciones.",
+                hint: "La Biblia los describe como el pueblo de la Alianza.",
                 options: [
-                    "Elegidos por Dios, herederos de los patriarcas y llamados a ser santos y un ejemplo para las naciones.",
-                    "Eran un pueblo de agricultores y nómadas, conocidos por su sabiduría y la construcción de templos.",
-                    "Fueron un pueblo de origen romano, griego y egipcio, que se asentó en las tierras de Canaán.",
-                    "Eran un pueblo de profetas, reyes y grandes constructores de civilizaciones."
-                ],
-                hint: "La Biblia los describe como el pueblo de la Alianza."
+                    {
+                        text: "Elegidos por Dios, herederos de los patriarcas y llamados a ser santos y un ejemplo para las naciones.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Eran un pueblo de agricultores y nómadas, conocidos por su sabiduría y la construcción de templos.",
+                        isCorrect: false,
+                        explanation: "Eran agricultores y nómadas, pero no siempre se caracterizaron por su sabiduría o por la construcción de templos, que llegó mucho después."
+                    },
+                    {
+                        text: "Fueron un pueblo de origen romano, griego y egipcio, que se asentó en las tierras de Canaán.",
+                        isCorrect: false,
+                        explanation: "El pueblo de Israel tiene su origen en los patriarcas (Abraham, Isaac, Jacob) y no en las civilizaciones romana, griega o egipcia."
+                    },
+                    {
+                        text: "Eran un pueblo de profetas, reyes y grandes constructores de civilizaciones.",
+                        isCorrect: false,
+                        explanation: "No siempre fueron 'grandes constructores de civilizaciones' ni tuvieron profetas y reyes en sus inicios."
+                    }
+                ]
             },
             {
                 q: "¿Cuál era el propósito del pueblo de Israel en el plan de Dios?",
-                a: "Ser luz para las naciones y testigos del poder de Dios, atrayendo a todos los pueblos hacia la salvación.",
+                hint: "Su misión tenía un alcance universal.",
                 options: [
-                    "Ser luz para las naciones y testigos del poder de Dios, atrayendo a todos los pueblos hacia la salvación.",
-                    "Dominar a las naciones circundantes a través de su poderío militar y económico.",
-                    "Vivir aislados del resto del mundo para evitar la contaminación de sus costumbres y tradiciones.",
-                    "Construir grandes templos y monumentos que demostraran la superioridad de su religión sobre otras."
-                ],
-                hint: "Su misión tenía un alcance universal."
+                    {
+                        text: "Ser luz para las naciones y testigos del poder de Dios, atrayendo a todos los pueblos hacia la salvación.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Dominar a las naciones circundantes a través de su poderío militar y económico.",
+                        isCorrect: false,
+                        explanation: "El propósito de Israel no era dominar a otros pueblos, sino atraerlos hacia Dios a través de su testimonio de fe y santidad."
+                    },
+                    {
+                        text: "Vivir aislados del resto del mundo para evitar la contaminación de sus costumbres y tradiciones.",
+                        isCorrect: false,
+                        explanation: "El pueblo de Israel debía ser un faro para las naciones, no aislarse de ellas. La idea de aislarse es contraria a la misión de ser 'luz'."
+                    },
+                    {
+                        text: "Construir grandes templos y monumentos que demostraran la superioridad de su religión sobre otras.",
+                        isCorrect: false,
+                        explanation: "La misión de Israel no era demostrar su superioridad, sino mostrar al mundo al verdadero Dios. La ostentación no era el objetivo."
+                    }
+                ]
             },
             {
                 q: "¿Qué es la Santísima Trinidad?",
-                a: "Un solo Dios que existe en tres personas distintas, Padre, Hijo y Espíritu Santo, co-eternos y de la misma sustancia.",
+                hint: "Es un dogma que define a Dios como tres en uno.",
                 options: [
-                    "Un solo Dios que existe en tres personas distintas, Padre, Hijo y Espíritu Santo, co-eternos y de la misma sustancia.",
-                    "La creencia en tres dioses separados, cada uno con un poder y una función diferentes.",
-                    "La idea de que hay un solo Dios que se manifiesta en tres nombres o modos diferentes a lo largo de la historia.",
-                    "Un ángel, un profeta y un espíritu santo que ayudan a Dios a gobernar el mundo."
-                ],
-                hint: "Es un dogma que define a Dios como tres en uno."
+                    {
+                        text: "Un solo Dios que existe en tres personas distintas, Padre, Hijo y Espíritu Santo, co-eternos y de la misma sustancia.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "La creencia en tres dioses separados, cada uno con un poder y una función diferentes.",
+                        isCorrect: false,
+                        explanation: "Esto se conoce como 'triteísmo' y es una herejía. La fe católica afirma que hay un solo Dios."
+                    },
+                    {
+                        text: "La idea de que hay un solo Dios que se manifiesta en tres nombres o modos diferentes a lo largo de la historia.",
+                        isCorrect: false,
+                        explanation: "Esto se conoce como 'sabelianismo' o 'modalismo' y es una herejía. La fe católica afirma que las tres personas son distintas y coexisten eternamente."
+                    },
+                    {
+                        text: "Un ángel, un profeta y un espíritu santo que ayudan a Dios a gobernar el mundo.",
+                        isCorrect: false,
+                        explanation: "Los ángeles son criaturas de Dios y los profetas son humanos. La Trinidad son tres personas divinas y un solo Dios."
+                    }
+                ]
             },
             {
                 q: "¿Cuál es la misión de Dios Padre?",
-                a: "Es el creador del universo, quien nos protege y nos guía, y el origen de toda la vida y la redención.",
+                hint: "Su rol es el de Creador y origen de la redención.",
                 options: [
-                    "Es el creador del universo, quien nos protege y nos guía, y el origen de toda la vida y la redención.",
-                    "Reinar en la tierra como un monarca terrenal y establecer su reino físico en el mundo.",
-                    "Sanar a los enfermos y curar las dolencias del alma y del cuerpo a través de milagros.",
-                    "Castigar al mundo por sus pecados, y destruir a los que no creen en él."
-                ],
-                hint: "Su rol es el de Creador y origen de la redención."
+                    {
+                        text: "Es el creador del universo, quien nos protege y nos guía, y el origen de toda la vida y la redención.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Reinar en la tierra como un monarca terrenal y establecer su reino físico en el mundo.",
+                        isCorrect: false,
+                        explanation: "La misión de Dios Padre no es un reinado terrenal, sino espiritual. El reino terrenal es temporal, mientras que su reino es eterno."
+                    },
+                    {
+                        text: "Sanar a los enfermos y curar las dolencias del alma y del cuerpo a través de milagros.",
+                        isCorrect: false,
+                        explanation: "Si bien Dios sana, esta misión está más asociada a la acción de Jesús en la Tierra, el Hijo."
+                    },
+                    {
+                        text: "Castigar al mundo por sus pecados, y destruir a los que no creen en él.",
+                        isCorrect: false,
+                        explanation: "La misión de Dios Padre no es la destrucción, sino la salvación, al enviar a su Hijo para redimir a la humanidad."
+                    }
+                ]
             },
             {
                 q: "¿Cuál es la misión de Jesús, el Hijo?",
-                a: "Salvar al mundo del pecado a través de su encarnación, vida, muerte y resurrección.",
+                hint: "Su misión es la Redención por medio de su sacrificio.",
                 options: [
-                    "Salvar al mundo del pecado a través de su encarnación, vida, muerte y resurrección.",
-                    "Escribir la ley divina en el corazón de los hombres, para que puedan vivir sin pecado.",
-                    "Guiar a los animales del campo y a las aves del cielo, ya que él es su pastor.",
-                    "Crear la Biblia y dictar todas las profecías que se encuentran en el Antiguo y el Nuevo Testamento."
-                ],
-                hint: "Su misión es la Redención por medio de su sacrificio."
+                    {
+                        text: "Salvar al mundo del pecado a través de su encarnación, vida, muerte y resurrección.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Escribir la ley divina en el corazón de los hombres, para que puedan vivir sin pecado.",
+                        isCorrect: false,
+                        explanation: "Jesús vino a cumplir la ley, no a escribirla. Esta labor se asocia a la gracia del Espíritu Santo en los corazones."
+                    },
+                    {
+                        text: "Guiar a los animales del campo y a las aves del cielo, ya que él es su pastor.",
+                        isCorrect: false,
+                        explanation: "Jesús es el 'buen pastor' del pueblo de Dios, no de los animales. Su misión es la salvación de la humanidad, no del reino animal."
+                    },
+                    {
+                        text: "Crear la Biblia y dictar todas las profecías que se encuentran en el Antiguo y el Nuevo Testamento.",
+                        isCorrect: false,
+                        explanation: "Jesús es la 'Palabra de Dios', pero no el autor literal de la Biblia. La Biblia fue escrita por hombres inspirados por Dios."
+                    }
+                ]
             },
             {
                 q: "¿Qué hace el Espíritu Santo?",
-                a: "Santifica a la Iglesia, guía a los creyentes a la verdad completa y habita en sus corazones.",
+                hint: "Es el santificador y consolador.",
                 options: [
-                    "Santifica a la Iglesia, guía a los creyentes a la verdad completa y habita en sus corazones.",
-                    "Gobierna la Tierra desde el cielo, distribuyendo los dones y las gracias a los hombres.",
-                    "Hace milagros en el mundo, como la curación de enfermedades y la resurrección de los muertos.",
-                    "Construye las iglesias y los templos donde los creyentes se reúnen para adorar a Dios."
-                ],
-                hint: "Es el santificador y consolador."
+                    {
+                        text: "Santifica a la Iglesia, guía a los creyentes a la verdad completa y habita en sus corazones.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Gobierna la Tierra desde el cielo, distribuyendo los dones y las gracias a los hombres.",
+                        isCorrect: false,
+                        explanation: "Si bien el Espíritu Santo distribuye dones y gracias, la idea de 'gobernar la Tierra desde el cielo' es más una función de Dios Padre."
+                    },
+                    {
+                        text: "Hace milagros en el mundo, como la curación de enfermedades y la resurrección de los muertos.",
+                        isCorrect: false,
+                        explanation: "Aunque los milagros son obra del Espíritu Santo, esa no es su única ni principal misión. La santificación de la Iglesia es el propósito principal."
+                    },
+                    {
+                        text: "Construye las iglesias y los templos donde los creyentes se reúnen para adorar a Dios.",
+                        isCorrect: false,
+                        explanation: "Los templos son construidos por las personas, no por el Espíritu Santo. Él es quien habita en esos templos, pero no los construye."
+                    }
+                ]
             },
             {
                 q: "¿Quiénes fueron los apóstoles?",
-                a: "Los doce discípulos elegidos por Jesús para anunciar su mensaje, ser testigos de su resurrección y fundar la Iglesia.",
+                hint: "Fueron los testigos primarios de la victoria de Cristo.",
                 options: [
-                    "Los sacerdotes del templo de Jerusalén, que eran los líderes religiosos de la época.",
-                    "Los seguidores de Moisés que escribieron el Pentateuco y las leyes judías.",
-                    "Los doce discípulos elegidos por Jesús para anunciar su mensaje, ser testigos de su resurrección y fundar la Iglesia.",
-                    "Los autores de los salmos, que escribieron los cantos de alabanza y lamentación del pueblo de Israel."
-                ],
-                hint: "Fueron los testigos primarios de la victoria de Cristo."
+                    {
+                        text: "Los doce discípulos elegidos por Jesús para anunciar su mensaje, ser testigos de su resurrección y fundar la Iglesia.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Los sacerdotes del templo de Jerusalén, que eran los líderes religiosos de la época.",
+                        isCorrect: false,
+                        explanation: "Los sacerdotes del templo eran parte de la élite judía. Los apóstoles fueron discípulos de Jesús, enviados a predicar fuera del templo."
+                    },
+                    {
+                        text: "Los seguidores de Moisés que escribieron el Pentateuco y las leyes judías.",
+                        isCorrect: false,
+                        explanation: "El Pentateuco fue escrito por Moisés y otros autores en el Antiguo Testamento. Los apóstoles vivieron en el Nuevo Testamento."
+                    },
+                    {
+                        text: "Los autores de los salmos, que escribieron los cantos de alabanza y lamentación del pueblo de Israel.",
+                        isCorrect: false,
+                        explanation: "El libro de los Salmos fue escrito por el Rey David y otros autores, mucho tiempo antes de la existencia de los apóstoles."
+                    }
+                ]
             },
             {
                 q: "¿Qué es la Lectio Divina?",
-                a: "Un método de oración y meditación con la Biblia para permitir que la Palabra de Dios transforme la vida del creyente.",
+                hint: "Es un proceso para interiorizar la Biblia.",
                 options: [
-                    "Un método de oración y meditación con la Biblia para permitir que la Palabra de Dios transforme la vida del creyente.",
-                    "Un canto litúrgico antiguo que se recita en la Misa y otras ceremonias.",
-                    "Un libro sagrado que contiene las profecías y los sueños de los profetas antiguos.",
-                    "Una peregrinación a los lugares santos de Tierra Santa, donde los creyentes caminan por la vida de Jesús."
-                ],
-                hint: "Es un proceso para interiorizar la Biblia."
+                    {
+                        text: "Un método de oración y meditación con la Biblia para permitir que la Palabra de Dios transforme la vida del creyente.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Un canto litúrgico antiguo que se recita en la Misa y otras ceremonias.",
+                        isCorrect: false,
+                        explanation: "La 'Lectio Divina' no es un canto litúrgico, sino un método personal de oración con la Escritura. Un canto litúrgico podría ser, por ejemplo, el 'Kyrie'."
+                    },
+                    {
+                        text: "Un libro sagrado que contiene las profecías y los sueños de los profetas antiguos.",
+                        isCorrect: false,
+                        explanation: "La 'Lectio Divina' no es un libro, sino un método de lectura de la Biblia, que sí contiene profecías."
+                    },
+                    {
+                        text: "Una peregrinación a los lugares santos de Tierra Santa, donde los creyentes caminan por la vida de Jesús.",
+                        isCorrect: false,
+                        explanation: "Una peregrinación es un viaje físico, mientras que la 'Lectio Divina' es un viaje espiritual a través de la lectura de la Biblia."
+                    }
+                ]
             },
             {
                 q: "¿Cuáles son los cinco pasos de la Lectio Divina?",
-                a: "Lectura, meditación, oración, contemplación y compromiso.",
+                hint: "Cinco pasos para orar con la Biblia.",
                 options: [
-                    "Ver, juzgar, actuar, rezar y cantar en la misa.",
-                    "Lectura, meditación, oración, contemplación y compromiso.",
-                    "Fe, esperanza, caridad, ayuno y oración en la cuaresma.",
-                    "Biblia, cruz, vela, misa y rezo."
-                ],
-                hint: "Cinco pasos para orar con la Biblia."
+                    {
+                        text: "Ver, juzgar, actuar, rezar y cantar en la misa.",
+                        isCorrect: false,
+                        explanation: "Estos pasos corresponden a la metodología de acción pastoral, no a la Lectio Divina."
+                    },
+                    {
+                        text: "Lectura, meditación, oración, contemplación y compromiso.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Fe, esperanza, caridad, ayuno y oración en la cuaresma.",
+                        isCorrect: false,
+                        explanation: "La fe, la esperanza y la caridad son virtudes teologales. El ayuno y la oración son prácticas cuaresmales, no los pasos de la Lectio Divina."
+                    },
+                    {
+                        text: "Biblia, cruz, vela, misa y rezo.",
+                        isCorrect: false,
+                        explanation: "Estos son elementos de la vida espiritual, pero no corresponden a los cinco pasos específicos de la Lectio Divina."
+                    }
+                ]
             },
             {
                 q: "¿Qué dice el creacionismo sobre el origen del hombre?",
-                a: "Que fue creado por Dios en un acto instantáneo y directo, según el relato del Génesis.",
+                hint: "Se basa en el relato literal del Génesis.",
                 options: [
-                    "Que fue creado por Dios en un acto instantáneo y directo, según el relato del Génesis.",
-                    "Que el hombre fue creado por unos ángeles que descendieron del cielo para poblar la Tierra.",
-                    "Que el hombre viene de Marte y fue traído a la Tierra por una nave espacial.",
-                    "Que el ser humano descendió directamente de los romanos, quienes poblaron el mundo con su imperio."
-                ],
-                hint: "Se basa en el relato literal del Génesis."
+                    {
+                        text: "Que fue creado por Dios en un acto instantáneo y directo, según el relato del Génesis.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Que el hombre fue creado por unos ángeles que descendieron del cielo para poblar la Tierra.",
+                        isCorrect: false,
+                        explanation: "El creacionismo afirma que el hombre fue creado por Dios, no por los ángeles."
+                    },
+                    {
+                        text: "Que el hombre viene de Marte y fue traído a la Tierra por una nave espacial.",
+                        isCorrect: false,
+                        explanation: "El creacionismo es una teoría religiosa que no menciona seres de otros planetas ni naves espaciales."
+                    },
+                    {
+                        text: "Que el ser humano descendió directamente de los romanos, quienes poblaron el mundo con su imperio.",
+                        isCorrect: false,
+                        explanation: "Esta opción no tiene ninguna base en el relato bíblico ni en el creacionismo."
+                    }
+                ]
             },
             {
                 q: "¿Qué dice el evolucionismo?",
-                a: "Que el ser humano evolucionó a lo largo del tiempo, y esta teoría es aceptada por la Iglesia si se reconoce a Dios como creador del alma.",
+                hint: "Piensa en la postura que concilia ciencia y fe.",
                 options: [
-                    "Que el ser humano evolucionó a lo largo del tiempo, y esta teoría es aceptada por la Iglesia si se reconoce a Dios como creador del alma.",
-                    "Que el hombre siempre existió en la tierra y no tuvo un origen, ya que es eterno.",
-                    "Que el hombre nació de un milagro en el mar, cuando una criatura marina fue convertida en ser humano por un dios pagano.",
-                    "Que el ser humano fue creado dos veces, la primera vez para vivir en el cielo, y la segunda para vivir en la Tierra."
-                ],
-                hint: "Piensa en la postura que concilia ciencia y fe."
+                    {
+                        text: "Que el ser humano evolucionó a lo largo del tiempo, y esta teoría es aceptada por la Iglesia si se reconoce a Dios como creador del alma.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Que el hombre siempre existió en la tierra y no tuvo un origen, ya que es eterno.",
+                        isCorrect: false,
+                        explanation: "El evolucionismo afirma que el hombre tiene un origen y ha evolucionado, no que es eterno."
+                    },
+                    {
+                        text: "Que el hombre nació de un milagro en el mar, cuando una criatura marina fue convertida en ser humano por un dios pagano.",
+                        isCorrect: false,
+                        explanation: "Esta opción describe una mitología sin base científica ni religiosa. El evolucionismo es una teoría científica."
+                    },
+                    {
+                        text: "Que el ser humano fue creado dos veces, la primera vez para vivir en el cielo, y la segunda para vivir en la Tierra.",
+                        isCorrect: false,
+                        explanation: "El evolucionismo no habla de creaciones duales, sino de un proceso de desarrollo a lo largo del tiempo."
+                    }
+                ]
             },
             {
                 q: "¿Qué es el “motor inmóvil” según Aristóteles?",
-                a: "Una causa primera y no causada que es la fuente de todo movimiento y existencia en el universo, identificada con Dios.",
+                hint: "Se refiere a la causa original de todo lo que se mueve.",
                 options: [
-                    "Un dios mecánico que funciona como un relojero que pone en marcha el universo y lo deja a su suerte.",
-                    "Una energía infinita que recorre el universo, pero que no tiene una conciencia propia.",
-                    "Una máquina eterna que funciona sin cesar y sin la intervención de un dios.",
-                    "Una causa primera y no causada que es la fuente de todo movimiento y existencia en el universo, identificada con Dios."
-                ],
-                hint: "Se refiere a la causa original de todo lo que se mueve."
+                    {
+                        text: "Un dios mecánico que funciona como un relojero que pone en marcha el universo y lo deja a su suerte.",
+                        isCorrect: false,
+                        explanation: "El 'dios relojero' es una idea del deísmo, no el 'motor inmóvil' de Aristóteles. El motor inmóvil atrae al universo sin intervenir directamente."
+                    },
+                    {
+                        text: "Una energía infinita que recorre el universo, pero que no tiene una conciencia propia.",
+                        isCorrect: false,
+                        explanation: "Para Aristóteles, el 'motor inmóvil' es un ser consciente, no solo una energía inconsciente."
+                    },
+                    {
+                        text: "Una máquina eterna que funciona sin cesar y sin la intervención de un dios.",
+                        isCorrect: false,
+                        explanation: "El 'motor inmóvil' no es una máquina; es la causa primera que provoca el movimiento de todo lo demás."
+                    },
+                    {
+                        text: "Una causa primera y no causada que es la fuente de todo movimiento y existencia en el universo, identificada con Dios.",
+                        isCorrect: true
+                    }
+                ]
             }
         ];
 
@@ -339,13 +618,15 @@
                 if (timeLeft <= 0) {
                     clearInterval(timer);
                     playAudio("loseSound");
-                    alert("⏰ Tiempo agotado. Respuesta incorrecta.");
+                    alert("⏰ ¡Tiempo agotado! Respuesta incorrecta.");
                     showQuestion();
                 }
             }, 1000);
 
-            current = remaining.splice(Math.floor(Math.random() * remaining.length), 1)[0];
+            const randomIndex = Math.floor(Math.random() * remaining.length);
+            current = remaining.splice(randomIndex, 1)[0];
             shuffle(current.options);
+
             document.getElementById("question").innerText = current.q;
             const optBox = document.getElementById("options");
             optBox.innerHTML = "";
@@ -353,17 +634,18 @@
             current.options.forEach(option => {
                 const btn = document.createElement("button");
                 btn.className = "option";
-                btn.innerText = option;
+                btn.innerText = option.text;
                 btn.onclick = () => {
                     clearInterval(timer);
                     playAudio("clickSound");
-                    if (option === current.a) {
+                    if (option.isCorrect) {
                         playAudio("winSound");
                         alert("✅ ¡Correcto!");
                         correctAnswers++;
                     } else {
                         playAudio("loseSound");
-                        alert(`❌ Incorrecto. La respuesta correcta era: ${current.a}`);
+                        const correctAnswer = current.options.find(opt => opt.isCorrect).text;
+                        alert(`❌ Incorrecto. ${option.explanation}\nLa respuesta correcta era: ${correctAnswer}`);
                     }
                     showQuestion();
                 };
@@ -379,14 +661,19 @@
             }
 
             const buttons = Array.from(document.querySelectorAll(".option"));
+            const incorrectOptions = current.options.filter(opt => !opt.isCorrect);
+            const correctOption = current.options.find(opt => opt.isCorrect);
+            
             if (type === "fifty") {
-                let wrong = buttons.filter(b => b.innerText !== current.a);
-                shuffle(wrong);
-                wrong.slice(0, 2).forEach(b => b.classList.add("hidden"));
+                shuffle(incorrectOptions);
+                const incorrectButtons = buttons.filter(btn => btn.innerText !== correctOption.text);
+                incorrectButtons.slice(0, 2).forEach(b => b.classList.add("hidden"));
             } else if (type === "one") {
-                let wrong = buttons.filter(b => b.innerText !== current.a);
-                shuffle(wrong);
-                wrong[0].classList.add("hidden");
+                shuffle(incorrectOptions);
+                const incorrectButton = buttons.find(btn => btn.innerText === incorrectOptions[0].text);
+                if (incorrectButton) {
+                    incorrectButton.classList.add("hidden");
+                }
             } else if (type === "hint") {
                 alert("💡 Pista: " + current.hint);
             }
