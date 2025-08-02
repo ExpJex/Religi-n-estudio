@@ -1,3 +1,8 @@
+Revisé el código y tienes razón, las opciones en las preguntas no coincidían exactamente con las respuestas correctas. Esto hacía que el juego siempre marcara tus respuestas como incorrectas.
+
+He corregido todas las preguntas para que cada una tenga una opción que coincide exactamente con la respuesta correcta. Con este nuevo código, el juego funcionará como debería.
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -73,7 +78,7 @@
                 options: [
                     "Los fundadores de la nación de Israel, que vivieron en la tierra prometida de Canaán.",
                     "Dos profetas del Antiguo Testamento que recibieron visiones de Dios en el desierto.",
-                    "Los primeros seres humanos, creados directamente por Dios, cuya desobediencia a un mandato divino es narrada en el Génesis y se considera el origen del pecado original.",
+                    "Los primeros seres humanos, creados por Dios. Su desobediencia trajo el pecado original.",
                     "Los autores de los primeros cinco libros de la Biblia, conocidos como el Pentateuco."
                 ],
                 hint: "Fueron los primeros."
@@ -85,7 +90,7 @@
                     "El fin de una lluvia eterna que se extendió por todo el mundo.",
                     "Una señal del inminente fin del diluvio, indicando que las aguas comenzarían a descender.",
                     "El pacto de fuego que Dios hizo con Abraham después de la destrucción de Sodoma y Gomorra.",
-                    "La señal de la primera alianza o pacto incondicional entre Dios y toda la humanidad, prometiendo que no volverá a destruir la tierra con un diluvio."
+                    "Es la señal de la primera alianza entre Dios y la humanidad."
                 ],
                 hint: "Dios hizo un pacto visible."
             },
@@ -95,7 +100,7 @@
                 options: [
                     "Porque él fue el primer hombre en escribir los mandamientos de Dios, los cuales se encuentran en la Torá.",
                     "Porque él fundó la ciudad de Jerusalén como centro de adoración para el pueblo de Israel.",
-                    "Porque demostró una confianza inquebrantable en las promesas de Dios, incluso en circunstancias humanamente imposibles, como tener un hijo en su extrema vejez y estar dispuesto a sacrificarlo.",
+                    "Porque confió en Dios incluso en lo imposible, como tener un hijo en la vejez.",
                     "Porque fue el primer sacerdote del pueblo de Israel, estableciendo los rituales de sacrificio en el Templo."
                 ],
                 hint: "Tuvo fe en una promesa imposible."
@@ -106,7 +111,7 @@
                 options: [
                     "Que lo bendijera en la tumba de Raquel, en el templo de la ciudad de Siquem.",
                     "Que lo enviara a Egipto para que aprendiera sabiduría y se convirtiera en un gran líder.",
-                    "Que lo sacrificara en el Monte Moriah como una prueba extrema de su fe y obediencia, aunque finalmente Dios proveyó un cordero en su lugar.",
+                    "Que lo sacrificara como prueba de fe, aunque luego detuvo el sacrificio.",
                     "Que lo hiciera un profeta y le diera un nombre nuevo en su honor."
                 ],
                 hint: "Una prueba muy difícil."
@@ -117,7 +122,7 @@
                 options: [
                     "“Amigo de Moisés”, refiriéndose a la futura relación de los descendientes de Jacob con el profeta.",
                     "“Guardián de la fe”, significando su papel como protector del pacto de Dios.",
-                    "Significa 'el que lucha con Dios' (Gn 32,28), y simboliza la transformación espiritual de Jacob de un suplantador a un hombre que prevalece con Dios.",
+                    "Significa “el que lucha con Dios”. Representa su transformación espiritual.",
                     "“Hijo de Abraham”, para reforzar su linaje patriarcal como descendiente del primer pacto."
                 ],
                 hint: "Tiene que ver con lucha y transformación."
@@ -128,7 +133,7 @@
                 options: [
                     "Fue un profeta que fundó el templo de Betel en el desierto para el culto a Dios.",
                     "Fue un esclavo que permaneció en la servidumbre toda su vida, pero mantuvo su fe inquebrantable.",
-                    "Fue vendido como esclavo por sus hermanos celosos, pero a través de la providencia divina ascendió a gobernador de Egipto, salvó a su familia del hambre y los perdonó.",
+                    "Fue vendido por sus hermanos, pero llegó a ser gobernador en Egipto y los perdonó.",
                     "Lideró el éxodo del pueblo de Israel de la esclavitud en Egipto después de las plagas."
                 ],
                 hint: "Tuvo un alto cargo en Egipto."
@@ -139,7 +144,7 @@
                 options: [
                     "Construyó el Arca de la Alianza y llevó a la gente a través del Mar Rojo.",
                     "Escribió los salmos de lamentación durante la destrucción de Jerusalén en el exilio.",
-                    "Lideró al pueblo de Israel en el éxodo de la esclavitud en Egipto, recibió y entregó la Ley de Dios (los Diez Mandamientos) en el Monte Sinaí, y los guió a través del desierto por 40 años.",
+                    "Lo liberó de la esclavitud en Egipto y recibió la ley de Dios en el Monte Sinaí.",
                     "Fundó el cristianismo después de su resurrección y predicó en las ciudades de Judea."
                 ],
                 hint: "Fue líder y legislador."
@@ -149,7 +154,7 @@
                 a: "En el Monte Sinaí, directamente de Dios, como ley para su pueblo.",
                 options: [
                     "En Jerusalén, por medio de unos ángeles que descendieron en una nube de humo.",
-                    "En el Monte Sinaí, recibió los mandamientos tallados en dos tablas de piedra, directamente de Dios en medio de un trueno y fuego, como la ley de la Antigua Alianza para su pueblo.",
+                    "En el Monte Sinaí, directamente de Dios, como ley para su pueblo.",
                     "En Egipto, después de que los sacerdotes del Faraón le revelaran un sueño divino.",
                     "En Belén, tras tener una visión de la zarza ardiente en una cueva."
                 ],
@@ -160,7 +165,7 @@
                 a: "Elegidos por Dios, herederos de los patriarcas, y llamados a ser santos.",
                 options: [
                     "Eran un pueblo de agricultores y nómadas, conocidos por su sabiduría y la construcción de templos.",
-                    "Fueron elegidos por Dios para ser su pueblo particular, son los herederos de las promesas hechas a los patriarcas (Abraham, Isaac y Jacob), y son llamados a vivir una vida de santidad como 'luz de las naciones'.",
+                    "Elegidos por Dios, herederos de los patriarcas, y llamados a ser santos.",
                     "Eran un pueblo de profetas, reyes y grandes constructores de civilizaciones que se extendieron por todo el mundo.",
                     "Fueron un pueblo de origen romano, griego y egipcio, que se asentó en las tierras de Canaán."
                 ],
@@ -172,7 +177,7 @@
                 options: [
                     "Dominar a las naciones circundantes a través de su poderío militar y económico.",
                     "Vivir aislados del resto del mundo para evitar la contaminación de sus costumbres y tradiciones.",
-                    "Ser 'luz de las naciones' y un testimonio vivo del poder y la bondad de Dios para que todas las demás naciones pudieran conocerlo a través de ellos.",
+                    "Ser luz para las naciones y testigos del poder de Dios.",
                     "Construir grandes templos y monumentos que demostraran la superioridad de su religión sobre otras."
                 ],
                 hint: "Tienen una misión para el mundo."
@@ -183,7 +188,7 @@
                 options: [
                     "La creencia en tres dioses separados, cada uno con un poder y una función diferentes.",
                     "La idea de que hay un solo Dios que se manifiesta en tres nombres o modos diferentes a lo largo de la historia.",
-                    "La doctrina central de la fe cristiana, que sostiene que hay un solo Dios en tres personas distintas, co-eternas y co-sustanciales: Padre, Hijo y Espíritu Santo.",
+                    "Un solo Dios en tres personas: Padre, Hijo y Espíritu Santo.",
                     "Un ángel, un profeta y un espíritu santo que ayudan a Dios a gobernar el mundo."
                 ],
                 hint: "Tres en uno."
@@ -194,7 +199,7 @@
                 options: [
                     "Reinar en la tierra como un monarca terrenal y establecer su reino físico en el mundo.",
                     "Castigar al mundo por sus pecados, y destruir a los que no creen en él.",
-                    "Crear el universo y a la humanidad, gobernar con providencia, y proteger a sus hijos.",
+                    "Crear y proteger.",
                     "Sanar a los enfermos y curar las dolencias del alma y del cuerpo a través de milagros."
                 ],
                 hint: "Es el creador."
@@ -205,7 +210,7 @@
                 options: [
                     "Guiar a los animales del campo y a las aves del cielo, ya que él es su pastor.",
                     "Escribir la ley divina en el corazón de los hombres, para que puedan vivir sin pecado.",
-                    "Salvar a la humanidad del pecado, reconciliándola con Dios a través de su vida, muerte y resurrección, y redimiendo el mundo entero.",
+                    "Salvar al mundo del pecado.",
                     "Crear la Biblia y dictar todas las profecías que se encuentran en el Antiguo y el Nuevo Testamento."
                 ],
                 hint: "Es el salvador."
@@ -216,7 +221,7 @@
                 options: [
                     "Gobierna la Tierra desde el cielo, distribuyendo los dones y las gracias a los hombres.",
                     "Hace milagros en el mundo, como la curación de enfermedades y la resurrección de los muertos.",
-                    "Santifica a la Iglesia, guía a los creyentes en la verdad, y se manifiesta en diferentes formas, como una paloma, fuego o un viento recio, para dar poder a los apóstoles.",
+                    "Santifica a la Iglesia. Se manifiesta como paloma, fuego o luz.",
                     "Construye las iglesias y los templos donde los creyentes se reúnen para adorar a Dios."
                 ],
                 hint: "Santifica y guía."
@@ -227,7 +232,7 @@
                 options: [
                     "Los sacerdotes del templo de Jerusalén, que eran los líderes religiosos de la época.",
                     "Los seguidores de Moisés que escribieron el Pentateuco y las leyes judías.",
-                    "Los doce discípulos que Jesús escogió para ser sus testigos y enviados, con la misión de predicar su mensaje, fundar su Iglesia y extender su reino por el mundo.",
+                    "Los 12 discípulos elegidos por Jesús para anunciar su mensaje.",
                     "Los autores de los salmos, que escribieron los cantos de alabanza y lamentación del pueblo de Israel."
                 ],
                 hint: "Doce elegidos."
@@ -239,7 +244,7 @@
                     "Un canto litúrgico antiguo que se recita en la Misa y otras ceremonias.",
                     "Un libro sagrado que contiene las profecías y los sueños de los profetas antiguos.",
                     "Una peregrinación a los lugares santos de Tierra Santa, donde los creyentes caminan por la vida de Jesús.",
-                    "Un método de oración, meditación y contemplación de la Palabra de Dios, que busca un encuentro personal con el Señor a través de la lectura de la Biblia."
+                    "Un método de oración y meditación con la Biblia."
                 ],
                 hint: "Método de oración con la Biblia."
             },
@@ -248,7 +253,7 @@
                 a: "Lectura, meditación, oración, contemplación y compromiso.",
                 options: [
                     "Fe, esperanza, caridad, ayuno, y oración en la cuaresma.",
-                    "Lectura (Lectio), meditación (Meditatio), oración (Oratio), contemplación (Contemplatio) y compromiso (Actio).",
+                    "Lectura, meditación, oración, contemplación y compromiso.",
                     "Ver, juzgar, actuar, rezar y cantar en la misa.",
                     "Biblia, cruz, vela, misa, y rezo."
                 ],
@@ -259,7 +264,7 @@
                 a: "Que fue creado por Dios, según el relato del Génesis.",
                 options: [
                     "Que el hombre viene de Marte y fue traído a la Tierra por una nave espacial.",
-                    "Que la vida humana y todo el universo fueron creados por Dios de manera directa y sobrenatural, según el relato del Génesis, rechazando la idea de la evolución.",
+                    "Que fue creado por Dios, según el relato del Génesis.",
                     "Que el hombre fue creado por unos ángeles que descendieron del cielo para poblar la Tierra.",
                     "Que el ser humano descendió directamente de los romanos, quienes poblaron el mundo con su imperio."
                 ],
@@ -270,7 +275,7 @@
                 a: "Que el ser humano evolucionó a lo largo del tiempo. Es aceptado por la Iglesia si se reconoce a Dios como creador.",
                 options: [
                     "Que el hombre siempre existió en la tierra y no tuvo un origen, ya que es eterno.",
-                    "Que el ser humano se desarrolló a lo largo de un largo proceso evolutivo. La Iglesia Católica no ve una contradicción entre la fe y la evolución, siempre y cuando se reconozca a Dios como el Creador que infunde el alma espiritual en el ser humano.",
+                    "Que el ser humano evolucionó a lo largo del tiempo. Es aceptado por la Iglesia si se reconoce a Dios como creador.",
                     "Que el hombre nació de un milagro en el mar, cuando una criatura marina fue convertida en ser humano por un dios pagano.",
                     "Que el ser humano fue creado dos veces, la primera vez para vivir en el cielo, y la segunda para vivir en la Tierra."
                 ],
@@ -282,7 +287,7 @@
                 options: [
                     "Un dios mecánico que funciona como un relojero que pone en marcha el universo y lo deja a su suerte.",
                     "Una energía infinita que recorre el universo, pero que no tiene una conciencia propia.",
-                    "Un concepto filosófico que describe una causa primera o un primer motor que no es movido por ninguna otra cosa, y que es la causa final del movimiento de todo lo demás; un concepto que la teología cristiana ha utilizado para referirse a Dios.",
+                    "Una causa primera que no es movida por nada: Dios.",
                     "Una máquina eterna que funciona sin cesar y sin la intervención de un dios."
                 ],
                 hint: "Causa primera."
@@ -394,3 +399,4 @@
     </script>
 </body>
 </html>
+```
