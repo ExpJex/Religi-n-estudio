@@ -1,132 +1,396 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trivia Bíblica y Católica</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; background-color: #f9f9f9; padding: 20px; }
-    .question-box { margin-bottom: 20px; font-size: 1.2em; }
-    .option { display: block; margin: 10px auto; padding: 10px 20px; border: 1px solid #ccc; width: 80%; max-width: 400px; background-color: #fff; cursor: pointer; }
-    .hidden { display: none; }
-    .lifelines button { margin: 5px; }
-    .timer { font-size: 1.2em; color: #d00; margin-top: 10px; }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Trivia Bíblica y Católica</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f9f9f9; padding: 20px; }
+        .question-box { margin-bottom: 20px; font-size: 1.2em; }
+        .option {
+            display: block;
+            margin: 10px auto;
+            padding: 15px 25px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+            color: #333;
+            text-align: left;
+        }
+        .option:hover {
+            background-color: #eef;
+            border-color: #a8a8ff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .hidden { display: none; }
+        .lifelines { margin-top: 20px; }
+        .lifelines button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        .lifelines button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        .lifelines button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .timer { font-size: 1.4em; color: #d9534f; margin-top: 15px; font-weight: bold; }
+        #score-display { font-size: 1.5em; margin-top: 20px; font-weight: bold; color: #28a745; }
+    </style>
 </head>
 <body>
-  <h1>Trivia Bíblica y Católica</h1>
-  <div class="question-box" id="question">Cargando pregunta...</div>
-  <div id="options"></div>
-  <div class="lifelines">
-    <button onclick="useLifeline('fifty')">🧩 50/50</button>
-    <button onclick="useLifeline('hint')">💡 Pista</button>
-    <button onclick="useLifeline('one')">🚫 Quitar una</button>
-  </div>
-  <div class="timer" id="timer">Tiempo restante: 15s</div>
-  <audio id="clickSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
-  <audio id="winSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
-  <audio id="loseSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
-  <script>
-    const questions = [
-      { q: "¿Quiénes fueron Adán y Eva según la Biblia?", a: "Los primeros seres humanos, creados por Dios. Su desobediencia trajo el pecado original.", options: ["Los fundadores de Israel", "Los profetas del desierto", "Los primeros seres humanos, creados por Dios. Su desobediencia trajo el pecado original.", "Los autores del Génesis"], hint: "Fueron los primeros." },
-      { q: "¿Qué representa el arcoíris en la historia de Noé?", a: "Es la señal de la primera alianza entre Dios y la humanidad.", options: ["La lluvia eterna", "El fin del diluvio", "El pacto de fuego", "Es la señal de la primera alianza entre Dios y la humanidad."], hint: "Dios hizo un pacto visible." },
-      { q: "¿Por qué Abraham es llamado “Padre de la fe”?", a: "Porque confió en Dios incluso en lo imposible, como tener un hijo en la vejez.", options: ["Porque escribió la Biblia", "Porque fundó Jerusalén", "Porque confió en Dios incluso en lo imposible, como tener un hijo en la vejez.", "Porque fue el primer sacerdote"], hint: "Tuvo fe en una promesa imposible." },
-      { q: "¿Qué le pidió Dios a Abraham respecto a Isaac?", a: "Que lo sacrificara como prueba de fe, aunque luego detuvo el sacrificio.", options: ["Que lo bendijera con un templo", "Que lo enviara a Egipto", "Que lo sacrificara como prueba de fe, aunque luego detuvo el sacrificio.", "Que lo hiciera profeta"], hint: "Una prueba muy difícil." },
-      { q: "¿Qué significa el cambio de nombre de Jacob a Israel?", a: "Significa “el que lucha con Dios”. Representa su transformación espiritual.", options: ["“Amigo de Moisés”", "“Guardián de la fe”", "“el que lucha con Dios”. Representa su transformación espiritual.", "“Hijo de Abraham”"], hint: "Tiene que ver con lucha y transformación." },
-      { q: "¿Qué hizo José “el soñador”?", a: "Fue vendido por sus hermanos, pero llegó a ser gobernador en Egipto y los perdonó.", options: ["Fundó el templo", "Fue esclavo toda su vida", "Fue vendido por sus hermanos, pero llegó a ser gobernador en Egipto y los perdonó.", "Lideró el éxodo"], hint: "Tuvo un alto cargo en Egipto." },
-      { q: "¿Qué hizo Moisés por el pueblo de Israel?", a: "Lo liberó de la esclavitud en Egipto y recibió la ley de Dios en el Monte Sinaí.", options: ["Construyó un arca", "Escribió los salmos", "Lo liberó de la esclavitud en Egipto y recibió la ley de Dios en el Monte Sinaí.", "Fundó el cristianismo"], hint: "Fue líder y legislador." },
-      { q: "¿Dónde y cómo recibió Moisés los 10 Mandamientos?", a: "En el Monte Sinaí, directamente de Dios, como ley para su pueblo.", options: ["En Jerusalén, por medio de ángeles", "En el Monte Sinaí, directamente de Dios, como ley para su pueblo.", "En Egipto, tras un sueño", "En Belén, tras una visión"], hint: "Una montaña muy importante." },
-      { q: "Menciona 3 características del pueblo de Israel según la Biblia.", a: "Elegidos por Dios, herederos de los patriarcas, y llamados a ser santos.", options: ["Agricultores, nómadas, sabios", "Elegidos por Dios, herederos de los patriarcas, y llamados a ser santos.", "Profetas, reyes, constructores", "Romanos, griegos, egipcios"], hint: "Elegidos y santos." },
-      { q: "¿Cuál era el propósito del pueblo de Israel en el plan de Dios?", a: "Ser luz para las naciones y testigos del poder de Dios.", options: ["Dominar naciones", "Vivir aislados", "Ser luz para las naciones y testigos del poder de Dios.", "Construir templos"], hint: "Tienen una misión para el mundo." },
-      { q: "¿Qué es la Santísima Trinidad?", a: "Un solo Dios en tres personas: Padre, Hijo y Espíritu Santo.", options: ["Tres dioses separados", "Un Dios con tres nombres", "Un solo Dios en tres personas: Padre, Hijo y Espíritu Santo.", "Un ángel, un profeta y un espíritu"], hint: "Tres en uno." },
-      { q: "¿Cuál es la misión de Dios Padre?", a: "Crear y proteger.", options: ["Reinar en la tierra", "Castigar al mundo", "Crear y proteger.", "Sanar y curar"], hint: "Es el creador." },
-      { q: "¿Cuál es la misión de Jesús, el Hijo?", a: "Salvar al mundo del pecado.", options: ["Guiar a los animales", "Escribir la ley", "Salvar al mundo del pecado.", "Crear la Biblia"], hint: "Es el salvador." },
-      { q: "¿Qué hace el Espíritu Santo?", a: "Santifica a la Iglesia. Se manifiesta como paloma, fuego o luz.", options: ["Gobierna la Tierra", "Hace milagros", "Santifica a la Iglesia. Se manifiesta como paloma, fuego o luz.", "Construye iglesias"], hint: "Santifica y guía." },
-      { q: "¿Quiénes fueron los apóstoles?", a: "Los 12 discípulos elegidos por Jesús para anunciar su mensaje.", options: ["Los sacerdotes del templo", "Los seguidores de Moisés", "Los 12 discípulos elegidos por Jesús para anunciar su mensaje.", "Los autores de los salmos"], hint: "Doce elegidos." },
-      { q: "¿Qué es la Lectio Divina?", a: "Un método de oración y meditación con la Biblia.", options: ["Un canto antiguo", "Un libro sagrado", "Una peregrinación", "Un método de oración y meditación con la Biblia."], hint: "Método de oración con la Biblia." },
-      { q: "¿Cuáles son los cinco pasos de la Lectio Divina?", a: "Lectura, meditación, oración, contemplación y compromiso.", options: ["Fe, esperanza, caridad, ayuno, oración", "Lectura, meditación, oración, contemplación y compromiso.", "Ver, juzgar, actuar, rezar, cantar", "Biblia, cruz, vela, misa, rezo"], hint: "Cinco pasos para orar con la Biblia." },
-      { q: "¿Qué dice el creacionismo sobre el origen del hombre?", a: "Que fue creado por Dios, según el relato del Génesis.", options: ["Que viene de Marte", "Que fue creado por Dios, según el relato del Génesis.", "Que lo crearon los ángeles", "Que descendió de los romanos"], hint: "Génesis lo explica." },
-      { q: "¿Qué dice el evolucionismo?", a: "Que el ser humano evolucionó a lo largo del tiempo. Es aceptado por la Iglesia si se reconoce a Dios como creador.", options: ["Que el hombre siempre existió", "Que el ser humano evolucionó a lo largo del tiempo. Es aceptado por la Iglesia si se reconoce a Dios como creador.", "Que nació de un milagro en el mar", "Que fue creado dos veces"], hint: "Proceso con aceptación teológica." },
-      { q: "¿Qué es el “motor inmóvil” según Aristóteles?", a: "Una causa primera que no es movida por nada: Dios.", options: ["Un dios mecánico", "Una energía infinita", "Una causa primera que no es movida por nada: Dios.", "Una máquina eterna"], hint: "Causa primera." }
-    ];
+    <h1>Trivia Bíblica y Católica</h1>
+    <div class="question-box" id="question">Cargando pregunta...</div>
+    <div id="options"></div>
+    <div class="lifelines">
+        <button id="fifty" onclick="useLifeline('fifty')">🧩 50/50</button>
+        <button id="hint" onclick="useLifeline('hint')">💡 Pista</button>
+        <button id="one" onclick="useLifeline('one')">🚫 Quitar una</button>
+    </div>
+    <div class="timer" id="timer">Tiempo restante: 15s</div>
+    <div id="score-display" class="hidden"></div>
+    <audio id="clickSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+    <audio id="winSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+    <audio id="loseSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+    <script>
+        const questions = [
+            {
+                q: "¿Quiénes fueron Adán y Eva según la Biblia?",
+                a: "Los primeros seres humanos, creados por Dios. Su desobediencia trajo el pecado original.",
+                options: [
+                    "Los fundadores de la nación de Israel, que vivieron en la tierra prometida de Canaán.",
+                    "Dos profetas del Antiguo Testamento que recibieron visiones de Dios en el desierto.",
+                    "Los primeros seres humanos, creados directamente por Dios, cuya desobediencia a un mandato divino es narrada en el Génesis y se considera el origen del pecado original.",
+                    "Los autores de los primeros cinco libros de la Biblia, conocidos como el Pentateuco."
+                ],
+                hint: "Fueron los primeros."
+            },
+            {
+                q: "¿Qué representa el arcoíris en la historia de Noé?",
+                a: "Es la señal de la primera alianza entre Dios y la humanidad.",
+                options: [
+                    "El fin de una lluvia eterna que se extendió por todo el mundo.",
+                    "Una señal del inminente fin del diluvio, indicando que las aguas comenzarían a descender.",
+                    "El pacto de fuego que Dios hizo con Abraham después de la destrucción de Sodoma y Gomorra.",
+                    "La señal de la primera alianza o pacto incondicional entre Dios y toda la humanidad, prometiendo que no volverá a destruir la tierra con un diluvio."
+                ],
+                hint: "Dios hizo un pacto visible."
+            },
+            {
+                q: "¿Por qué Abraham es llamado “Padre de la fe”?",
+                a: "Porque confió en Dios incluso en lo imposible, como tener un hijo en la vejez.",
+                options: [
+                    "Porque él fue el primer hombre en escribir los mandamientos de Dios, los cuales se encuentran en la Torá.",
+                    "Porque él fundó la ciudad de Jerusalén como centro de adoración para el pueblo de Israel.",
+                    "Porque demostró una confianza inquebrantable en las promesas de Dios, incluso en circunstancias humanamente imposibles, como tener un hijo en su extrema vejez y estar dispuesto a sacrificarlo.",
+                    "Porque fue el primer sacerdote del pueblo de Israel, estableciendo los rituales de sacrificio en el Templo."
+                ],
+                hint: "Tuvo fe en una promesa imposible."
+            },
+            {
+                q: "¿Qué le pidió Dios a Abraham respecto a Isaac?",
+                a: "Que lo sacrificara como prueba de fe, aunque luego detuvo el sacrificio.",
+                options: [
+                    "Que lo bendijera en la tumba de Raquel, en el templo de la ciudad de Siquem.",
+                    "Que lo enviara a Egipto para que aprendiera sabiduría y se convirtiera en un gran líder.",
+                    "Que lo sacrificara en el Monte Moriah como una prueba extrema de su fe y obediencia, aunque finalmente Dios proveyó un cordero en su lugar.",
+                    "Que lo hiciera un profeta y le diera un nombre nuevo en su honor."
+                ],
+                hint: "Una prueba muy difícil."
+            },
+            {
+                q: "¿Qué significa el cambio de nombre de Jacob a Israel?",
+                a: "Significa “el que lucha con Dios”. Representa su transformación espiritual.",
+                options: [
+                    "“Amigo de Moisés”, refiriéndose a la futura relación de los descendientes de Jacob con el profeta.",
+                    "“Guardián de la fe”, significando su papel como protector del pacto de Dios.",
+                    "Significa 'el que lucha con Dios' (Gn 32,28), y simboliza la transformación espiritual de Jacob de un suplantador a un hombre que prevalece con Dios.",
+                    "“Hijo de Abraham”, para reforzar su linaje patriarcal como descendiente del primer pacto."
+                ],
+                hint: "Tiene que ver con lucha y transformación."
+            },
+            {
+                q: "¿Qué hizo José “el soñador”?",
+                a: "Fue vendido por sus hermanos, pero llegó a ser gobernador en Egipto y los perdonó.",
+                options: [
+                    "Fue un profeta que fundó el templo de Betel en el desierto para el culto a Dios.",
+                    "Fue un esclavo que permaneció en la servidumbre toda su vida, pero mantuvo su fe inquebrantable.",
+                    "Fue vendido como esclavo por sus hermanos celosos, pero a través de la providencia divina ascendió a gobernador de Egipto, salvó a su familia del hambre y los perdonó.",
+                    "Lideró el éxodo del pueblo de Israel de la esclavitud en Egipto después de las plagas."
+                ],
+                hint: "Tuvo un alto cargo en Egipto."
+            },
+            {
+                q: "¿Qué hizo Moisés por el pueblo de Israel?",
+                a: "Lo liberó de la esclavitud en Egipto y recibió la ley de Dios en el Monte Sinaí.",
+                options: [
+                    "Construyó el Arca de la Alianza y llevó a la gente a través del Mar Rojo.",
+                    "Escribió los salmos de lamentación durante la destrucción de Jerusalén en el exilio.",
+                    "Lideró al pueblo de Israel en el éxodo de la esclavitud en Egipto, recibió y entregó la Ley de Dios (los Diez Mandamientos) en el Monte Sinaí, y los guió a través del desierto por 40 años.",
+                    "Fundó el cristianismo después de su resurrección y predicó en las ciudades de Judea."
+                ],
+                hint: "Fue líder y legislador."
+            },
+            {
+                q: "¿Dónde y cómo recibió Moisés los 10 Mandamientos?",
+                a: "En el Monte Sinaí, directamente de Dios, como ley para su pueblo.",
+                options: [
+                    "En Jerusalén, por medio de unos ángeles que descendieron en una nube de humo.",
+                    "En el Monte Sinaí, recibió los mandamientos tallados en dos tablas de piedra, directamente de Dios en medio de un trueno y fuego, como la ley de la Antigua Alianza para su pueblo.",
+                    "En Egipto, después de que los sacerdotes del Faraón le revelaran un sueño divino.",
+                    "En Belén, tras tener una visión de la zarza ardiente en una cueva."
+                ],
+                hint: "Una montaña muy importante."
+            },
+            {
+                q: "Menciona 3 características del pueblo de Israel según la Biblia.",
+                a: "Elegidos por Dios, herederos de los patriarcas, y llamados a ser santos.",
+                options: [
+                    "Eran un pueblo de agricultores y nómadas, conocidos por su sabiduría y la construcción de templos.",
+                    "Fueron elegidos por Dios para ser su pueblo particular, son los herederos de las promesas hechas a los patriarcas (Abraham, Isaac y Jacob), y son llamados a vivir una vida de santidad como 'luz de las naciones'.",
+                    "Eran un pueblo de profetas, reyes y grandes constructores de civilizaciones que se extendieron por todo el mundo.",
+                    "Fueron un pueblo de origen romano, griego y egipcio, que se asentó en las tierras de Canaán."
+                ],
+                hint: "Elegidos y santos."
+            },
+            {
+                q: "¿Cuál era el propósito del pueblo de Israel en el plan de Dios?",
+                a: "Ser luz para las naciones y testigos del poder de Dios.",
+                options: [
+                    "Dominar a las naciones circundantes a través de su poderío militar y económico.",
+                    "Vivir aislados del resto del mundo para evitar la contaminación de sus costumbres y tradiciones.",
+                    "Ser 'luz de las naciones' y un testimonio vivo del poder y la bondad de Dios para que todas las demás naciones pudieran conocerlo a través de ellos.",
+                    "Construir grandes templos y monumentos que demostraran la superioridad de su religión sobre otras."
+                ],
+                hint: "Tienen una misión para el mundo."
+            },
+            {
+                q: "¿Qué es la Santísima Trinidad?",
+                a: "Un solo Dios en tres personas: Padre, Hijo y Espíritu Santo.",
+                options: [
+                    "La creencia en tres dioses separados, cada uno con un poder y una función diferentes.",
+                    "La idea de que hay un solo Dios que se manifiesta en tres nombres o modos diferentes a lo largo de la historia.",
+                    "La doctrina central de la fe cristiana, que sostiene que hay un solo Dios en tres personas distintas, co-eternas y co-sustanciales: Padre, Hijo y Espíritu Santo.",
+                    "Un ángel, un profeta y un espíritu santo que ayudan a Dios a gobernar el mundo."
+                ],
+                hint: "Tres en uno."
+            },
+            {
+                q: "¿Cuál es la misión de Dios Padre?",
+                a: "Crear y proteger.",
+                options: [
+                    "Reinar en la tierra como un monarca terrenal y establecer su reino físico en el mundo.",
+                    "Castigar al mundo por sus pecados, y destruir a los que no creen en él.",
+                    "Crear el universo y a la humanidad, gobernar con providencia, y proteger a sus hijos.",
+                    "Sanar a los enfermos y curar las dolencias del alma y del cuerpo a través de milagros."
+                ],
+                hint: "Es el creador."
+            },
+            {
+                q: "¿Cuál es la misión de Jesús, el Hijo?",
+                a: "Salvar al mundo del pecado.",
+                options: [
+                    "Guiar a los animales del campo y a las aves del cielo, ya que él es su pastor.",
+                    "Escribir la ley divina en el corazón de los hombres, para que puedan vivir sin pecado.",
+                    "Salvar a la humanidad del pecado, reconciliándola con Dios a través de su vida, muerte y resurrección, y redimiendo el mundo entero.",
+                    "Crear la Biblia y dictar todas las profecías que se encuentran en el Antiguo y el Nuevo Testamento."
+                ],
+                hint: "Es el salvador."
+            },
+            {
+                q: "¿Qué hace el Espíritu Santo?",
+                a: "Santifica a la Iglesia. Se manifiesta como paloma, fuego o luz.",
+                options: [
+                    "Gobierna la Tierra desde el cielo, distribuyendo los dones y las gracias a los hombres.",
+                    "Hace milagros en el mundo, como la curación de enfermedades y la resurrección de los muertos.",
+                    "Santifica a la Iglesia, guía a los creyentes en la verdad, y se manifiesta en diferentes formas, como una paloma, fuego o un viento recio, para dar poder a los apóstoles.",
+                    "Construye las iglesias y los templos donde los creyentes se reúnen para adorar a Dios."
+                ],
+                hint: "Santifica y guía."
+            },
+            {
+                q: "¿Quiénes fueron los apóstoles?",
+                a: "Los 12 discípulos elegidos por Jesús para anunciar su mensaje.",
+                options: [
+                    "Los sacerdotes del templo de Jerusalén, que eran los líderes religiosos de la época.",
+                    "Los seguidores de Moisés que escribieron el Pentateuco y las leyes judías.",
+                    "Los doce discípulos que Jesús escogió para ser sus testigos y enviados, con la misión de predicar su mensaje, fundar su Iglesia y extender su reino por el mundo.",
+                    "Los autores de los salmos, que escribieron los cantos de alabanza y lamentación del pueblo de Israel."
+                ],
+                hint: "Doce elegidos."
+            },
+            {
+                q: "¿Qué es la Lectio Divina?",
+                a: "Un método de oración y meditación con la Biblia.",
+                options: [
+                    "Un canto litúrgico antiguo que se recita en la Misa y otras ceremonias.",
+                    "Un libro sagrado que contiene las profecías y los sueños de los profetas antiguos.",
+                    "Una peregrinación a los lugares santos de Tierra Santa, donde los creyentes caminan por la vida de Jesús.",
+                    "Un método de oración, meditación y contemplación de la Palabra de Dios, que busca un encuentro personal con el Señor a través de la lectura de la Biblia."
+                ],
+                hint: "Método de oración con la Biblia."
+            },
+            {
+                q: "¿Cuáles son los cinco pasos de la Lectio Divina?",
+                a: "Lectura, meditación, oración, contemplación y compromiso.",
+                options: [
+                    "Fe, esperanza, caridad, ayuno, y oración en la cuaresma.",
+                    "Lectura (Lectio), meditación (Meditatio), oración (Oratio), contemplación (Contemplatio) y compromiso (Actio).",
+                    "Ver, juzgar, actuar, rezar y cantar en la misa.",
+                    "Biblia, cruz, vela, misa, y rezo."
+                ],
+                hint: "Cinco pasos para orar con la Biblia."
+            },
+            {
+                q: "¿Qué dice el creacionismo sobre el origen del hombre?",
+                a: "Que fue creado por Dios, según el relato del Génesis.",
+                options: [
+                    "Que el hombre viene de Marte y fue traído a la Tierra por una nave espacial.",
+                    "Que la vida humana y todo el universo fueron creados por Dios de manera directa y sobrenatural, según el relato del Génesis, rechazando la idea de la evolución.",
+                    "Que el hombre fue creado por unos ángeles que descendieron del cielo para poblar la Tierra.",
+                    "Que el ser humano descendió directamente de los romanos, quienes poblaron el mundo con su imperio."
+                ],
+                hint: "Génesis lo explica."
+            },
+            {
+                q: "¿Qué dice el evolucionismo?",
+                a: "Que el ser humano evolucionó a lo largo del tiempo. Es aceptado por la Iglesia si se reconoce a Dios como creador.",
+                options: [
+                    "Que el hombre siempre existió en la tierra y no tuvo un origen, ya que es eterno.",
+                    "Que el ser humano se desarrolló a lo largo de un largo proceso evolutivo. La Iglesia Católica no ve una contradicción entre la fe y la evolución, siempre y cuando se reconozca a Dios como el Creador que infunde el alma espiritual en el ser humano.",
+                    "Que el hombre nació de un milagro en el mar, cuando una criatura marina fue convertida en ser humano por un dios pagano.",
+                    "Que el ser humano fue creado dos veces, la primera vez para vivir en el cielo, y la segunda para vivir en la Tierra."
+                ],
+                hint: "Proceso con aceptación teológica."
+            },
+            {
+                q: "¿Qué es el “motor inmóvil” según Aristóteles?",
+                a: "Una causa primera que no es movida por nada: Dios.",
+                options: [
+                    "Un dios mecánico que funciona como un relojero que pone en marcha el universo y lo deja a su suerte.",
+                    "Una energía infinita que recorre el universo, pero que no tiene una conciencia propia.",
+                    "Un concepto filosófico que describe una causa primera o un primer motor que no es movido por ninguna otra cosa, y que es la causa final del movimiento de todo lo demás; un concepto que la teología cristiana ha utilizado para referirse a Dios.",
+                    "Una máquina eterna que funciona sin cesar y sin la intervención de un dios."
+                ],
+                hint: "Causa primera."
+            }
+        ];
 
-    let remaining = [...questions];
-    let current, timer, timeLeft = 15;
+        let remaining = [...questions];
+        let usedLifelines = { fifty: false, hint: false, one: false };
+        let correctAnswers = 0;
+        let totalQuestions = 0;
+        let current, timer, timeLeft = 15;
 
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
-
-    function playAudio(id) {
-      document.getElementById(id).play();
-    }
-
-    function showQuestion() {
-      clearInterval(timer);
-      if (remaining.length === 0) {
-        document.getElementById("question").innerText = "🎉 ¡Has completado toda la trivia!";
-        document.getElementById("options").innerHTML = "";
-        document.querySelector(".lifelines").remove();
-        document.getElementById("timer").remove();
-        return;
-      }
-      timeLeft = 15;
-      document.getElementById("timer").innerText = `Tiempo restante: ${timeLeft}s`;
-      timer = setInterval(() => {
-        timeLeft--;
-        document.getElementById("timer").innerText = `Tiempo restante: ${timeLeft}s`;
-        if (timeLeft <= 0) {
-          clearInterval(timer);
-          playAudio("loseSound");
-          alert("⏰ Tiempo agotado.");
-          showQuestion();
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
         }
-      }, 1000);
 
-      current = remaining.splice(Math.floor(Math.random() * remaining.length), 1)[0];
-      shuffle(current.options);
-      document.getElementById("question").innerText = current.q;
-      const optBox = document.getElementById("options");
-      optBox.innerHTML = "";
-      current.options.forEach(option => {
-        const btn = document.createElement("button");
-        btn.className = "option";
-        btn.innerText = option;
-        btn.onclick = () => {
-          playAudio("clickSound");
-          if (option === current.a) {
-            playAudio("winSound");
-            alert("✅ ¡Correcto!");
-          } else {
-            playAudio("loseSound");
-            alert("❌ Incorrecto.");
-          }
-          showQuestion();
-        };
-        optBox.appendChild(btn);
-      });
-    }
+        function playAudio(id) {
+            document.getElementById(id).play();
+        }
 
-    function useLifeline(type) {
-      const buttons = Array.from(document.querySelectorAll(".option"));
-      if (type === "fifty") {
-        let wrong = buttons.filter(b => b.innerText !== current.a);
-        shuffle(wrong);
-        wrong.slice(0, 2).forEach(b => b.classList.add("hidden"));
-      } else if (type === "one") {
-        let wrong = buttons.filter(b => b.innerText !== current.a);
-        shuffle(wrong);
-        wrong[0].classList.add("hidden");
-      } else if (type === "hint") {
-        alert("💡 Pista: " + current.hint);
-      }
-    }
+        function updateLifelineButtons() {
+            for (const lifeline in usedLifelines) {
+                document.getElementById(lifeline).disabled = usedLifelines[lifeline];
+            }
+        }
 
-    showQuestion();
-  </script>
+        function showQuestion() {
+            clearInterval(timer);
+            const scoreDisplay = document.getElementById("score-display");
+
+            if (remaining.length === 0) {
+                document.getElementById("question").innerText = "🎉 ¡Has completado toda la trivia!";
+                document.getElementById("options").innerHTML = "";
+                document.querySelector(".lifelines").remove();
+                document.getElementById("timer").remove();
+                scoreDisplay.innerText = `Acertaste ${correctAnswers} de ${totalQuestions} preguntas.`;
+                scoreDisplay.classList.remove("hidden");
+                return;
+            }
+
+            totalQuestions++;
+            timeLeft = 15;
+            document.getElementById("timer").innerText = `Tiempo restante: ${timeLeft}s`;
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").innerText = `Tiempo restante: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    playAudio("loseSound");
+                    alert("⏰ Tiempo agotado. Respuesta incorrecta.");
+                    showQuestion();
+                }
+            }, 1000);
+
+            current = remaining.splice(Math.floor(Math.random() * remaining.length), 1)[0];
+            shuffle(current.options);
+            document.getElementById("question").innerText = current.q;
+            const optBox = document.getElementById("options");
+            optBox.innerHTML = "";
+
+            current.options.forEach(option => {
+                const btn = document.createElement("button");
+                btn.className = "option";
+                btn.innerText = option;
+                btn.onclick = () => {
+                    clearInterval(timer);
+                    playAudio("clickSound");
+                    if (option === current.a) {
+                        playAudio("winSound");
+                        alert("✅ ¡Correcto!");
+                        correctAnswers++;
+                    } else {
+                        playAudio("loseSound");
+                        alert(`❌ Incorrecto. La respuesta correcta era: ${current.a}`);
+                    }
+                    showQuestion();
+                };
+                optBox.appendChild(btn);
+            });
+            updateLifelineButtons();
+        }
+
+        function useLifeline(type) {
+            if (usedLifelines[type]) {
+                alert("Ya has usado este comodín.");
+                return;
+            }
+
+            const buttons = Array.from(document.querySelectorAll(".option"));
+            if (type === "fifty") {
+                let wrong = buttons.filter(b => b.innerText !== current.a);
+                shuffle(wrong);
+                wrong.slice(0, 2).forEach(b => b.classList.add("hidden"));
+            } else if (type === "one") {
+                let wrong = buttons.filter(b => b.innerText !== current.a);
+                shuffle(wrong);
+                wrong[0].classList.add("hidden");
+            } else if (type === "hint") {
+                alert("💡 Pista: " + current.hint);
+            }
+            usedLifelines[type] = true;
+            updateLifelineButtons();
+        }
+
+        showQuestion();
+    </script>
 </body>
 </html>
