@@ -1,68 +1,183 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Trivia Bíblica</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trivia Católica</title>
   <style>
-    body { font-family: sans-serif; text-align: center; background-color: #f4f4f4; padding: 40px; }
-    #question { font-size: 1.5em; margin: 20px 0; }
-    .option { display: block; margin: 10px auto; padding: 10px 20px; background-color: #ddd; border: none; border-radius: 5px; cursor: pointer; }
-    .option:hover { background-color: #bbb; }
-    #feedback { margin-top: 20px; font-weight: bold; }
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f0f0f0;
+      padding: 20px;
+    }
+    .question {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    .answers button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .lifelines button {
+      margin: 10px 5px;
+    }
+    #timer {
+      font-size: 18px;
+      margin: 20px;
+      color: #d00;
+    }
   </style>
 </head>
 <body>
-  <h1>Trivia sobre la Biblia y la Fe Católica</h1>
-  <div id="question">Haz clic para comenzar</div>
-  <div id="options"></div>
-  <div id="feedback"></div>
-  <button onclick="loadQuestion()">Trivia</button>
+
+  <h1>Trivia Católica</h1>
+  <div id="timer">Tiempo: 15</div>
+  <div class="question" id="questionText"></div>
+  <div class="answers" id="answers"></div>
+
+  <div class="lifelines">
+    <button onclick="use5050()">50/50</button>
+    <button onclick="showHint()">Pista</button>
+    <button onclick="removeOne()">Eliminar una</button>
+  </div>
+
+  <div id="hint" style="margin-top: 20px; font-style: italic;"></div>
+
+  <audio id="clickSound" src="click.mp3"></audio>
+  <audio id="correctSound" src="correct.mp3"></audio>
+  <audio id="wrongSound" src="wrong.mp3"></audio>
 
   <script>
     const questions = [
       {
-        question: "¿Qué representa el arcoíris en la historia de Noé?",
-        options: ["El fin del diluvio", "La señal de la alianza entre Dios y la humanidad", "La bendición a Abraham", "La creación del mundo"],
-        correct: 1
+        text: "¿Qué significa el nombre 'Israel'?",
+        answers: ["Elegido por Dios", "Padre de muchas naciones", "El que lucha con Dios", "Guía espiritual"],
+        correct: 2,
+        hint: "Tiene que ver con una lucha espiritual o física."
       },
       {
-        question: "¿Qué significa el nombre Israel?",
-        options: ["Elegido por Dios", "Padre de naciones", "El que lucha con Dios", "Discípulo de Moisés"],
-        correct: 2
+        text: "¿Cuál es el primer mandamiento?",
+        answers: ["No robar", "Amar a Dios sobre todas las cosas", "No matar", "No mentir"],
+        correct: 1,
+        hint: "Se refiere a la relación del hombre con Dios."
       },
       {
-        question: "¿Qué hace el Espíritu Santo según la fe católica?",
-        options: ["Reina sobre Israel", "Sana enfermedades físicas", "Santifica la Iglesia", "Expulsa demonios"],
-        correct: 2
-      },
-      {
-        question: "¿Cuál fue la misión de Moisés?",
-        options: ["Construir el templo", "Liberar a Israel y recibir la ley", "Escribir los Salmos", "Ser Rey de Canaán"],
-        correct: 1
+        text: "¿Qué representa el Espíritu Santo?",
+        answers: ["Un león", "Una paloma", "Un cordero", "Una cruz"],
+        correct: 1,
+        hint: "También se representa con fuego o viento."
       }
     ];
 
-    function loadQuestion() {
-      const q = questions[Math.floor(Math.random() * questions.length)];
-      document.getElementById('question').textContent = q.question;
-      const optionsDiv = document.getElementById('options');
-      optionsDiv.innerHTML = '';
-      document.getElementById('feedback').textContent = '';
+    let currentQuestion = 0;
+    let timer;
+    let timeLeft = 15;
+    let lifelines = {
+      "50": false,
+      "hint": false,
+      "remove": false
+    };
 
-      q.options.forEach((option, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'option';
-        btn.textContent = option;
-        btn.onclick = () => {
-          if (index === q.correct) {
-            document.getElementById('feedback').textContent = '✅ Correcto';
-          } else {
-            document.getElementById('feedback').textContent = '❌ Incorrecto';
-          }
-        };
-        optionsDiv.appendChild(btn);
+    function loadQuestion() {
+      clearInterval(timer);
+      timeLeft = 15;
+      document.getElementById("hint").innerText = "";
+      const q = questions[currentQuestion];
+      document.getElementById("questionText").innerText = q.text;
+
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+      q.answers.forEach((answer, i) => {
+        const btn = document.createElement("button");
+        btn.innerText = answer;
+        btn.onclick = () => handleAnswer(i);
+        answersDiv.appendChild(btn);
+      });
+
+      document.getElementById("timer").innerText = "Tiempo: 15";
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").innerText = `Tiempo: ${timeLeft}`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          playSound("wrongSound");
+          alert("¡Tiempo agotado!");
+          nextQuestion();
+        }
+      }, 1000);
+    }
+
+    function handleAnswer(index) {
+      playSound("clickSound");
+      clearInterval(timer);
+      const q = questions[currentQuestion];
+      if (index === q.correct) {
+        playSound("correctSound");
+        alert("✅ ¡Correcto!");
+      } else {
+        playSound("wrongSound");
+        alert("❌ Incorrecto. La respuesta correcta era: " + q.answers[q.correct]);
+      }
+      nextQuestion();
+    }
+
+    function playSound(id) {
+      const sound = document.getElementById(id);
+      sound.currentTime = 0;
+      sound.play();
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        loadQuestion();
+      } else {
+        alert("🎉 ¡Has terminado la trivia!");
+      }
+    }
+
+    function use5050() {
+      if (lifelines["50"]) return;
+      lifelines["50"] = true;
+
+      const q = questions[currentQuestion];
+      const answers = Array.from(document.getElementById("answers").children);
+      let removed = 0;
+      answers.forEach((btn, i) => {
+        if (i !== q.correct && removed < 2) {
+          btn.style.display = "none";
+          removed++;
+        }
       });
     }
+
+    function showHint() {
+      if (lifelines["hint"]) return;
+      lifelines["hint"] = true;
+      const q = questions[currentQuestion];
+      document.getElementById("hint").innerText = "💡 Pista: " + q.hint;
+    }
+
+    function removeOne() {
+      if (lifelines["remove"]) return;
+      lifelines["remove"] = true;
+
+      const q = questions[currentQuestion];
+      const answers = Array.from(document.getElementById("answers").children);
+      for (let i = 0; i < answers.length; i++) {
+        if (i !== q.correct && answers[i].style.display !== "none") {
+          answers[i].style.display = "none";
+          break;
+        }
+      }
+    }
+
+    loadQuestion();
   </script>
+
 </body>
 </html>
