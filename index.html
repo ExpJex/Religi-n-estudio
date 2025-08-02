@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Trivia Bíblica</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; background-color: #f4f4f4; padding: 40px; }
+    #question { font-size: 1.5em; margin: 20px 0; }
+    .option { display: block; margin: 10px auto; padding: 10px 20px; background-color: #ddd; border: none; border-radius: 5px; cursor: pointer; }
+    .option:hover { background-color: #bbb; }
+    #feedback { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Trivia sobre la Biblia y la Fe Católica</h1>
+  <div id="question">Haz clic para comenzar</div>
+  <div id="options"></div>
+  <div id="feedback"></div>
+  <button onclick="loadQuestion()">Trivia</button>
+
+  <script>
+    const questions = [
+      {
+        question: "¿Qué representa el arcoíris en la historia de Noé?",
+        options: ["El fin del diluvio", "La señal de la alianza entre Dios y la humanidad", "La bendición a Abraham", "La creación del mundo"],
+        correct: 1
+      },
+      {
+        question: "¿Qué significa el nombre Israel?",
+        options: ["Elegido por Dios", "Padre de naciones", "El que lucha con Dios", "Discípulo de Moisés"],
+        correct: 2
+      },
+      {
+        question: "¿Qué hace el Espíritu Santo según la fe católica?",
+        options: ["Reina sobre Israel", "Sana enfermedades físicas", "Santifica la Iglesia", "Expulsa demonios"],
+        correct: 2
+      },
+      {
+        question: "¿Cuál fue la misión de Moisés?",
+        options: ["Construir el templo", "Liberar a Israel y recibir la ley", "Escribir los Salmos", "Ser Rey de Canaán"],
+        correct: 1
+      }
+    ];
+
+    function loadQuestion() {
+      const q = questions[Math.floor(Math.random() * questions.length)];
+      document.getElementById('question').textContent = q.question;
+      const optionsDiv = document.getElementById('options');
+      optionsDiv.innerHTML = '';
+      document.getElementById('feedback').textContent = '';
+
+      q.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = option;
+        btn.onclick = () => {
+          if (index === q.correct) {
+            document.getElementById('feedback').textContent = '✅ Correcto';
+          } else {
+            document.getElementById('feedback').textContent = '❌ Incorrecto';
+          }
+        };
+        optionsDiv.appendChild(btn);
+      });
+    }
+  </script>
+</body>
+</html>
