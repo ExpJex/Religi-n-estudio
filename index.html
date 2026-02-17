@@ -8,17 +8,16 @@
 <style>
 body{
     margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg,#FFD700,#0033A0,#CE1126);
-    background-size: 400% 400%;
-    animation: gradient 8s ease infinite;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#FFD700,#0033A0,#CE1126);
+    background-size:400% 400%;
+    animation:bgMove 10s infinite;
     display:flex;
     justify-content:center;
     align-items:center;
     height:100vh;
 }
-
-@keyframes gradient{
+@keyframes bgMove{
     0%{background-position:0% 50%;}
     50%{background-position:100% 50%;}
     100%{background-position:0% 50%;}
@@ -26,24 +25,28 @@ body{
 
 .container{
     background:white;
-    width:90%;
-    max-width:600px;
+    width:95%;
+    max-width:650px;
     padding:25px;
     border-radius:15px;
-    box-shadow:0 0 20px rgba(0,0,0,0.3);
+    box-shadow:0 0 25px rgba(0,0,0,0.3);
     text-align:center;
     position:relative;
-    overflow:hidden;
 }
 
 h1{
-    margin-bottom:10px;
     color:#0033A0;
+}
+
+#timer{
+    font-weight:bold;
+    margin:10px 0;
+    font-size:18px;
 }
 
 #question{
     font-size:20px;
-    margin:20px 0;
+    margin:15px 0;
     min-height:50px;
 }
 
@@ -57,15 +60,14 @@ button{
     padding:12px;
     border:none;
     border-radius:8px;
-    font-size:16px;
+    font-size:15px;
     cursor:pointer;
     transition:0.3s;
 }
 
 .option-btn{
-    background:#f1f1f1;
+    background:#f2f2f2;
 }
-
 .option-btn:hover{
     transform:scale(1.05);
     background:#ddd;
@@ -75,37 +77,20 @@ button{
     background:#4CAF50 !important;
     color:white;
 }
-
 .wrong{
     background:#f44336 !important;
     color:white;
 }
 
-#timer{
-    font-size:18px;
-    margin:10px 0;
-    font-weight:bold;
-}
-
 #lifeline{
-    margin:10px 0;
+    margin-top:10px;
     background:#0033A0;
     color:white;
 }
 
-#result{
-    font-size:20px;
-    margin-top:20px;
-}
+.hidden{display:none;}
 
-.hidden{
-    display:none;
-}
-
-.fade{
-    animation: fadeIn 0.5s;
-}
-
+.fade{animation:fadeIn 0.4s;}
 @keyframes fadeIn{
     from{opacity:0; transform:translateY(10px);}
     to{opacity:1; transform:translateY(0);}
@@ -115,38 +100,100 @@ button{
 <body>
 
 <div class="container fade">
-    <h1>Departamentos y Capitales de Colombia</h1>
-    <div id="timer">Tiempo: 10</div>
-    <div id="question"></div>
-
-    <div class="options" id="options"></div>
-
-    <button id="lifeline">Comodín 50/50</button>
-
-    <div id="result" class="hidden"></div>
-    <button id="restart" class="hidden">Volver a jugar</button>
+<h1>Departamentos y Capitales de Colombia</h1>
+<div id="timer">Tiempo: 10</div>
+<div id="question"></div>
+<div class="options" id="options"></div>
+<button id="lifeline">Comodín 50/50</button>
+<div id="result" class="hidden"></div>
+<button id="restart" class="hidden">Volver a jugar</button>
 </div>
 
 <script>
-// ---- Datos ----
-const questions = [
-{q:"¿Cuál es la capital de Antioquia?", correct:"Medellín", options:["Medellín","Cali","Barranquilla","Pereira"]},
-{q:"¿Cuál es la capital del Valle del Cauca?", correct:"Cali", options:["Cali","Neiva","Montería","Tunja"]},
-{q:"¿Cuál es la capital de Atlántico?", correct:"Barranquilla", options:["Santa Marta","Barranquilla","Cartagena","Sincelejo"]},
-{q:"¿Cuál es la capital de Cundinamarca?", correct:"Bogotá", options:["Bogotá","Ibagué","Villavicencio","Pasto"]},
-{q:"¿Cuál es la capital de Bolívar?", correct:"Cartagena", options:["Cartagena","Cúcuta","Popayán","Armenia"]}
+
+// ================= DATOS =================
+
+const departamentos = [
+["Amazonas","Leticia"],
+["Antioquia","Medellín"],
+["Arauca","Arauca"],
+["Atlántico","Barranquilla"],
+["Bolívar","Cartagena"],
+["Boyacá","Tunja"],
+["Caldas","Manizales"],
+["Caquetá","Florencia"],
+["Casanare","Yopal"],
+["Cauca","Popayán"],
+["Cesar","Valledupar"],
+["Chocó","Quibdó"],
+["Córdoba","Montería"],
+["Cundinamarca","Bogotá"],
+["Guainía","Inírida"],
+["Guaviare","San José del Guaviare"],
+["Huila","Neiva"],
+["La Guajira","Riohacha"],
+["Magdalena","Santa Marta"],
+["Meta","Villavicencio"],
+["Nariño","Pasto"],
+["Norte de Santander","Cúcuta"],
+["Putumayo","Mocoa"],
+["Quindío","Armenia"],
+["Risaralda","Pereira"],
+["San Andrés y Providencia","San Andrés"],
+["Santander","Bucaramanga"],
+["Sucre","Sincelejo"],
+["Tolima","Ibagué"],
+["Valle del Cauca","Cali"],
+["Vaupés","Mitú"],
+["Vichada","Puerto Carreño"]
 ];
+
+// generar preguntas automáticamente
+let questions = departamentos.map(dep => {
+    let correct = dep[1];
+    let wrong = departamentos
+        .map(d=>d[1])
+        .filter(cap=>cap!==correct)
+        .sort(()=>0.5-Math.random())
+        .slice(0,3);
+
+    let options = [...wrong, correct].sort(()=>0.5-Math.random());
+
+    return {
+        q: "¿Cuál es la capital de " + dep[0] + "?",
+        correct: correct,
+        options: options
+    };
+});
+
+// ================= VARIABLES =================
 
 let current = 0;
 let score = 0;
-let timer;
 let timeLeft = 10;
+let timer;
 let used5050 = false;
 
-// ---- Sonidos ----
-const correctSound = new Audio("https://www.soundjay.com/buttons/sounds/button-3.mp3");
-const wrongSound = new Audio("https://www.soundjay.com/buttons/sounds/button-10.mp3");
-const timeoutSound = new Audio("https://www.soundjay.com/buttons/sounds/beep-10.mp3");
+// ================= SONIDOS (BEEP PROPIO) =================
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function beep(freq,duration){
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.frequency.value = freq;
+    osc.start();
+    gain.gain.setValueAtTime(0.3,audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + duration/1000);
+}
+
+function correctSound(){ beep(800,200); }
+function wrongSound(){ beep(200,400); }
+function timeoutSound(){ beep(100,600); }
+
+// ================= LÓGICA =================
 
 function startTimer(){
     timeLeft = 10;
@@ -154,16 +201,16 @@ function startTimer(){
     timer = setInterval(()=>{
         timeLeft--;
         document.getElementById("timer").textContent = "Tiempo: " + timeLeft;
-        if(timeLeft <= 0){
+        if(timeLeft<=0){
             clearInterval(timer);
-            timeoutSound.play();
+            timeoutSound();
             nextQuestion();
         }
     },1000);
 }
 
 function loadQuestion(){
-    if(current >= questions.length){
+    if(current>=questions.length){
         showResult();
         return;
     }
@@ -176,34 +223,34 @@ function loadQuestion(){
         const btn = document.createElement("button");
         btn.textContent = opt;
         btn.classList.add("option-btn");
-        btn.onclick = ()=>selectAnswer(btn, opt);
+        btn.onclick=()=>selectAnswer(btn,opt);
         optionsDiv.appendChild(btn);
     });
 
     startTimer();
 }
 
-function selectAnswer(button, answer){
+function selectAnswer(button,answer){
     clearInterval(timer);
     const correct = questions[current].correct;
     const buttons = document.querySelectorAll(".option-btn");
 
     buttons.forEach(btn=>{
-        btn.disabled = true;
-        if(btn.textContent === correct){
+        btn.disabled=true;
+        if(btn.textContent===correct){
             btn.classList.add("correct");
         }
     });
 
-    if(answer === correct){
+    if(answer===correct){
         score++;
-        correctSound.play();
-    } else {
+        correctSound();
+    }else{
         button.classList.add("wrong");
-        wrongSound.play();
+        wrongSound();
     }
 
-    setTimeout(nextQuestion,1500);
+    setTimeout(nextQuestion,1200);
 }
 
 function nextQuestion(){
@@ -219,15 +266,16 @@ function showResult(){
 
     const result = document.getElementById("result");
     result.classList.remove("hidden");
-    result.textContent = "Tu puntaje fue: " + score + " / " + questions.length;
+    result.textContent = "Tu puntaje fue: " + score + " / 32";
 
     document.getElementById("restart").classList.remove("hidden");
 }
 
-document.getElementById("restart").onclick = ()=>{
-    current = 0;
-    score = 0;
-    used5050 = false;
+document.getElementById("restart").onclick=()=>{
+    current=0;
+    score=0;
+    used5050=false;
+    questions.sort(()=>0.5-Math.random());
 
     document.getElementById("question").classList.remove("hidden");
     document.getElementById("options").classList.remove("hidden");
@@ -235,27 +283,26 @@ document.getElementById("restart").onclick = ()=>{
     document.getElementById("timer").classList.remove("hidden");
     document.getElementById("result").classList.add("hidden");
     document.getElementById("restart").classList.add("hidden");
+    document.getElementById("lifeline").disabled=false;
 
     loadQuestion();
 };
 
-document.getElementById("lifeline").onclick = ()=>{
+document.getElementById("lifeline").onclick=()=>{
     if(used5050) return;
-
     const correct = questions[current].correct;
     const buttons = Array.from(document.querySelectorAll(".option-btn"));
-    let wrongOptions = buttons.filter(btn => btn.textContent !== correct);
-
-    // eliminar 2 incorrectas
-    wrongOptions.sort(()=>0.5 - Math.random());
-    wrongOptions.slice(0,2).forEach(btn=> btn.style.visibility="hidden");
-
-    used5050 = true;
-    document.getElementById("lifeline").disabled = true;
+    let wrong = buttons.filter(b=>b.textContent!==correct);
+    wrong.sort(()=>0.5-Math.random());
+    wrong.slice(0,2).forEach(b=>b.style.visibility="hidden");
+    used5050=true;
+    document.getElementById("lifeline").disabled=true;
 };
 
 // iniciar
+questions.sort(()=>0.5-Math.random());
 loadQuestion();
+
 </script>
 
 </body>
