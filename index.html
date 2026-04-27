@@ -1,309 +1,190 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Departamentos y Capitales de Colombia</title>
-
-<style>
-body{
-    margin:0;
-    font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#FFD700,#0033A0,#CE1126);
-    background-size:400% 400%;
-    animation:bgMove 10s infinite;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
-@keyframes bgMove{
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
-}
-
-.container{
-    background:white;
-    width:95%;
-    max-width:650px;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 0 25px rgba(0,0,0,0.3);
-    text-align:center;
-    position:relative;
-}
-
-h1{
-    color:#0033A0;
-}
-
-#timer{
-    font-weight:bold;
-    margin:10px 0;
-    font-size:18px;
-}
-
-#question{
-    font-size:20px;
-    margin:15px 0;
-    min-height:50px;
-}
-
-.options{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-}
-
-button{
-    padding:12px;
-    border:none;
-    border-radius:8px;
-    font-size:15px;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-.option-btn{
-    background:#f2f2f2;
-}
-.option-btn:hover{
-    transform:scale(1.05);
-    background:#ddd;
-}
-
-.correct{
-    background:#4CAF50 !important;
-    color:white;
-}
-.wrong{
-    background:#f44336 !important;
-    color:white;
-}
-
-#lifeline{
-    margin-top:10px;
-    background:#0033A0;
-    color:white;
-}
-
-.hidden{display:none;}
-
-.fade{animation:fadeIn 0.4s;}
-@keyframes fadeIn{
-    from{opacity:0; transform:translateY(10px);}
-    to{opacity:1; transform:translateY(0);}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpJex | Portafolio Roblox</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        dark: '#09090b',
+                        card: '#18181b',
+                        cardHover: '#27272a',
+                        accent: '#10b981', // Esmeralda
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #09090b; color: #f4f4f5; }
+        .glass-card {
+            background: rgba(24, 24, 27, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(16, 185, 129, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
-<body>
+<body class="antialiased min-h-screen flex flex-col items-center pb-20">
 
-<div class="container fade">
-<h1>Departamentos y Capitales de Colombia</h1>
-<div id="timer">Tiempo: 10</div>
-<div id="question"></div>
-<div class="options" id="options"></div>
-<button id="lifeline">Comodín 50/50</button>
-<div id="result" class="hidden"></div>
-<button id="restart" class="hidden">Volver a jugar</button>
-</div>
+    <nav class="w-full max-w-5xl flex justify-between items-center p-6 mb-8">
+        <div class="text-xl font-bold tracking-tight">ExpJex<span class="text-accent">.</span></div>
+        <div class="flex gap-4">
+            <a href="#experiencia" class="text-sm text-gray-400 hover:text-white transition">Experiencia</a>
+            <a href="#reseñas" class="text-sm text-gray-400 hover:text-white transition">Reseñas</a>
+        </div>
+    </nav>
 
-<script>
+    <main class="w-full max-w-5xl px-6 flex flex-col gap-8">
+        
+        <section class="flex flex-col md:flex-row gap-6">
+            <div class="glass-card rounded-3xl p-8 flex-1 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-accent rounded-full mix-blend-multiply filter blur-[100px] opacity-20"></div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold mb-6">
+                    <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+                    Disponible para Comisiones
+                </div>
+                <h1 class="text-5xl md:text-6xl font-bold mb-4 tracking-tight">ExpJex</h1>
+                <p class="text-xl text-gray-400 mb-2">Desarrollador de Roblox</p>
+                <p class="text-sm text-gray-500 mb-8 max-w-md">Especialista en diseño UI/UX, construcción de entornos inmersivos y optimización de experiencias.</p>
+                
+                <div class="flex flex-wrap gap-4">
+                    <a href="https://www.roblox.com/search/users?keyword=ExpJex" target="_blank" class="flex items-center gap-2 bg-white text-black px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition">
+                        <i class="ph-fill ph-game-controller text-xl"></i>
+                        Perfil de Roblox
+                    </a>
+                    <a href="#" class="flex items-center gap-2 bg-[#5865F2] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#4752C4] transition">
+                        <i class="ph-fill ph-discord-logo text-xl"></i>
+                        Contactar en Discord
+                    </a>
+                </div>
+            </div>
 
-// ================= DATOS =================
+            <div class="flex flex-col gap-6 w-full md:w-1/3">
+                <div class="glass-card rounded-3xl p-6 flex flex-col justify-center items-center text-center h-full">
+                    <h2 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent to-emerald-300 mb-2">25M+</h2>
+                    <p class="text-sm text-gray-400 uppercase tracking-wider font-semibold">Visitas en Colaboraciones</p>
+                </div>
+                <div class="flex gap-6 h-full">
+                    <div class="glass-card rounded-3xl p-6 flex-1 flex flex-col justify-center items-center text-center">
+                        <h3 class="text-2xl font-bold mb-1">6+</h3>
+                        <p class="text-xs text-gray-400 uppercase">Años Exp.</p>
+                    </div>
+                    <div class="glass-card rounded-3xl p-6 flex-1 flex flex-col justify-center items-center text-center">
+                        <i class="ph ph-globe-hemisphere-west text-2xl mb-2 text-accent"></i>
+                        <p class="text-xs text-gray-400 uppercase">Bogotá<br>(EST)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-const departamentos = [
-["Amazonas","Leticia"],
-["Antioquia","Medellín"],
-["Arauca","Arauca"],
-["Atlántico","Barranquilla"],
-["Bolívar","Cartagena"],
-["Boyacá","Tunja"],
-["Caldas","Manizales"],
-["Caquetá","Florencia"],
-["Casanare","Yopal"],
-["Cauca","Popayán"],
-["Cesar","Valledupar"],
-["Chocó","Quibdó"],
-["Córdoba","Montería"],
-["Cundinamarca","Bogotá"],
-["Guainía","Inírida"],
-["Guaviare","San José del Guaviare"],
-["Huila","Neiva"],
-["La Guajira","Riohacha"],
-["Magdalena","Santa Marta"],
-["Meta","Villavicencio"],
-["Nariño","Pasto"],
-["Norte de Santander","Cúcuta"],
-["Putumayo","Mocoa"],
-["Quindío","Armenia"],
-["Risaralda","Pereira"],
-["San Andrés y Providencia","San Andrés"],
-["Santander","Bucaramanga"],
-["Sucre","Sincelejo"],
-["Tolima","Ibagué"],
-["Valle del Cauca","Cali"],
-["Vaupés","Mitú"],
-["Vichada","Puerto Carreño"]
-];
+        <section id="experiencia" class="mt-8">
+            <h2 class="text-2xl font-bold mb-6">Mis Especialidades</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-2xl">
+                    <i class="ph ph-layout text-3xl text-accent mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Sistemas UI / UX</h3>
+                    <p class="text-sm text-gray-400">Diseño de interfaces pulidas, responsivas y centradas en la experiencia del jugador, con animaciones fluidas.</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl">
+                    <i class="ph ph-buildings text-3xl text-accent mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Construcción y Entornos</h3>
+                    <p class="text-sm text-gray-400">Desarrollo de mapas inmersivos tipo Tycoon y simuladores, con estructuras limpias y optimizadas para el rendimiento.</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl">
+                    <i class="ph ph-bezier-curve text-3xl text-accent mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Diseño Gráfico</h3>
+                    <p class="text-sm text-gray-400">Creación de íconos vectoriales, branding y miniaturas de alto impacto diseñadas para maximizar el CTR.</p>
+                </div>
+            </div>
+        </section>
 
-// generar preguntas automáticamente
-let questions = departamentos.map(dep => {
-    let correct = dep[1];
-    let wrong = departamentos
-        .map(d=>d[1])
-        .filter(cap=>cap!==correct)
-        .sort(()=>0.5-Math.random())
-        .slice(0,3);
+        <section id="reseñas" class="mt-12 flex flex-col md:flex-row gap-8">
+            <div class="flex-1">
+                <h2 class="text-2xl font-bold mb-6">Lo que dice la comunidad</h2>
+                <div id="reviewsList" class="flex flex-col gap-4">
+                    <div class="glass-card p-5 rounded-2xl">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center font-bold text-gray-400">D</div>
+                                <div>
+                                    <h4 class="font-semibold text-sm">DevStudio</h4>
+                                    <p class="text-xs text-accent">Colaborador Verificado</p>
+                                </div>
+                            </div>
+                            <div class="flex text-yellow-500 text-sm">
+                                <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-300 italic">"Increíble trabajo en la interfaz para nuestro Tycoon. Rápido, comunicativo y un resultado muy pulido."</p>
+                    </div>
+                </div>
+            </div>
 
-    let options = [...wrong, correct].sort(()=>0.5-Math.random());
+            <div class="w-full md:w-1/3 glass-card p-6 rounded-2xl h-fit">
+                <h3 class="text-lg font-semibold mb-4">Dejar una Reseña</h3>
+                <form id="reviewForm" class="flex flex-col gap-4">
+                    <div>
+                        <label class="text-xs text-gray-400 mb-1 block">Tu Nombre / Estudio</label>
+                        <input type="text" id="reviewerName" required class="w-full bg-[#09090b] border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-accent" placeholder="Ej: BuildMaster">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 mb-1 block">Comentario</label>
+                        <textarea id="reviewText" required rows="3" class="w-full bg-[#09090b] border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-accent" placeholder="¿Cómo fue trabajar con ExpJex?"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-accent/10 text-accent border border-accent/20 hover:bg-accent hover:text-dark font-semibold py-2 rounded-lg transition text-sm">
+                        Publicar Reseña
+                    </button>
+                </form>
+            </div>
+        </section>
 
-    return {
-        q: "¿Cuál es la capital de " + dep[0] + "?",
-        correct: correct,
-        options: options
-    };
-});
+    </main>
 
-// ================= VARIABLES =================
+    <script>
+        // Lógica para el formulario de reseñas en tiempo real
+        document.getElementById('reviewForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('reviewerName').value;
+            const text = document.getElementById('reviewText').value;
+            const initial = name.charAt(0).toUpperCase();
 
-let current = 0;
-let score = 0;
-let timeLeft = 10;
-let timer;
-let used5050 = false;
+            const reviewHTML = `
+                <div class="glass-card p-5 rounded-2xl animate-[fadeIn_0.5s_ease-out]">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center font-bold text-gray-400">${initial}</div>
+                            <div>
+                                <h4 class="font-semibold text-sm">${name}</h4>
+                                <p class="text-xs text-gray-500">Nuevo Cliente</p>
+                            </div>
+                        </div>
+                        <div class="flex text-yellow-500 text-sm">
+                            <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-300 italic">"${text}"</p>
+                </div>
+            `;
 
-// ================= SONIDOS (BEEP PROPIO) =================
-
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-function beep(freq,duration){
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.frequency.value = freq;
-    osc.start();
-    gain.gain.setValueAtTime(0.3,audioCtx.currentTime);
-    osc.stop(audioCtx.currentTime + duration/1000);
-}
-
-function correctSound(){ beep(800,200); }
-function wrongSound(){ beep(200,400); }
-function timeoutSound(){ beep(100,600); }
-
-// ================= LÓGICA =================
-
-function startTimer(){
-    timeLeft = 10;
-    document.getElementById("timer").textContent = "Tiempo: " + timeLeft;
-    timer = setInterval(()=>{
-        timeLeft--;
-        document.getElementById("timer").textContent = "Tiempo: " + timeLeft;
-        if(timeLeft<=0){
-            clearInterval(timer);
-            timeoutSound();
-            nextQuestion();
-        }
-    },1000);
-}
-
-function loadQuestion(){
-    if(current>=questions.length){
-        showResult();
-        return;
-    }
-
-    document.getElementById("question").textContent = questions[current].q;
-    const optionsDiv = document.getElementById("options");
-    optionsDiv.innerHTML = "";
-
-    questions[current].options.forEach(opt=>{
-        const btn = document.createElement("button");
-        btn.textContent = opt;
-        btn.classList.add("option-btn");
-        btn.onclick=()=>selectAnswer(btn,opt);
-        optionsDiv.appendChild(btn);
-    });
-
-    startTimer();
-}
-
-function selectAnswer(button,answer){
-    clearInterval(timer);
-    const correct = questions[current].correct;
-    const buttons = document.querySelectorAll(".option-btn");
-
-    buttons.forEach(btn=>{
-        btn.disabled=true;
-        if(btn.textContent===correct){
-            btn.classList.add("correct");
-        }
-    });
-
-    if(answer===correct){
-        score++;
-        correctSound();
-    }else{
-        button.classList.add("wrong");
-        wrongSound();
-    }
-
-    setTimeout(nextQuestion,1200);
-}
-
-function nextQuestion(){
-    current++;
-    loadQuestion();
-}
-
-function showResult(){
-    document.getElementById("question").classList.add("hidden");
-    document.getElementById("options").classList.add("hidden");
-    document.getElementById("lifeline").classList.add("hidden");
-    document.getElementById("timer").classList.add("hidden");
-
-    const result = document.getElementById("result");
-    result.classList.remove("hidden");
-    result.textContent = "Tu puntaje fue: " + score + " / 32";
-
-    document.getElementById("restart").classList.remove("hidden");
-}
-
-document.getElementById("restart").onclick=()=>{
-    current=0;
-    score=0;
-    used5050=false;
-    questions.sort(()=>0.5-Math.random());
-
-    document.getElementById("question").classList.remove("hidden");
-    document.getElementById("options").classList.remove("hidden");
-    document.getElementById("lifeline").classList.remove("hidden");
-    document.getElementById("timer").classList.remove("hidden");
-    document.getElementById("result").classList.add("hidden");
-    document.getElementById("restart").classList.add("hidden");
-    document.getElementById("lifeline").disabled=false;
-
-    loadQuestion();
-};
-
-document.getElementById("lifeline").onclick=()=>{
-    if(used5050) return;
-    const correct = questions[current].correct;
-    const buttons = Array.from(document.querySelectorAll(".option-btn"));
-    let wrong = buttons.filter(b=>b.textContent!==correct);
-    wrong.sort(()=>0.5-Math.random());
-    wrong.slice(0,2).forEach(b=>b.style.visibility="hidden");
-    used5050=true;
-    document.getElementById("lifeline").disabled=true;
-};
-
-// iniciar
-questions.sort(()=>0.5-Math.random());
-loadQuestion();
-
-</script>
-
+            // Insertar la nueva reseña al principio de la lista
+            document.getElementById('reviewsList').insertAdjacentHTML('afterbegin', reviewHTML);
+            
+            // Limpiar el formulario
+            this.reset();
+        });
+    </script>
 </body>
 </html>
