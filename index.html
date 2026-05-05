@@ -3,1215 +3,1563 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QuímicaLab</title>
+<title>SciLab — Aprende Ciencias</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════ */
 :root{
-  --bg:#0F1923; --s1:#1A2733; --s2:#213040; --s3:#2A3F52;
-  --border:#2E4560; --text:#F0F4F8; --muted:#6B8AA8;
-  --green:#4ADE80; --green2:#22C55E; --greend:#16A34A; --greens:#14532D;
-  --blue:#38BDF8; --blued:#0EA5E9; --blues:#0C4A6E;
-  --gold:#FBBF24; --goldd:#F59E0B; --golds:#78350F;
-  --red:#F87171; --redd:#EF4444; --reds:#7F1D1D;
-  --purple:#C084FC; --purpled:#A855F7; --purples:#581C87;
-  --orange:#FB923C; --oranged:#F97316;
-  --r16:16px; --r12:12px; --r8:8px;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{height:100%}
-body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-.screen{display:none;min-height:100vh;flex-direction:column}
-.screen.active{display:flex}
-button{font-family:'Nunito',sans-serif;cursor:pointer}
+  --bg:#0C1520; --s1:#152030; --s2:#1C2D3F; --s3:#243548;
+  --border:#2A3F56; --text:#EFF6FF; --muted:#5A7A99;
 
-/* ─── HEADER ─── */
-.app-header{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 20px;background:var(--s1);
-  border-bottom:2px solid var(--border);position:sticky;top:0;z-index:50;
+  /* Chemistry — Emerald/Teal */
+  --chem:#10B981; --chem2:#059669; --chem3:#047857;
+  --chem-bg:#052E16; --chem-glow:rgba(16,185,129,.2);
+  --chem-light:#6EE7B7; --chem-mid:#34D399;
+
+  /* Physics — Amber/Violet */
+  --phys:#F59E0B; --phys2:#D97706; --phys3:#B45309;
+  --phys-bg:#2D1A00; --phys-glow:rgba(245,158,11,.2);
+  --phys-light:#FDE68A; --phys-mid:#FCD34D;
+  --phys-accent:#8B5CF6; --phys-accent2:#7C3AED;
+
+  /* Feedback */
+  --ok:#22C55E; --ok-bg:#052E16; --ok-b:#16A34A;
+  --bad:#F87171; --bad-bg:#2D0A0A; --bad-b:#DC2626;
+  --gold:#FBBF24; --gold-bg:#451A03; --gold-b:#D97706;
+  --blue:#38BDF8; --purple:#C084FC;
+
+  --r8:8px; --r12:12px; --r16:16px; --r20:20px; --r24:24px;
 }
-.logo{font-family:'Fredoka One',sans-serif;font-size:24px;color:var(--green2);letter-spacing:.5px}
-.hdr-right{display:flex;align-items:center;gap:10px;margin-left:auto}
-.xp-chip{
+
+/* Active course theming */
+body.chem-mode{
+  --accent:var(--chem); --accent2:var(--chem2); --accent3:var(--chem3);
+  --accent-bg:var(--chem-bg); --accent-glow:var(--chem-glow);
+  --accent-light:var(--chem-light); --accent-mid:var(--chem-mid);
+}
+body.phys-mode{
+  --accent:var(--phys); --accent2:var(--phys2); --accent3:var(--phys3);
+  --accent-bg:var(--phys-bg); --accent-glow:var(--phys-glow);
+  --accent-light:var(--phys-light); --accent-mid:var(--phys-mid);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow-x:hidden;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);}
+button{font-family:'Nunito',sans-serif;cursor:pointer;}
+input{font-family:'Nunito',sans-serif;}
+.screen{display:none;min-height:100vh;flex-direction:column;}
+.screen.active{display:flex;}
+
+/* ═══════════════════════════════════════
+   SHARED COMPONENTS
+═══════════════════════════════════════ */
+.app-bar{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 18px;background:var(--s1);
+  border-bottom:2px solid var(--border);
+  position:sticky;top:0;z-index:60;
+}
+.app-bar .logo{font-family:'Fredoka One',sans-serif;font-size:22px;color:var(--text);}
+.bar-right{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.chip{
   display:flex;align-items:center;gap:5px;
-  background:var(--s2);border:2px solid var(--border);
-  border-radius:20px;padding:5px 12px;
-  font-weight:800;font-size:13px;color:var(--gold)
+  background:var(--s2);border:1.5px solid var(--border);
+  border-radius:20px;padding:5px 11px;
+  font-weight:800;font-size:12px;
 }
-.streak-chip{
-  display:flex;align-items:center;gap:4px;
-  background:var(--s2);border:2px solid var(--border);
-  border-radius:20px;padding:5px 12px;
-  font-weight:800;font-size:13px;color:var(--orange)
-}
-.level-chip{
-  background:var(--s2);border:2px solid var(--border);
-  border-radius:20px;padding:5px 12px;
-  font-weight:700;font-size:12px;color:var(--blue)
-}
+.chip.xp{color:var(--gold);}
+.chip.str{color:#FB923C;}
+.chip.lv{color:var(--blue);}
 .back-btn{
-  background:none;border:2px solid var(--border);border-radius:10px;
-  color:var(--muted);font-size:18px;padding:6px 10px;
-  transition:color .2s,border-color .2s
+  background:none;border:2px solid var(--border);border-radius:var(--r8);
+  color:var(--muted);font-size:17px;padding:5px 10px;
+  transition:all .2s;
 }
-.back-btn:hover{color:var(--text);border-color:var(--text)}
+.back-btn:hover{color:var(--text);border-color:var(--text);}
 
-/* ─── HOME ─── */
-#home{background:radial-gradient(ellipse at top,#1A3040 0%,var(--bg) 60%)}
-.home-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
-.mascot{font-size:72px;margin-bottom:12px;animation:float 3s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-.home-title{font-family:'Fredoka One',sans-serif;font-size:44px;line-height:1.1;margin-bottom:8px}
-.home-title span{color:var(--green2)}
-.home-sub{font-size:16px;color:var(--muted);max-width:320px;margin:0 auto 32px;line-height:1.6}
-.level-card{
-  background:var(--s1);border:2px solid var(--border);border-radius:var(--r16);
-  padding:16px 24px;margin-bottom:24px;width:100%;max-width:340px;text-align:left
+/* Big action button */
+.btn-main{
+  border:none;border-radius:var(--r16);
+  font-weight:900;font-size:17px;padding:15px 36px;
+  transition:filter .15s,transform .1s;
+  border-bottom:4px solid transparent;
 }
-.lc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.lc-name{font-weight:700;font-size:14px;color:var(--blue)}
-.lc-xp{font-size:12px;color:var(--muted);font-weight:600}
-.lc-bar{height:14px;background:var(--border);border-radius:10px;overflow:hidden}
-.lc-fill{height:100%;background:linear-gradient(90deg,var(--green2),var(--green));border-radius:10px;transition:width .8s cubic-bezier(.34,1.56,.64,1)}
-.home-stats{display:flex;gap:12px;width:100%;max-width:340px;margin-bottom:32px}
-.h-stat{flex:1;background:var(--s1);border:2px solid var(--border);border-radius:var(--r12);padding:12px 8px;text-align:center}
-.h-stat-n{font-family:'Fredoka One',sans-serif;font-size:26px}
-.h-stat-l{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
-.btn-cta{
-  background:var(--green2);color:#fff;border:none;border-radius:var(--r16);
-  font-weight:900;font-size:18px;padding:16px 48px;
-  border-bottom:4px solid var(--greend);letter-spacing:.5px;
-  transition:transform .1s,filter .15s;
+.btn-main:active{transform:translateY(2px);border-bottom-width:2px;}
+.btn-main.green{
+  background:var(--chem);color:#fff;
+  border-bottom-color:var(--chem3);
 }
-.btn-cta:hover{filter:brightness(1.1)}
-.btn-cta:active{transform:translateY(2px);border-bottom-width:2px}
-.btn-secondary{
-  background:var(--s2);color:var(--blue);border:2px solid var(--border);
-  border-radius:var(--r12);font-weight:700;font-size:15px;padding:12px 24px;
-  transition:background .2s;margin-top:12px
+.btn-main.green:hover{filter:brightness(1.1);}
+.btn-main.amber{
+  background:var(--phys);color:#fff;
+  border-bottom-color:var(--phys3);
 }
-.btn-secondary:hover{background:var(--s3)}
+.btn-main.amber:hover{filter:brightness(1.1);}
+.btn-main.accent{
+  background:var(--accent);color:#fff;
+  border-bottom-color:var(--accent3);
+}
+.btn-sec{
+  background:var(--s2);color:var(--muted);
+  border:2px solid var(--border);border-radius:var(--r12);
+  font-weight:700;font-size:14px;padding:11px 24px;
+  transition:background .2s,color .2s;
+}
+.btn-sec:hover{background:var(--s3);color:var(--text);}
+.w100{width:100%;}
 
-/* ─── MAP ─── */
-#map{background:var(--bg)}
-.map-body{flex:1;padding:20px;overflow-y:auto;padding-bottom:80px}
-.unit-badge{
+/* ═══════════════════════════════════════
+   HOME — COURSE SELECTOR
+═══════════════════════════════════════ */
+#home{
+  background:radial-gradient(ellipse at 30% 20%, #0D2030 0%, var(--bg) 60%);
+}
+.home-top{
+  padding:32px 20px 16px;text-align:center;
+}
+.home-mascot{font-size:60px;display:block;margin-bottom:12px;animation:bob 3s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.home-title{
+  font-family:'Fredoka One',sans-serif;font-size:42px;
+  line-height:1.1;margin-bottom:8px;
+}
+.home-title .t-sci{color:var(--blue);}
+.home-title .t-lab{color:var(--chem);}
+.home-subtitle{font-size:15px;color:var(--muted);max-width:310px;margin:0 auto 28px;line-height:1.6;}
+
+/* USER STATS STRIP */
+.user-strip{
+  display:flex;gap:10px;padding:0 20px 24px;justify-content:center;
+}
+.us-card{
+  flex:1;max-width:120px;
   background:var(--s1);border:2px solid var(--border);
+  border-radius:var(--r12);padding:11px 8px;text-align:center;
+}
+.us-n{font-family:'Fredoka One',sans-serif;font-size:24px;}
+.us-l{font-size:10px;font-weight:700;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px;}
+
+/* LEVEL CARD */
+.level-strip{
+  margin:0 20px 28px;
+  background:var(--s1);border:2px solid var(--border);
+  border-radius:var(--r16);padding:14px 18px;
+}
+.ls-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.ls-name{font-weight:800;font-size:14px;color:var(--blue);}
+.ls-xp{font-size:11px;color:var(--muted);font-weight:700;}
+.ls-bar{height:12px;background:var(--border);border-radius:10px;overflow:hidden;}
+.ls-fill{height:100%;border-radius:10px;transition:width .8s cubic-bezier(.34,1.56,.64,1);}
+.ls-fill.chem{background:linear-gradient(90deg,var(--chem),var(--chem-light));}
+.ls-fill.phys{background:linear-gradient(90deg,var(--phys),var(--phys-light));}
+
+/* COURSE CARDS */
+.courses-label{
+  text-align:center;font-size:11px;font-weight:800;
+  color:var(--muted);letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:16px;
+}
+.courses-grid{
+  display:flex;gap:14px;padding:0 20px 20px;
+}
+.course-card{
+  flex:1;border:3px solid var(--border);border-radius:var(--r20);
+  padding:0;overflow:hidden;cursor:pointer;
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+  position:relative;
+}
+.course-card:hover{transform:translateY(-4px);}
+.course-card:active{transform:scale(.97);}
+.course-card.chem-card{border-color:rgba(16,185,129,.4);}
+.course-card.chem-card:hover{border-color:var(--chem);box-shadow:0 8px 32px rgba(16,185,129,.25);}
+.course-card.phys-card{border-color:rgba(245,158,11,.4);}
+.course-card.phys-card:hover{border-color:var(--phys);box-shadow:0 8px 32px rgba(245,158,11,.25);}
+.cc-banner{
+  height:100px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.cc-banner.chem-banner{background:linear-gradient(135deg,#052E16,#065F46);}
+.cc-banner.phys-banner{background:linear-gradient(135deg,#2D1A00,#44260A);}
+.cc-icon{font-size:46px;position:relative;z-index:2;}
+.cc-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.cc-particles span{
+  position:absolute;font-size:12px;opacity:.25;animation:drift 4s linear infinite;
+}
+@keyframes drift{
+  from{transform:translateY(120px) rotate(0deg);opacity:0;}
+  20%{opacity:.25;}
+  80%{opacity:.25;}
+  to{transform:translateY(-20px) rotate(180deg);opacity:0;}
+}
+.cc-body{padding:14px;}
+.cc-title{font-family:'Fredoka One',sans-serif;font-size:20px;margin-bottom:4px;}
+.cc-title.chem-title{color:var(--chem);}
+.cc-title.phys-title{color:var(--phys);}
+.cc-desc{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:12px;}
+.cc-progress{margin-bottom:10px;}
+.cc-prog-row{display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:var(--muted);margin-bottom:5px;}
+.cc-bar{height:7px;background:var(--border);border-radius:10px;overflow:hidden;}
+.cc-fill-bar{height:100%;border-radius:10px;transition:width .6s ease;}
+.cc-fill-bar.chem{background:var(--chem);}
+.cc-fill-bar.phys{background:var(--phys);}
+.cc-stats{display:flex;gap:6px;}
+.cc-stat{
+  flex:1;background:var(--s2);border-radius:var(--r8);
+  padding:5px 4px;text-align:center;
+  font-size:10px;font-weight:800;color:var(--muted);
+}
+.cc-stat span{display:block;font-size:14px;font-weight:900;margin-bottom:1px;}
+.cc-stat span.chem-n{color:var(--chem);}
+.cc-stat span.phys-n{color:var(--phys);}
+.cc-badge{
+  position:absolute;top:8px;right:8px;
+  background:var(--gold);color:#451A03;
+  border-radius:20px;padding:3px 8px;
+  font-size:9px;font-weight:900;letter-spacing:.5px;
+}
+.home-footer{padding:0 20px 32px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.achiev-row{display:flex;gap:8px;}
+
+/* ═══════════════════════════════════════
+   MAP SCREEN
+═══════════════════════════════════════ */
+#map{background:var(--bg);}
+.map-body{flex:1;padding:16px 20px 100px;overflow-y:auto;}
+.unit-card{
   border-radius:var(--r16);padding:14px 18px;margin-bottom:20px;
-  display:flex;align-items:center;gap:12px;
+  border:2px solid;
 }
-.unit-icon{font-size:28px}
-.unit-info .unit-title{font-family:'Fredoka One',sans-serif;font-size:18px;color:var(--blue)}
-.unit-info .unit-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.path-container{display:flex;flex-direction:column;align-items:center;gap:0}
-.path-node-wrap{display:flex;flex-direction:column;align-items:center}
-.node-connector{width:3px;height:24px;border-radius:3px;background:var(--border);transition:background .4s}
-.node-connector.done{background:var(--green2)}
-.zigzag{margin-left:80px}.zigzag.r{margin-left:-80px}
+.unit-card.chem{background:#052E16;border-color:rgba(16,185,129,.4);}
+.unit-card.phys{background:#2D1A00;border-color:rgba(245,158,11,.4);}
+.uc-title{font-family:'Fredoka One',sans-serif;font-size:19px;margin-bottom:3px;}
+.uc-title.chem{color:var(--chem);}
+.uc-title.phys{color:var(--phys);}
+.uc-sub{font-size:12px;color:var(--muted);}
+
+.nodes-path{display:flex;flex-direction:column;align-items:center;}
+.node-gap{width:3px;height:20px;background:var(--border);border-radius:3px;}
+.node-gap.done.chem{background:var(--chem);}
+.node-gap.done.phys{background:var(--phys);}
+
 .lesson-node{
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  cursor:pointer;padding:4px;
-}
-.lesson-circle{
-  width:80px;height:80px;border-radius:50%;border:4px solid var(--border);
-  background:var(--s2);display:flex;flex-direction:column;align-items:center;
-  justify-content:center;font-size:30px;position:relative;
-  transition:transform .15s,border-color .3s,background .3s,box-shadow .3s;
-  border-bottom:6px solid var(--border);
-}
-.lesson-circle:hover{transform:scale(1.05)}
-.lesson-circle.active{
-  border-color:var(--green2);background:var(--greens);
-  border-bottom-color:var(--greend);
-  box-shadow:0 0 0 6px rgba(74,222,128,.12);
-  animation:pulse-node 2s ease-in-out infinite;
-}
-.lesson-circle.mastered{
-  border-color:var(--gold);background:var(--golds);
-  border-bottom-color:var(--goldd);
-  box-shadow:0 0 0 8px rgba(251,191,36,.12);
-}
-.lesson-circle.locked{opacity:.45;cursor:not-allowed;filter:grayscale(.4)}
-@keyframes pulse-node{0%,100%{box-shadow:0 0 0 6px rgba(74,222,128,.12)}50%{box-shadow:0 0 0 12px rgba(74,222,128,.06)}}
-.star-overlay{
-  position:absolute;top:-8px;right:-8px;
-  width:24px;height:24px;background:var(--gold);
-  border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:12px;border:2px solid var(--bg);
-}
-.lock-overlay{
-  position:absolute;bottom:-6px;right:-6px;
-  font-size:14px;
-}
-.lesson-label{
-  font-size:12px;font-weight:800;text-align:center;max-width:100px;
-  color:var(--muted);line-height:1.3
-}
-.lesson-label.active{color:var(--text)}
-.lesson-label.mastered{color:var(--gold)}
-.phase-dots{display:flex;gap:6px;align-items:center;margin-top:2px}
-.phase-dot{
-  width:10px;height:10px;border-radius:50%;background:var(--border);
-  transition:background .3s,transform .3s
-}
-.phase-dot.done{background:var(--green2);transform:scale(1.1)}
-.phase-dot.mastered{background:var(--gold)}
-.achiev-btn{
-  position:fixed;bottom:20px;right:20px;z-index:40;
-  background:var(--gold);color:var(--golds);border:none;
-  border-radius:50%;width:56px;height:56px;font-size:24px;
-  border-bottom:4px solid var(--goldd);
-  box-shadow:0 4px 20px rgba(251,191,36,.3);
-  transition:transform .15s;
-}
-.achiev-btn:hover{transform:scale(1.1)}
-
-/* ─── LESSON ─── */
-#lesson{background:var(--bg)}
-.les-header{
   display:flex;align-items:center;gap:14px;
-  padding:12px 18px;background:var(--s1);border-bottom:2px solid var(--border);
-  position:sticky;top:0;z-index:50
-}
-.prog-outer{flex:1;height:16px;background:var(--border);border-radius:10px;overflow:hidden}
-.prog-inner{height:100%;background:var(--green2);border-radius:10px;transition:width .4s ease}
-.hearts{display:flex;gap:3px;font-size:18px}
-.phase-tag{
-  font-size:11px;font-weight:800;color:var(--blue);
-  background:var(--blues);border-radius:8px;padding:4px 10px;
-  letter-spacing:.5px;white-space:nowrap
-}
-.les-content{flex:1;padding:24px 20px 120px;overflow-y:auto;display:flex;flex-direction:column;align-items:center}
-.q-badge{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;align-self:flex-start}
-.q-text{font-size:21px;font-weight:800;line-height:1.35;margin-bottom:20px;width:100%;max-width:500px}
-
-/* MCQ */
-.mcq-list{display:flex;flex-direction:column;gap:10px;width:100%;max-width:490px}
-.mcq-opt{
-  display:flex;align-items:center;gap:12px;
   background:var(--s1);border:2.5px solid var(--border);
   border-radius:var(--r16);padding:14px 16px;
-  font-size:15px;font-weight:700;color:var(--text);text-align:left;
+  cursor:pointer;width:100%;max-width:480px;
+  transition:transform .15s,border-color .2s,background .2s;
+  position:relative;
+}
+.lesson-node:hover:not(.locked-node){transform:translateX(4px);}
+.lesson-node.active-node{border-color:var(--accent);background:rgba(0,0,0,.2);}
+.lesson-node.mastered-node{border-color:var(--gold);background:rgba(251,191,36,.06);}
+.lesson-node.locked-node{opacity:.45;cursor:not-allowed;filter:grayscale(.4);}
+.ln-icon{
+  width:56px;height:56px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:26px;flex-shrink:0;border:3px solid var(--border);
+  transition:border-color .2s;
+}
+.lesson-node.active-node .ln-icon{border-color:var(--accent);}
+.lesson-node.mastered-node .ln-icon{border-color:var(--gold);}
+.ln-info{flex:1;}
+.ln-title{font-weight:900;font-size:15px;margin-bottom:4px;}
+.lesson-node.mastered-node .ln-title{color:var(--gold);}
+.ln-phases{display:flex;gap:5px;margin-bottom:5px;}
+.lp-dot{width:22px;height:8px;border-radius:5px;background:var(--border);}
+.lp-dot.done.chem{background:var(--chem);}
+.lp-dot.done.phys{background:var(--phys);}
+.lp-dot.mastered{background:var(--gold);}
+.ln-meta{font-size:11px;color:var(--muted);font-weight:600;}
+.ln-badge{
+  position:absolute;top:-8px;right:12px;
+  border-radius:12px;padding:3px 10px;
+  font-size:10px;font-weight:900;
+}
+.ln-badge.new{background:var(--chem);color:#fff;}
+.ln-badge.gold{background:var(--gold);color:#451A03;}
+.ln-badge.locked{background:var(--border);color:var(--muted);}
+.ln-xp{font-size:11px;font-weight:700;color:var(--gold);}
+.fab-ach{
+  position:fixed;bottom:20px;right:20px;z-index:50;
+  width:54px;height:54px;border-radius:50%;border:none;
+  background:var(--gold);color:#451A03;font-size:22px;
+  border-bottom:4px solid var(--gold-b);
+  box-shadow:0 4px 20px rgba(251,191,36,.35);
+  transition:transform .15s;
+}
+.fab-ach:hover{transform:scale(1.08);}
+
+/* ═══════════════════════════════════════
+   LESSON SCREEN
+═══════════════════════════════════════ */
+#lesson{background:var(--bg);}
+.les-bar{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 16px;background:var(--s1);
+  border-bottom:2px solid var(--border);
+  position:sticky;top:0;z-index:60;
+}
+.prog-track{flex:1;height:14px;background:var(--border);border-radius:10px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:10px;transition:width .4s ease;}
+.prog-fill.chem{background:var(--chem);}
+.prog-fill.phys{background:var(--phys);}
+.phase-pill{
+  font-size:10px;font-weight:800;letter-spacing:.5px;
+  border-radius:12px;padding:4px 10px;white-space:nowrap;
+}
+.phase-pill.chem{background:rgba(16,185,129,.15);color:var(--chem);}
+.phase-pill.phys{background:rgba(245,158,11,.15);color:var(--phys);}
+.hearts-row{display:flex;gap:2px;font-size:16px;}
+.les-content{
+  flex:1;padding:20px 18px 140px;overflow-y:auto;
+  display:flex;flex-direction:column;align-items:center;
+}
+.q-type{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;align-self:flex-start;}
+.q-text{font-size:20px;font-weight:800;line-height:1.35;margin-bottom:18px;width:100%;max-width:510px;}
+
+/* Theory card */
+.theory-card{
+  width:100%;max-width:510px;
+  background:var(--s1);border:2px solid var(--border);
+  border-radius:var(--r16);padding:18px;margin-bottom:16px;
+}
+.theory-card.chem{border-color:rgba(16,185,129,.3);}
+.theory-card.phys{border-color:rgba(245,158,11,.3);}
+.tc-title{font-weight:900;font-size:15px;margin-bottom:8px;}
+.tc-title.chem{color:var(--chem);}
+.tc-title.phys{color:var(--phys);}
+.tc-body{font-size:13px;color:#C0D0E0;line-height:1.7;}
+.formula-box{
+  background:var(--s2);border-radius:var(--r12);padding:12px 16px;
+  margin:10px 0;border-left:4px solid;
+  font-family:monospace;font-size:17px;font-weight:700;
+  text-align:center;letter-spacing:.5px;
+}
+.formula-box.chem{border-color:var(--chem);color:var(--chem-light);}
+.formula-box.phys{border-color:var(--phys);color:var(--phys-light);}
+
+/* MCQ */
+.mcq-list{display:flex;flex-direction:column;gap:9px;width:100%;max-width:510px;}
+.mopt{
+  display:flex;align-items:center;gap:11px;
+  background:var(--s1);border:2.5px solid var(--border);
+  border-radius:var(--r16);padding:13px 15px;
+  font-size:14px;font-weight:700;color:var(--text);text-align:left;
   transition:background .15s,border-color .15s;width:100%;
 }
-.mcq-opt:hover:not(:disabled){background:var(--s2);border-color:#4a6a8a}
-.mcq-opt.sel{border-color:var(--blue);background:rgba(56,189,248,.12);color:var(--blue)}
-.mcq-opt.ok{border-color:var(--green2);background:rgba(74,222,128,.12);color:var(--green2)}
-.mcq-opt.bad{border-color:var(--red);background:rgba(248,113,113,.12);color:var(--red)}
-.mcq-letter{
-  width:34px;height:34px;border-radius:10px;background:var(--border);
+.mopt:hover:not(:disabled){background:var(--s2);}
+.mopt.sel{border-color:var(--blue);background:rgba(56,189,248,.1);color:var(--blue);}
+.mopt.ok{border-color:var(--ok);background:rgba(34,197,94,.1);color:var(--ok);}
+.mopt.bad{border-color:var(--bad);background:rgba(248,113,113,.1);color:var(--bad);}
+.ml{
+  width:32px;height:32px;border-radius:9px;background:var(--border);
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:900;flex-shrink:0;transition:background .15s;
+  font-size:12px;font-weight:900;flex-shrink:0;transition:background .15s;
 }
-.mcq-opt.sel .mcq-letter{background:var(--blue);color:#fff}
-.mcq-opt.ok .mcq-letter{background:var(--green2);color:#fff}
-.mcq-opt.bad .mcq-letter{background:var(--red);color:#fff}
+.mopt.sel .ml{background:var(--blue);color:#fff;}
+.mopt.ok .ml{background:var(--ok);color:#fff;}
+.mopt.bad .ml{background:var(--bad);color:#fff;}
 
-/* IMAGE MCQ */
-.img-q-wrap{width:100%;max-width:490px;margin-bottom:16px}
-.img-q-label{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.img-q-svg{
-  background:var(--s1);border:2px solid var(--border);border-radius:var(--r16);
-  padding:16px;overflow:hidden;
+/* NUMERIC */
+.numeric-wrap{width:100%;max-width:510px;}
+.num-label{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:10px;}
+.num-input-row{display:flex;gap:10px;align-items:center;}
+.num-input{
+  flex:1;background:var(--s1);border:2.5px solid var(--border);
+  border-radius:var(--r12);padding:13px 16px;
+  font-size:20px;font-weight:700;color:var(--text);
+  outline:none;transition:border-color .2s;
+}
+.num-input:focus{border-color:var(--blue);}
+.num-input.ok{border-color:var(--ok);color:var(--ok);}
+.num-input.bad{border-color:var(--bad);color:var(--bad);}
+.num-unit{font-size:16px;font-weight:700;color:var(--muted);white-space:nowrap;}
+.num-hint{font-size:12px;color:var(--muted);margin-top:8px;}
+.calc-steps{
+  background:var(--s2);border-radius:var(--r12);padding:12px 14px;
+  margin-top:10px;display:none;
+}
+.calc-steps.show{display:block;}
+.cs-title{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.cs-step{
+  display:flex;gap:10px;align-items:flex-start;
+  font-size:13px;margin-bottom:6px;line-height:1.5;
+}
+.cs-num{
+  width:22px;height:22px;border-radius:50%;background:var(--accent,var(--blue));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;flex-shrink:0;margin-top:1px;
 }
 
 /* FILL */
-.fill-sentence{
-  font-size:20px;font-weight:700;line-height:2.2;
-  width:100%;max-width:490px;margin-bottom:18px;
-  padding:16px;background:var(--s1);border:2px solid var(--border);border-radius:var(--r16);
+.fill-sent{
+  font-size:18px;font-weight:700;line-height:2.3;
+  width:100%;max-width:510px;margin-bottom:14px;
+  background:var(--s1);border:2px solid var(--border);
+  border-radius:var(--r16);padding:16px;
 }
 .fill-blank{
-  display:inline-block;min-width:90px;border-bottom:3px solid var(--blue);
-  padding:0 6px;color:var(--blue);text-align:center;cursor:default;
-  transition:color .2s,border-color .2s;
+  display:inline-block;min-width:80px;border-bottom:3px solid var(--blue);
+  padding:0 6px;color:var(--blue);text-align:center;transition:all .2s;
 }
-.fill-blank.filled{border-color:var(--green2);color:var(--green2)}
-.fill-blank.wrong-b{border-color:var(--red);color:var(--red)}
-.fill-word-bank{display:flex;flex-wrap:wrap;gap:8px;max-width:490px;padding:12px;background:var(--s1);border:2px solid var(--border);border-radius:var(--r16)}
-.fill-word{
-  background:var(--s2);border:2.5px solid var(--border);
-  border-radius:12px;padding:8px 16px;font-size:14px;font-weight:700;
-  color:var(--text);transition:background .15s,border-color .15s;
+.fill-blank.filled{border-bottom-color:var(--ok);color:var(--ok);}
+.fill-blank.wrong-b{border-bottom-color:var(--bad);color:var(--bad);}
+.word-bank{
+  display:flex;flex-wrap:wrap;gap:7px;
+  padding:12px;background:var(--s1);border:2px solid var(--border);
+  border-radius:var(--r16);width:100%;max-width:510px;
 }
-.fill-word:hover:not(:disabled){border-color:var(--blue);background:rgba(56,189,248,.12)}
-.fill-word.used{opacity:.35;cursor:not-allowed}
-.fill-word.ok{border-color:var(--green2);background:rgba(74,222,128,.12);color:var(--green2)}
-.fill-word.bad{border-color:var(--red);background:rgba(248,113,113,.12);color:var(--red)}
+.wb-word{
+  background:var(--s2);border:2px solid var(--border);
+  border-radius:10px;padding:8px 14px;
+  font-size:13px;font-weight:700;color:var(--text);
+  transition:background .15s,border-color .15s;
+}
+.wb-word:hover:not(:disabled){border-color:var(--blue);}
+.wb-word.used{opacity:.3;cursor:not-allowed;}
 
 /* MATCH */
-.match-cols{display:flex;gap:14px;width:100%;max-width:490px}
-.match-col{flex:1;display:flex;flex-direction:column;gap:8px}
-.match-col-hdr{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.match-wrap{display:flex;gap:12px;width:100%;max-width:510px;}
+.match-col{flex:1;display:flex;flex-direction:column;gap:7px;}
+.mc-hdr{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
 .match-item{
   background:var(--s1);border:2.5px solid var(--border);
-  border-radius:14px;padding:11px 14px;font-size:13px;font-weight:700;
+  border-radius:12px;padding:10px 12px;font-size:12px;font-weight:700;
   cursor:pointer;text-align:center;transition:all .15s;
 }
-.match-item:hover{border-color:#4a6a8a}
-.match-item.sel{border-color:var(--blue);background:rgba(56,189,248,.15);color:var(--blue)}
-.match-item.paired{border-color:var(--green2);background:rgba(74,222,128,.12);color:var(--green2);cursor:default}
-.match-item.bad-pair{border-color:var(--red);background:rgba(248,113,113,.12);color:var(--red)}
+.match-item:hover{border-color:#4a6a8a;}
+.match-item.sel{border-color:var(--blue);background:rgba(56,189,248,.12);color:var(--blue);}
+.match-item.paired{border-color:var(--ok);background:rgba(34,197,94,.1);color:var(--ok);cursor:default;}
+.match-item.bad-m{border-color:var(--bad);background:rgba(248,113,113,.1);color:var(--bad);}
 
 /* DRAG */
-.drag-scene{width:100%;max-width:490px;display:flex;flex-direction:column;gap:14px}
-.drag-zones-row{display:flex;gap:12px}
-.drop-zone{
-  flex:1;min-height:90px;border:2.5px dashed var(--border);
-  border-radius:var(--r16);padding:10px;
-  display:flex;flex-direction:column;gap:6px;
-  transition:border-color .2s,background .2s;
+.drag-scene{display:flex;flex-direction:column;gap:12px;width:100%;max-width:510px;}
+.drop-zones{display:flex;gap:10px;}
+.drop-z{
+  flex:1;min-height:80px;border:2.5px dashed var(--border);
+  border-radius:var(--r16);padding:9px;
+  display:flex;flex-direction:column;gap:5px;transition:all .2s;
 }
-.drop-zone.over{border-color:var(--blue);background:rgba(56,189,248,.08)}
-.drop-zone.ok{border-color:var(--green2);background:rgba(74,222,128,.08)}
-.drop-zone.bad{border-color:var(--red);background:rgba(248,113,113,.08)}
-.dz-label{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
-.drag-chip{
-  background:var(--blue);color:#fff;border-radius:10px;
-  padding:8px 12px;font-size:13px;font-weight:700;
+.drop-z.over{border-color:var(--blue);background:rgba(56,189,248,.07);}
+.drop-z.ok{border-color:var(--ok);}
+.drop-z.bad{border-color:var(--bad);}
+.dz-lbl{font-size:9px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.d-chip{
+  background:var(--s3);border:2px solid var(--border);
+  border-radius:9px;padding:6px 10px;font-size:12px;font-weight:700;
   cursor:grab;user-select:none;display:inline-block;
-  border-bottom:3px solid var(--blued);transition:transform .1s;
+  border-bottom:3px solid var(--border);transition:transform .1s;
 }
-.drag-chip:active{cursor:grabbing;transform:scale(1.04)}
-.drag-chip.bank-chip{background:var(--s2);color:var(--text);border:2px solid var(--border);border-bottom:none}
-.drag-bank{display:flex;flex-wrap:wrap;gap:8px;padding:12px;background:var(--s1);border:2px solid var(--border);border-radius:var(--r16)}
-.db-label{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;width:100%;margin-bottom:4px}
+.d-chip:active{cursor:grabbing;transform:scale(1.04);}
+.d-chip.active-chip{background:var(--blue);color:#fff;border-color:var(--blue-dark,#0ea5e9);border-bottom-color:#0369a1;}
+.d-bank{display:flex;flex-wrap:wrap;gap:7px;padding:10px;background:var(--s1);border:2px solid var(--border);border-radius:var(--r16);}
+.db-lbl{font-size:9px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;width:100%;margin-bottom:3px;}
 
 /* ORDER */
-.order-list{display:flex;flex-direction:column;gap:8px;width:100%;max-width:490px}
+.order-list{display:flex;flex-direction:column;gap:7px;width:100%;max-width:510px;}
 .order-item{
-  display:flex;align-items:center;gap:12px;
+  display:flex;align-items:center;gap:10px;
   background:var(--s1);border:2.5px solid var(--border);
-  border-radius:14px;padding:13px 15px;
-  cursor:grab;font-size:14px;font-weight:700;
-  user-select:none;transition:border-color .15s,background .15s;
+  border-radius:12px;padding:12px 14px;
+  cursor:grab;user-select:none;font-size:13px;font-weight:700;
+  transition:border-color .15s;
 }
-.order-item:active{cursor:grabbing}
-.order-item.drag-over{border-color:var(--blue);background:var(--s2)}
-.order-handle{color:var(--muted);font-size:16px;flex-shrink:0}
-.order-badge{
-  width:28px;height:28px;border-radius:8px;background:var(--border);
+.order-item:active{cursor:grabbing;}
+.order-item.over{border-color:var(--blue);background:var(--s2);}
+.order-handle{color:var(--muted);font-size:14px;flex-shrink:0;}
+.order-n{
+  width:26px;height:26px;border-radius:7px;background:var(--border);
   display:flex;align-items:center;justify-content:center;
   font-size:12px;font-weight:900;flex-shrink:0;
 }
-.order-item.ok .order-badge{background:var(--green2);color:#fff}
-.order-item.bad .order-badge{background:var(--red);color:#fff}
 
-/* CONFIRM */
+/* CONFIRM BAR */
 .confirm-bar{
   position:fixed;bottom:0;left:0;right:0;
-  padding:14px 20px;background:var(--s1);border-top:2px solid var(--border);z-index:40
+  padding:12px 18px;background:var(--s1);
+  border-top:2px solid var(--border);z-index:50;
 }
-.confirm-btn{
-  width:100%;max-width:480px;display:block;margin:0 auto;
+.c-btn{
+  display:block;width:100%;max-width:480px;margin:0 auto;
   background:var(--s3);color:var(--muted);border:2px solid var(--border);
-  border-radius:var(--r16);font-weight:900;font-size:18px;padding:15px;
+  border-radius:var(--r16);font-weight:900;font-size:17px;padding:14px;
   cursor:not-allowed;transition:all .2s;
 }
-.confirm-btn.ready{
-  background:var(--green2);color:#fff;border-color:var(--greend);
-  cursor:pointer;border-bottom:4px solid var(--greend);
+.c-btn.ready{
+  background:var(--accent,var(--ok));color:#fff;
+  border-color:var(--accent3,var(--ok-b));
+  cursor:pointer;border-bottom:4px solid;border-bottom-color:var(--accent3,var(--ok-b));
 }
-.confirm-btn.ready:active{transform:translateY(2px);border-bottom-width:2px}
+.c-btn.ready:active{transform:translateY(2px);}
 
 /* FEEDBACK */
-.feedback-panel{
+.fb-panel{
   position:fixed;bottom:0;left:0;right:0;
-  padding:18px 20px 24px;border-top:3px solid;
-  transform:translateY(100%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);z-index:60
+  padding:16px 18px 22px;border-top:3px solid;
+  transform:translateY(100%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);z-index:70;
 }
-.feedback-panel.show{transform:translateY(0)}
-.fp-ok{background:#0F2A15;border-color:var(--green2)}
-.fp-bad{background:#2A0F0F;border-color:var(--redd)}
-.fp-title{font-family:'Fredoka One',sans-serif;font-size:26px;margin-bottom:4px}
-.fp-ok .fp-title{color:var(--green2)}
-.fp-bad .fp-title{color:var(--red)}
-.fp-exp{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5;max-width:480px}
-.fp-btn{
-  width:100%;max-width:480px;border:none;border-radius:var(--r16);
-  font-weight:900;font-size:16px;padding:14px;
+.fb-panel.show{transform:translateY(0);}
+.fb-ok{background:#061C0E;border-top-color:var(--ok);}
+.fb-bad{background:#1C0606;border-top-color:var(--bad);}
+.fb-title{font-family:'Fredoka One',sans-serif;font-size:24px;margin-bottom:4px;}
+.fb-ok .fb-title{color:var(--ok);}
+.fb-bad .fb-title{color:var(--bad);}
+.fb-exp{font-size:13px;color:#8AABB0;line-height:1.55;margin-bottom:14px;max-width:480px;}
+.fb-steps{
+  background:rgba(255,255,255,.05);border-radius:var(--r12);
+  padding:10px 12px;margin-bottom:12px;max-width:480px;display:none;
+}
+.fb-steps.show{display:block;}
+.fbs-title{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.fbs-row{font-size:13px;color:#B0C8D0;margin-bottom:5px;line-height:1.5;}
+.fb-btn{
+  display:block;width:100%;max-width:480px;border:none;
+  border-radius:var(--r16);font-weight:900;font-size:16px;padding:14px;
   border-bottom:4px solid;
 }
-.fp-ok .fp-btn{background:var(--green2);color:#fff;border-bottom-color:var(--greend)}
-.fp-bad .fp-btn{background:var(--redd);color:#fff;border-bottom-color:#B91C1C}
-.fp-btn:active{transform:translateY(2px);border-bottom-width:2px}
+.fb-ok .fb-btn{background:var(--ok);color:#fff;border-bottom-color:var(--ok-b);}
+.fb-bad .fb-btn{background:var(--bad);color:#fff;border-bottom-color:var(--bad-b);}
+.fb-btn:active{transform:translateY(2px);border-bottom-width:2px;}
 
-/* PHASE DONE */
-#phase-done{background:radial-gradient(ellipse at center,#0F2A15 0%,var(--bg) 70%);align-items:center;justify-content:center}
-.pd-inner{text-align:center;padding:32px 24px}
-.pd-icon{font-size:64px;animation:spin-in .5s cubic-bezier(.34,1.56,.64,1);margin-bottom:12px}
-.pd-title{font-family:'Fredoka One',sans-serif;font-size:38px;color:var(--green2);margin-bottom:6px}
-.pd-sub{font-size:16px;color:var(--muted);margin-bottom:24px}
-.pd-stats{display:flex;gap:14px;justify-content:center;margin-bottom:28px}
-.pd-stat{background:var(--s1);border:2px solid var(--border);border-radius:var(--r12);padding:14px 18px;text-align:center}
-.pd-sn{font-family:'Fredoka One',sans-serif;font-size:28px}
-.pd-sl{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
-.xp-pill{
+/* ═══════════════════════════════════════
+   PHASE / LESSON DONE
+═══════════════════════════════════════ */
+#phase-done,#lesson-done{
+  align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at center,#061C0E 0%,var(--bg) 70%);
+}
+.done-inner{text-align:center;padding:28px 22px;max-width:420px;width:100%;}
+.done-icon{font-size:70px;animation:pop-in .5s cubic-bezier(.34,1.56,.64,1);margin-bottom:10px;}
+@keyframes pop-in{from{transform:scale(0) rotate(-180deg);}to{transform:scale(1) rotate(0);}}
+.done-title{font-family:'Fredoka One',sans-serif;font-size:38px;margin-bottom:6px;}
+.done-sub{font-size:15px;color:var(--muted);margin-bottom:20px;}
+.xp-badge{
   display:inline-flex;align-items:center;gap:6px;
-  background:rgba(251,191,36,.15);border:2px solid var(--gold);
-  border-radius:20px;padding:10px 20px;margin-bottom:24px;
+  background:rgba(251,191,36,.12);border:2px solid var(--gold);
+  border-radius:20px;padding:10px 20px;margin-bottom:20px;
 }
-.xp-pill-n{font-family:'Fredoka One',sans-serif;font-size:32px;color:var(--gold)}
-.xp-pill-l{font-size:16px;font-weight:700;color:var(--gold)}
-.phase-indicator{display:flex;gap:10px;justify-content:center;margin-bottom:20px}
-.pi-dot{width:36px;height:14px;border-radius:10px;background:var(--border);transition:background .4s}
-.pi-dot.done{background:var(--green2)}
-.pi-dot.gold{background:var(--gold)}
+.xp-b-n{font-family:'Fredoka One',sans-serif;font-size:34px;color:var(--gold);}
+.xp-b-l{font-size:16px;font-weight:700;color:var(--gold);}
+.done-stats{display:flex;gap:12px;justify-content:center;margin-bottom:24px;}
+.ds{background:var(--s1);border:2px solid var(--border);border-radius:var(--r12);padding:14px 16px;text-align:center;flex:1;}
+.ds-n{font-family:'Fredoka One',sans-serif;font-size:28px;}
+.ds-l{font-size:10px;color:var(--muted);font-weight:700;margin-top:2px;text-transform:uppercase;}
+.phase-track{display:flex;gap:8px;justify-content:center;margin-bottom:20px;}
+.pt-dot{width:40px;height:12px;border-radius:8px;background:var(--border);}
+.pt-dot.done{background:var(--ok);}
+.pt-dot.gold{background:var(--gold);}
+.done-btns{display:flex;flex-direction:column;gap:10px;}
 
-/* LESSON DONE */
-#lesson-done{background:radial-gradient(ellipse at center,#1A2A0A 0%,var(--bg) 70%);align-items:center;justify-content:center}
-.ld-inner{text-align:center;padding:32px 24px;width:100%;max-width:420px;margin:0 auto}
-.ld-trophy{font-size:90px;animation:spin-in .6s cubic-bezier(.34,1.56,.64,1);margin-bottom:10px}
-@keyframes spin-in{from{transform:scale(0) rotate(-180deg)}to{transform:scale(1) rotate(0)}}
-.ld-title{font-family:'Fredoka One',sans-serif;font-size:46px;line-height:1;margin-bottom:6px}
-.ld-badge{
-  display:inline-block;background:var(--gold);color:var(--golds);
-  border-radius:20px;padding:6px 16px;font-weight:900;font-size:14px;
-  margin-bottom:16px;border:2px solid var(--goldd)
-}
-.ld-stats{display:flex;gap:12px;justify-content:center;margin-bottom:24px}
-.ld-stat{flex:1;background:var(--s1);border:2px solid var(--border);border-radius:var(--r12);padding:14px;text-align:center}
-.ld-sn{font-family:'Fredoka One',sans-serif;font-size:30px}
-.ld-sl{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
-.ld-btns{display:flex;flex-direction:column;gap:10px;margin-top:4px}
-
-/* ACHIEVEMENTS */
-#achievements{background:var(--bg)}
-.ach-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:20px}
+/* ═══════════════════════════════════════
+   ACHIEVEMENTS
+═══════════════════════════════════════ */
+#achievements{background:var(--bg);}
+.ach-header{padding:16px 18px 8px;font-size:13px;color:var(--muted);font-weight:700;}
+.ach-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px 24px;}
 .ach-card{
   background:var(--s1);border:2px solid var(--border);
-  border-radius:var(--r16);padding:16px 14px;display:flex;gap:12px;
-  transition:border-color .2s;align-items:flex-start;
+  border-radius:var(--r16);padding:14px;
+  transition:border-color .2s;
 }
-.ach-card.unlocked{border-color:var(--gold);background:rgba(251,191,36,.06)}
-.ach-card.locked{filter:grayscale(.5);opacity:.6}
-.ach-icon{font-size:32px;flex-shrink:0}
-.ach-info{}
-.ach-name{font-weight:900;font-size:14px;margin-bottom:3px}
-.ach-card.unlocked .ach-name{color:var(--gold)}
-.ach-desc{font-size:12px;color:var(--muted);line-height:1.4}
-.ach-bonus{font-size:11px;font-weight:800;color:var(--green2);margin-top:4px}
-.ach-lock-label{font-size:11px;color:var(--red);font-weight:700;margin-top:4px}
+.ach-card.done{border-color:var(--gold);background:rgba(251,191,36,.05);}
+.ach-card.locked{filter:grayscale(.4);opacity:.6;}
+.ach-icon{font-size:30px;margin-bottom:6px;}
+.ach-name{font-weight:900;font-size:13px;margin-bottom:3px;}
+.ach-card.done .ach-name{color:var(--gold);}
+.ach-desc{font-size:11px;color:var(--muted);line-height:1.4;margin-bottom:6px;}
+.ach-status{font-size:10px;font-weight:800;}
+.ach-card.done .ach-status{color:var(--ok);}
+.ach-card.locked .ach-status{color:var(--muted);}
 
-/* ACHIEVEMENT POPUP */
-.ach-popup{
-  position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-40px);
-  background:var(--s1);border:2px solid var(--gold);border-radius:var(--r16);
-  padding:14px 20px;display:flex;align-items:center;gap:12px;
+/* ACHIEVEMENT TOAST */
+.ach-toast{
+  position:fixed;top:70px;left:50%;
+  transform:translateX(-50%) translateY(-20px);
+  background:var(--s1);border:2.5px solid var(--gold);
+  border-radius:var(--r16);padding:12px 16px;
+  display:flex;align-items:center;gap:12px;
   z-index:200;pointer-events:none;opacity:0;
-  transition:opacity .3s,transform .3s;max-width:340px;width:90%;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  width:90%;max-width:340px;
 }
-.ach-popup.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.ap-icon{font-size:32px}
-.ap-title{font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px;text-transform:uppercase}
-.ap-name{font-weight:900;font-size:16px;color:var(--text)}
-.ap-bonus{font-size:12px;color:var(--green2);font-weight:700}
+.ach-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.at-ico{font-size:30px;}
+.at-tag{font-size:9px;font-weight:800;color:var(--gold);letter-spacing:1px;text-transform:uppercase;}
+.at-name{font-weight:900;font-size:15px;}
+.at-xp{font-size:11px;font-weight:700;color:var(--ok);}
 
 /* XP FLOAT */
 .xp-float{
-  position:fixed;z-index:300;font-family:'Fredoka One',sans-serif;
-  font-size:20px;color:var(--green2);pointer-events:none;
-  animation:float-up .8s ease-out forwards;
+  position:fixed;font-family:'Fredoka One',sans-serif;font-size:18px;
+  color:var(--ok);pointer-events:none;z-index:300;
+  animation:xp-up .9s ease-out forwards;
 }
-@keyframes float-up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-50px)}}
+@keyframes xp-up{0%{opacity:1;transform:translateY(0);}100%{opacity:0;transform:translateY(-60px);}}
 
 /* CONFETTI */
-.confetti{position:fixed;pointer-events:none;z-index:999;animation:cfetti var(--dur,.8s) ease-out forwards}
-@keyframes cfetti{0%{opacity:1;transform:translate(0,0) rotate(0deg)}100%{opacity:0;transform:translate(var(--tx,0),200px) rotate(var(--r,360deg))}}
+.cfp{position:fixed;pointer-events:none;z-index:999;border-radius:3px;}
 
-/* MISC */
-.shake{animation:shake .3s ease}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.pop{animation:pop .25s cubic-bezier(.34,1.56,.64,1)}
-@keyframes pop{from{transform:scale(.7)}to{transform:scale(1)}}
+/* SHAKE */
+.shake{animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
+
+/* COMBO STREAK */
+.combo-badge{
+  position:fixed;top:75px;left:50%;transform:translateX(-50%) scale(0);
+  background:var(--gold);color:#451A03;border-radius:20px;
+  padding:8px 20px;font-family:'Fredoka One',sans-serif;font-size:20px;
+  z-index:200;pointer-events:none;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s;
+  opacity:0;
+}
+.combo-badge.show{transform:translateX(-50%) scale(1);opacity:1;}
 </style>
 </head>
 <body>
 
-<!-- ═══════════ HOME ═══════════ -->
+<!-- ══════════════ HOME ══════════════ -->
 <div id="home" class="screen active">
-  <div class="app-header">
-    <div class="logo">⚗️ QuímicaLab</div>
-    <div class="hdr-right">
-      <div class="streak-chip">🔥 <span id="h-streak">0</span></div>
-      <div class="xp-chip">⭐ <span id="h-xp">0</span> XP</div>
+  <div class="app-bar">
+    <span class="logo">🔭 SciLab</span>
+    <div class="bar-right">
+      <div class="chip str">🔥 <span id="h-streak">0</span></div>
+      <div class="chip xp">⭐ <span id="h-xp">0</span></div>
+      <div class="chip lv" id="h-lv">Nv.1</div>
     </div>
   </div>
-  <div class="home-body">
-    <div class="mascot">🧪</div>
-    <div class="home-title">Aprende<br><span>Química</span></div>
-    <div class="home-sub">Domina soluciones, coloides y más con lecciones interactivas y divertidas</div>
-    <div class="level-card">
-      <div class="lc-row">
-        <span class="lc-name" id="h-level-name">Nivel 1 — Estudiante</span>
-        <span class="lc-xp" id="h-level-xp">0 / 100 XP</span>
+  <div class="home-top">
+    <span class="home-mascot">🔭</span>
+    <div class="home-title"><span class="t-sci">Sci</span><span class="t-lab">Lab</span></div>
+    <div class="home-subtitle">Aprende Química y Física con lecciones interactivas y gamificadas</div>
+  </div>
+
+  <div class="level-strip" id="h-level-strip">
+    <div class="ls-row">
+      <span class="ls-name" id="h-lv-name">Nivel 1 — Estudiante</span>
+      <span class="ls-xp" id="h-lv-xp">0 / 100 XP</span>
+    </div>
+    <div class="ls-bar"><div class="ls-fill chem" id="h-lv-bar" style="width:0%"></div></div>
+  </div>
+
+  <div class="user-strip">
+    <div class="us-card"><div class="us-n" id="hs-lessons" style="color:var(--chem)">0</div><div class="us-l">Dominio</div></div>
+    <div class="us-card"><div class="us-n" id="hs-phases" style="color:var(--blue)">0</div><div class="us-l">Fases</div></div>
+    <div class="us-card"><div class="us-n" id="hs-ach" style="color:var(--gold)">0</div><div class="us-l">Logros</div></div>
+  </div>
+
+  <div class="courses-label">ELIGE TU CURSO</div>
+  <div class="courses-grid">
+    <!-- Chemistry Card -->
+    <div class="course-card chem-card" onclick="selectCourse('chemistry')">
+      <div class="cc-banner chem-banner">
+        <div class="cc-particles" id="chem-particles"></div>
+        <span class="cc-icon">⚗️</span>
       </div>
-      <div class="lc-bar"><div class="lc-fill" id="h-level-bar" style="width:0%"></div></div>
+      <div class="cc-body">
+        <div class="cc-title chem-title">Química</div>
+        <div class="cc-desc">Soluciones, coloides, concentración y propiedades coligativas</div>
+        <div class="cc-progress">
+          <div class="cc-prog-row"><span>Progreso</span><span id="chem-prog-label">0%</span></div>
+          <div class="cc-bar"><div class="cc-fill-bar chem" id="chem-prog-bar" style="width:0%"></div></div>
+        </div>
+        <div class="cc-stats">
+          <div class="cc-stat"><span class="chem-n" id="chem-s1">0</span>Dom.</div>
+          <div class="cc-stat"><span class="chem-n" id="chem-s2">0</span>XP</div>
+          <div class="cc-stat"><span class="chem-n" id="chem-s3">5</span>Lec.</div>
+        </div>
+      </div>
     </div>
-    <div class="home-stats">
-      <div class="h-stat"><div class="h-stat-n" id="hs-lessons" style="color:var(--green2)">0</div><div class="h-stat-l">Lecciones</div></div>
-      <div class="h-stat"><div class="h-stat-n" id="hs-phases" style="color:var(--blue)">0</div><div class="h-stat-l">Fases</div></div>
-      <div class="h-stat"><div class="h-stat-n" id="hs-ach" style="color:var(--gold)">0</div><div class="h-stat-l">Logros</div></div>
+    <!-- Physics Card -->
+    <div class="course-card phys-card" onclick="selectCourse('physics')">
+      <div class="cc-banner phys-banner">
+        <div class="cc-particles" id="phys-particles"></div>
+        <span class="cc-icon">⚡</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-title phys-title">Física</div>
+        <div class="cc-desc">Densidad, presión e hidrostática con resolución de ecuaciones</div>
+        <div class="cc-progress">
+          <div class="cc-prog-row"><span>Progreso</span><span id="phys-prog-label">0%</span></div>
+          <div class="cc-bar"><div class="cc-fill-bar phys" id="phys-prog-bar" style="width:0%"></div></div>
+        </div>
+        <div class="cc-stats">
+          <div class="cc-stat"><span class="phys-n" id="phys-s1">0</span>Dom.</div>
+          <div class="cc-stat"><span class="phys-n" id="phys-s2">0</span>XP</div>
+          <div class="cc-stat"><span class="phys-n" id="phys-s3">3</span>Lec.</div>
+        </div>
+      </div>
     </div>
-    <button class="btn-cta" onclick="showMap()">EMPEZAR →</button>
-    <button class="btn-secondary" onclick="showScreen('achievements')">🏆 Ver Logros</button>
+  </div>
+
+  <div class="home-footer">
+    <button class="btn-sec w100" style="max-width:360px" onclick="G.activeCourse='chemistry';showScreen('achievements')">🏆 Ver todos los Logros</button>
   </div>
 </div>
 
-<!-- ═══════════ MAP ═══════════ -->
+<!-- ══════════════ MAP ══════════════ -->
 <div id="map" class="screen">
-  <div class="app-header">
+  <div class="app-bar" id="map-bar">
     <button class="back-btn" onclick="showHome()">←</button>
-    <div class="logo">Mapa de Aprendizaje</div>
-    <div class="hdr-right">
-      <div class="streak-chip">🔥 <span id="m-streak">0</span></div>
-      <div class="xp-chip">⭐ <span id="m-xp">0</span></div>
-      <div class="level-chip" id="m-level">Nv.1</div>
+    <span class="logo" id="map-logo">Mapa</span>
+    <div class="bar-right">
+      <div class="chip str">🔥 <span id="m-str">0</span></div>
+      <div class="chip xp">⭐ <span id="m-xp">0</span></div>
+      <div class="chip lv" id="m-lv">Nv.1</div>
     </div>
   </div>
   <div class="map-body" id="map-body"></div>
-  <button class="achiev-btn" onclick="showScreen('achievements')" title="Logros">🏆</button>
+  <button class="fab-ach" onclick="showScreen('achievements')">🏆</button>
 </div>
 
-<!-- ═══════════ LESSON ═══════════ -->
+<!-- ══════════════ LESSON ══════════════ -->
 <div id="lesson" class="screen">
-  <div class="les-header">
+  <div class="les-bar">
     <button class="back-btn" id="les-back">✕</button>
-    <div class="prog-outer"><div class="prog-inner" id="les-prog"></div></div>
-    <div class="phase-tag" id="les-phase-tag">Fase 1</div>
-    <div class="hearts" id="les-hearts"></div>
+    <div class="prog-track"><div class="prog-fill" id="les-prog-fill"></div></div>
+    <div class="phase-pill" id="les-phase-pill">Fase 1</div>
+    <div class="hearts-row" id="les-hearts"></div>
   </div>
   <div class="les-content" id="les-content"></div>
   <div class="confirm-bar">
-    <button class="confirm-btn" id="confirm-btn">VERIFICAR</button>
+    <button class="c-btn" id="c-btn">VERIFICAR</button>
   </div>
-  <div class="feedback-panel" id="feedback">
-    <div class="fp-title" id="fp-title"></div>
-    <div class="fp-exp" id="fp-exp"></div>
-    <button class="fp-btn" id="fp-btn">CONTINUAR</button>
+  <div class="fb-panel" id="fb-panel">
+    <div class="fb-title" id="fb-title"></div>
+    <div class="fb-exp" id="fb-exp"></div>
+    <div class="fb-steps" id="fb-steps">
+      <div class="fbs-title">📐 Solución paso a paso</div>
+      <div id="fb-steps-body"></div>
+    </div>
+    <button class="fb-btn" id="fb-btn">CONTINUAR</button>
   </div>
 </div>
 
-<!-- ═══════════ PHASE DONE ═══════════ -->
+<!-- ══════════════ PHASE DONE ══════════════ -->
 <div id="phase-done" class="screen">
-  <div class="pd-inner">
-    <div class="pd-icon" id="pd-icon">⭐</div>
-    <div class="pd-title" id="pd-title">¡Fase Completada!</div>
-    <div class="pd-sub" id="pd-sub">Buen trabajo, sigue así</div>
-    <div class="xp-pill"><span>+</span><span class="xp-pill-n" id="pd-xp">20</span><span class="xp-pill-l">XP</span></div>
-    <div class="phase-indicator" id="pd-phases"></div>
-    <div class="pd-stats">
-      <div class="pd-stat"><div class="pd-sn" style="color:var(--green2)" id="pd-correct">0</div><div class="pd-sl">Correctas</div></div>
-      <div class="pd-stat"><div class="pd-sn" style="color:var(--red)" id="pd-wrong">0</div><div class="pd-sl">Errores</div></div>
-      <div class="pd-stat"><div class="pd-sn" style="color:var(--gold)" id="pd-acc">0%</div><div class="pd-sl">Precisión</div></div>
+  <div class="done-inner">
+    <div class="done-icon" id="pd-icon">⭐</div>
+    <div class="done-title" id="pd-title" style="color:var(--ok)">¡Fase Completada!</div>
+    <div class="done-sub" id="pd-sub">¡Buen trabajo!</div>
+    <div class="xp-badge"><span>+</span><span class="xp-b-n" id="pd-xp">15</span><span class="xp-b-l">XP</span></div>
+    <div class="phase-track" id="pd-track"></div>
+    <div class="done-stats">
+      <div class="ds"><div class="ds-n" style="color:var(--ok)" id="pd-ok">0</div><div class="ds-l">Correctas</div></div>
+      <div class="ds"><div class="ds-n" style="color:var(--bad)" id="pd-bad">0</div><div class="ds-l">Errores</div></div>
+      <div class="ds"><div class="ds-n" style="color:var(--gold)" id="pd-acc">0%</div><div class="ds-l">Precisión</div></div>
     </div>
-    <button class="btn-cta" id="pd-next-btn">SIGUIENTE FASE →</button>
-    <button class="btn-secondary" onclick="showMap()" style="margin-top:12px">Ir al mapa</button>
+    <div class="done-btns">
+      <button class="btn-main accent" id="pd-next-btn" style="width:100%">SIGUIENTE →</button>
+      <button class="btn-sec w100" onclick="showMap()">Ir al Mapa</button>
+    </div>
   </div>
 </div>
 
-<!-- ═══════════ LESSON DONE ═══════════ -->
+<!-- ══════════════ LESSON DONE ══════════════ -->
 <div id="lesson-done" class="screen">
-  <div class="ld-inner">
-    <div class="ld-trophy">🏆</div>
-    <div class="ld-title" id="ld-title" style="color:var(--gold)">¡Dominado!</div>
-    <div class="ld-badge">⭐ LECCIÓN MAESTRA</div>
-    <div class="xp-pill"><span>+</span><span class="xp-pill-n" id="ld-xp">60</span><span class="xp-pill-l">XP Total</span></div>
-    <div class="ld-stats">
-      <div class="ld-stat"><div class="ld-sn" style="color:var(--green2)" id="ld-correct">0</div><div class="ld-sl">Correctas</div></div>
-      <div class="ld-stat"><div class="ld-sn" style="color:var(--red)" id="ld-wrong">0</div><div class="ld-sl">Errores</div></div>
-      <div class="ld-stat"><div class="ld-sn" style="color:var(--gold)" id="ld-acc">0%</div><div class="ld-sl">Precisión</div></div>
+  <div class="done-inner">
+    <div class="done-icon">🏆</div>
+    <div class="done-title" id="ld-title" style="color:var(--gold)">¡Dominado!</div>
+    <div style="display:inline-block;background:var(--gold);color:#451A03;border-radius:14px;padding:5px 14px;font-weight:900;font-size:13px;margin-bottom:14px;">⭐ LECCIÓN MAESTRA</div>
+    <div class="xp-badge"><span>+</span><span class="xp-b-n" id="ld-xp">60</span><span class="xp-b-l">XP Total</span></div>
+    <div class="done-stats">
+      <div class="ds"><div class="ds-n" style="color:var(--ok)" id="ld-ok">0</div><div class="ds-l">Correctas</div></div>
+      <div class="ds"><div class="ds-n" style="color:var(--bad)" id="ld-bad">0</div><div class="ds-l">Errores</div></div>
+      <div class="ds"><div class="ds-n" style="color:var(--gold)" id="ld-acc">0%</div><div class="ds-l">Precisión</div></div>
     </div>
-    <div class="ld-btns">
-      <button class="btn-cta" onclick="showMap()">VER MAPA →</button>
-      <button class="btn-secondary" onclick="showHome()">Inicio</button>
+    <div class="done-btns">
+      <button class="btn-main accent" style="width:100%" onclick="showMap()">VER MAPA →</button>
+      <button class="btn-sec w100" onclick="showHome()">Inicio</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════ ACHIEVEMENTS ═══════════ -->
+<!-- ══════════════ ACHIEVEMENTS ══════════════ -->
 <div id="achievements" class="screen">
-  <div class="app-header">
-    <button class="back-btn" onclick="showMap()">←</button>
-    <div class="logo">🏆 Logros</div>
-    <div class="hdr-right">
-      <div class="xp-chip">⭐ <span id="a-xp">0</span></div>
-    </div>
+  <div class="app-bar">
+    <button class="back-btn" onclick="showHome()">←</button>
+    <span class="logo">🏆 Logros</span>
+    <div class="bar-right"><div class="chip xp">⭐ <span id="a-xp">0</span></div></div>
   </div>
+  <div class="ach-header" id="ach-header">Logros desbloqueados: 0 / 12</div>
   <div class="ach-grid" id="ach-grid"></div>
 </div>
 
 <!-- Popups -->
-<div class="ach-popup" id="ach-popup">
-  <div class="ap-icon" id="ap-icon">🏆</div>
-  <div><div class="ap-title">¡Logro Desbloqueado!</div><div class="ap-name" id="ap-name"></div><div class="ap-bonus" id="ap-bonus"></div></div>
+<div class="ach-toast" id="ach-toast">
+  <div class="at-ico" id="at-ico">🏆</div>
+  <div><div class="at-tag">¡Logro Desbloqueado!</div><div class="at-name" id="at-name"></div><div class="at-xp" id="at-xp"></div></div>
 </div>
+<div class="combo-badge" id="combo-badge">🔥 ¡Racha x<span id="combo-n">5</span>!</div>
 
 <script>
-// ══════════════════════════════════════
-// DATA
-// ══════════════════════════════════════
-const LEVELS_DEF = [
-  {level:1,name:'Estudiante',min:0,max:100},
-  {level:2,name:'Aprendiz',min:100,max:250},
-  {level:3,name:'Laboratorista',min:250,max:450},
-  {level:4,name:'Analista',min:450,max:700},
-  {level:5,name:'Químico',min:700,max:1000},
-  {level:6,name:'Químico Maestro',min:1000,max:Infinity},
-];
-
-const ACHIEVEMENTS = [
-  {id:'first_phase',icon:'🔬',name:'Primera Reacción',desc:'Completa tu primera fase de lección',xp:5},
-  {id:'perfect_phase',icon:'⭐',name:'Perfeccionista',desc:'Completa una fase sin ningún error',xp:10},
-  {id:'streak_5',icon:'🔥',name:'En Racha',desc:'Responde 5 preguntas seguidas correctamente',xp:10},
-  {id:'streak_10',icon:'⚡',name:'Imparable',desc:'Responde 10 preguntas seguidas correctamente',xp:20},
-  {id:'lesson_0_done',icon:'🧪',name:'Maestro de Soluciones',desc:'Domina todas las fases de Soluciones',xp:15},
-  {id:'lesson_1_done',icon:'⚖️',name:'Experto en Solubilidad',desc:'Domina todas las fases de Solubilidad',xp:15},
-  {id:'lesson_2_done',icon:'📐',name:'Calculista',desc:'Domina todas las fases de Concentración',xp:15},
-  {id:'lesson_3_done',icon:'🌊',name:'Maestro Coloidal',desc:'Domina todas las fases de Coloides',xp:15},
-  {id:'halfway',icon:'🏅',name:'A Mitad del Camino',desc:'Domina al menos 3 lecciones',xp:20},
-  {id:'quimico_maestro',icon:'🏆',name:'Químico Maestro',desc:'¡Domina absolutamente todas las lecciones del curso!',xp:50},
-];
-
-// SVG DIAGRAMS (from notebook images)
-const SVG_BOTTLES = `
-<svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
-  <rect width="320" height="180" rx="12" fill="#1A2733"/>
-  <!-- Bottle 1: dilute (from img 1 - left bottle) -->
-  <g transform="translate(30,20)">
-    <rect x="18" y="40" width="44" height="80" rx="6" fill="#253040" stroke="#38BDF8" stroke-width="1.5"/>
-    <rect x="24" y="90" width="32" height="30" rx="3" fill="rgba(200,180,240,0.15)"/>
-    <rect x="22" y="30" width="36" height="14" rx="4" fill="#2A3F52"/>
-    <circle cx="26" cy="75" r="3" fill="rgba(200,180,240,0.4)"/>
-    <circle cx="38" cy="82" r="2" fill="rgba(200,180,240,0.4)"/>
-    <circle cx="32" cy="68" r="2" fill="rgba(200,180,240,0.4)"/>
-    <text x="40" y="140" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700">Insaturada</text>
-  </g>
-  <!-- Bottle 2: medium (from img 1 - middle bottle) -->
-  <g transform="translate(118,10)">
-    <rect x="18" y="40" width="44" height="90" rx="6" fill="#253040" stroke="#38BDF8" stroke-width="1.5"/>
-    <rect x="24" y="68" width="32" height="62" rx="3" fill="rgba(180,120,255,0.35)"/>
-    <rect x="22" y="28" width="36" height="16" rx="4" fill="#2A3F52"/>
-    <circle cx="30" cy="75" r="3" fill="rgba(200,150,255,0.7)"/>
-    <circle cx="42" cy="70" r="2.5" fill="rgba(200,150,255,0.7)"/>
-    <circle cx="36" cy="82" r="2" fill="rgba(200,150,255,0.7)"/>
-    <circle cx="28" cy="64" r="2" fill="rgba(200,150,255,0.7)"/>
-    <circle cx="44" cy="85" r="2" fill="rgba(200,150,255,0.7)"/>
-    <text x="40" y="150" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700">Saturada</text>
-  </g>
-  <!-- Bottle 3: concentrated (from img 1 - right, darkest) -->
-  <g transform="translate(210,5)">
-    <rect x="12" y="40" width="56" height="100" rx="8" fill="#253040" stroke="#38BDF8" stroke-width="1.5"/>
-    <rect x="18" y="55" width="44" height="85" rx="5" fill="rgba(130,60,220,0.65)"/>
-    <rect x="18" y="28" width="44" height="16" rx="5" fill="#2A3F52"/>
-    <circle cx="28" cy="65" r="4" fill="rgba(220,160,255,0.9)"/>
-    <circle cx="44" cy="58" r="3" fill="rgba(220,160,255,0.9)"/>
-    <circle cx="36" cy="72" r="3.5" fill="rgba(220,160,255,0.9)"/>
-    <circle cx="52" cy="67" r="2.5" fill="rgba(220,160,255,0.9)"/>
-    <circle cx="24" cy="80" r="3" fill="rgba(220,160,255,0.9)"/>
-    <circle cx="48" cy="78" r="3" fill="rgba(220,160,255,0.9)"/>
-    <circle cx="34" cy="88" r="2" fill="rgba(220,160,255,0.9)"/>
-    <text x="40" y="155" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700">Sobresaturada</text>
-  </g>
-  <text x="160" y="17" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700" letter-spacing="1">TIPOS DE SOLUCIONES</text>
-</svg>`;
-
-const SVG_FORMULAS = `
-<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
-  <rect width="320" height="160" rx="12" fill="#1A2733"/>
-  <text x="160" y="20" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700" letter-spacing="1">UNIDADES DE CONCENTRACIÓN (del cuaderno)</text>
-  <!-- % m/m -->
-  <rect x="10" y="28" width="140" height="55" rx="10" fill="#213040" stroke="#38BDF8" stroke-width="1.5"/>
-  <text x="80" y="46" text-anchor="middle" fill="#38BDF8" font-size="11" font-family="Nunito" font-weight="800">% m/m</text>
-  <text x="80" y="62" text-anchor="middle" fill="#C084FC" font-size="13" font-family="Nunito" font-weight="900">g soluto</text>
-  <line x1="30" y1="68" x2="130" y2="68" stroke="#6B8AA8" stroke-width="1"/>
-  <text x="80" y="78" text-anchor="middle" fill="#C084FC" font-size="13" font-family="Nunito" font-weight="900">g solución</text>
-  <text x="138" y="58" fill="#4ADE80" font-size="14" font-family="Nunito" font-weight="900">×100</text>
-  <!-- Molaridad M -->
-  <rect x="165" y="28" width="145" height="55" rx="10" fill="#213040" stroke="#4ADE80" stroke-width="1.5"/>
-  <text x="237" y="46" text-anchor="middle" fill="#4ADE80" font-size="11" font-family="Nunito" font-weight="800">Molaridad (M)</text>
-  <text x="237" y="63" text-anchor="middle" fill="#FBBF24" font-size="13" font-family="Nunito" font-weight="900">mol soluto</text>
-  <line x1="185" y1="68" x2="290" y2="68" stroke="#6B8AA8" stroke-width="1"/>
-  <text x="237" y="78" text-anchor="middle" fill="#FBBF24" font-size="13" font-family="Nunito" font-weight="900">L solución</text>
-  <!-- Molalidad m -->
-  <rect x="10" y="92" width="140" height="55" rx="10" fill="#213040" stroke="#FB923C" stroke-width="1.5"/>
-  <text x="80" y="110" text-anchor="middle" fill="#FB923C" font-size="11" font-family="Nunito" font-weight="800">Molalidad (m)</text>
-  <text x="80" y="127" text-anchor="middle" fill="#F87171" font-size="13" font-family="Nunito" font-weight="900">mol soluto</text>
-  <line x1="30" y1="132" x2="130" y2="132" stroke="#6B8AA8" stroke-width="1"/>
-  <text x="80" y="142" text-anchor="middle" fill="#F87171" font-size="13" font-family="Nunito" font-weight="900">kg solvente</text>
-  <!-- % v/v -->
-  <rect x="165" y="92" width="145" height="55" rx="10" fill="#213040" stroke="#C084FC" stroke-width="1.5"/>
-  <text x="237" y="110" text-anchor="middle" fill="#C084FC" font-size="11" font-family="Nunito" font-weight="800">% v/v</text>
-  <text x="237" y="127" text-anchor="middle" fill="#38BDF8" font-size="13" font-family="Nunito" font-weight="900">mL soluto</text>
-  <line x1="185" y1="132" x2="290" y2="132" stroke="#6B8AA8" stroke-width="1"/>
-  <text x="237" y="142" text-anchor="middle" fill="#38BDF8" font-size="13" font-family="Nunito" font-weight="900">mL solución</text>
-  <text x="295" y="122" fill="#4ADE80" font-size="14" font-family="Nunito" font-weight="900">×100</text>
-</svg>`;
-
-const SVG_COLLOIDS_TABLE = `
-<svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
-  <rect width="320" height="200" rx="12" fill="#1A2733"/>
-  <text x="160" y="18" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700" letter-spacing="1">TABLA DE COLOIDES (del cuaderno)</text>
-  <!-- Header row -->
-  <rect x="10" y="25" width="90" height="28" rx="6" fill="#2A3F52"/>
-  <text x="55" y="44" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="800">Medio / Fase</text>
-  <rect x="104" y="25" width="66" height="28" rx="6" fill="#0C4A6E"/>
-  <text x="137" y="44" text-anchor="middle" fill="#38BDF8" font-size="10" font-family="Nunito" font-weight="800">Sólida</text>
-  <rect x="174" y="25" width="66" height="28" rx="6" fill="#0C4A6E"/>
-  <text x="207" y="44" text-anchor="middle" fill="#38BDF8" font-size="10" font-family="Nunito" font-weight="800">Líquida</text>
-  <rect x="244" y="25" width="66" height="28" rx="6" fill="#0C4A6E"/>
-  <text x="277" y="44" text-anchor="middle" fill="#38BDF8" font-size="10" font-family="Nunito" font-weight="800">Gaseosa</text>
-  <!-- Row Sólido -->
-  <rect x="10" y="57" width="90" height="42" rx="4" fill="#14532D"/>
-  <text x="55" y="82" text-anchor="middle" fill="#4ADE80" font-size="11" font-family="Nunito" font-weight="800">Sólido</text>
-  <rect x="104" y="57" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
-  <text x="137" y="71" text-anchor="middle" fill="#C084FC" font-size="9" font-family="Nunito" font-weight="700">Sol sólido</text>
-  <text x="137" y="84" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Gemas,rubíes</text>
-  <rect x="174" y="57" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
-  <text x="207" y="71" text-anchor="middle" fill="#C084FC" font-size="9" font-family="Nunito" font-weight="700">Emulsión s.</text>
-  <text x="207" y="84" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Perlas</text>
-  <rect x="244" y="57" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
-  <text x="277" y="71" text-anchor="middle" fill="#C084FC" font-size="9" font-family="Nunito" font-weight="700">Espuma s.</text>
-  <text x="277" y="84" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Ámbar</text>
-  <!-- Row Líquido -->
-  <rect x="10" y="103" width="90" height="42" rx="4" fill="#0C4A6E"/>
-  <text x="55" y="128" text-anchor="middle" fill="#38BDF8" font-size="11" font-family="Nunito" font-weight="800">Líquido</text>
-  <rect x="104" y="103" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
-  <text x="137" y="117" text-anchor="middle" fill="#FBBF24" font-size="9" font-family="Nunito" font-weight="700">Sol</text>
-  <text x="137" y="130" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Tintas,plasma</text>
-  <rect x="174" y="103" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
-  <text x="207" y="117" text-anchor="middle" fill="#FBBF24" font-size="9" font-family="Nunito" font-weight="700">Emulsión</text>
-  <text x="207" y="130" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Leche,mayo</text>
-  <rect x="244" y="103" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
-  <text x="277" y="117" text-anchor="middle" fill="#FBBF24" font-size="9" font-family="Nunito" font-weight="700">Espuma</text>
-  <text x="277" y="130" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Merengue</text>
-  <!-- Row Gaseoso -->
-  <rect x="10" y="149" width="90" height="42" rx="4" fill="#3D1A0F"/>
-  <text x="55" y="174" text-anchor="middle" fill="#FB923C" font-size="11" font-family="Nunito" font-weight="800">Gaseoso</text>
-  <rect x="104" y="149" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
-  <text x="137" y="163" text-anchor="middle" fill="#F87171" font-size="9" font-family="Nunito" font-weight="700">Aerosol s.</text>
-  <text x="137" y="176" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Humo,polvo</text>
-  <rect x="174" y="149" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
-  <text x="207" y="163" text-anchor="middle" fill="#F87171" font-size="9" font-family="Nunito" font-weight="700">Aerosol l.</text>
-  <text x="207" y="176" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Niebla</text>
-  <rect x="244" y="149" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
-  <text x="277" y="163" text-anchor="middle" fill="#6B8AA8" font-size="9" font-family="Nunito" font-weight="700">—</text>
-</svg>`;
-
-const SVG_CLASSIFICATION = `
-<svg viewBox="0 0 320 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
-  <rect width="320" height="150" rx="12" fill="#1A2733"/>
-  <text x="160" y="18" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700" letter-spacing="1">CLASIFICACIÓN POR SOLUBILIDAD</text>
-  <!-- Insaturada beaker -->
-  <g transform="translate(15,25)">
-    <rect x="10" y="15" width="55" height="80" rx="4" fill="#213040" stroke="#38BDF8" stroke-width="1.5"/>
-    <rect x="14" y="75" width="47" height="20" rx="2" fill="rgba(56,189,248,0.15)"/>
-    <circle cx="25" cy="55" r="3" fill="rgba(56,189,248,0.5)"/>
-    <circle cx="40" cy="60" r="2" fill="rgba(56,189,248,0.5)"/>
-    <circle cx="55" cy="50" r="2.5" fill="rgba(56,189,248,0.5)"/>
-    <rect x="15" y="8" width="45" height="10" rx="2" fill="#2A3F52"/>
-    <text x="37" y="112" text-anchor="middle" fill="#38BDF8" font-size="10" font-family="Nunito" font-weight="800">Insaturada</text>
-    <text x="37" y="125" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Puede disolver más</text>
-  </g>
-  <!-- Saturada beaker -->
-  <g transform="translate(118,25)">
-    <rect x="5" y="15" width="65" height="80" rx="4" fill="#213040" stroke="#4ADE80" stroke-width="1.5"/>
-    <rect x="9" y="60" width="57" height="35" rx="2" fill="rgba(74,222,128,0.2)"/>
-    <!-- crystals at bottom -->
-    <polygon points="15,95 22,80 29,95" fill="rgba(74,222,128,0.6)"/>
-    <polygon points="28,95 35,83 42,95" fill="rgba(74,222,128,0.6)"/>
-    <polygon points="44,95 51,82 58,95" fill="rgba(74,222,128,0.6)"/>
-    <circle cx="20" cy="68" r="2.5" fill="rgba(74,222,128,0.7)"/>
-    <circle cx="45" cy="65" r="2" fill="rgba(74,222,128,0.7)"/>
-    <circle cx="60" cy="72" r="2" fill="rgba(74,222,128,0.7)"/>
-    <rect x="15" y="8" width="45" height="10" rx="2" fill="#2A3F52"/>
-    <text x="37" y="112" text-anchor="middle" fill="#4ADE80" font-size="10" font-family="Nunito" font-weight="800">Saturada</text>
-    <text x="37" y="125" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">En el límite máximo</text>
-  </g>
-  <!-- Sobresaturada beaker -->
-  <g transform="translate(225,25)">
-    <rect x="5" y="15" width="65" height="80" rx="4" fill="#213040" stroke="#FBBF24" stroke-width="2"/>
-    <rect x="9" y="35" width="57" height="60" rx="2" fill="rgba(251,191,36,0.2)"/>
-    <!-- overflow drops -->
-    <circle cx="10" cy="28" r="4" fill="rgba(251,191,36,0.5)"/>
-    <circle cx="60" cy="24" r="3" fill="rgba(251,191,36,0.5)"/>
-    <!-- many crystals -->
-    <polygon points="12,95 18,78 24,95" fill="rgba(251,191,36,0.7)"/>
-    <polygon points="24,95 30,80 36,95" fill="rgba(251,191,36,0.7)"/>
-    <polygon points="36,95 42,78 48,95" fill="rgba(251,191,36,0.7)"/>
-    <polygon points="48,95 54,80 60,95" fill="rgba(251,191,36,0.7)"/>
-    <circle cx="20" cy="52" r="3" fill="rgba(251,191,36,0.8)"/>
-    <circle cx="45" cy="45" r="2.5" fill="rgba(251,191,36,0.8)"/>
-    <circle cx="60" cy="56" r="2" fill="rgba(251,191,36,0.8)"/>
-    <circle cx="30" cy="60" r="2" fill="rgba(251,191,36,0.8)"/>
-    <rect x="15" y="8" width="45" height="10" rx="2" fill="#2A3F52"/>
-    <text x="37" y="112" text-anchor="middle" fill="#FBBF24" font-size="10" font-family="Nunito" font-weight="800">Sobresaturada</text>
-    <text x="37" y="125" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Supera el límite</text>
-  </g>
-</svg>`;
-
-// ══════════════════════════════════════
-// LESSON CONTENT: 5 lessons × 3 phases × 3 questions
-// ══════════════════════════════════════
-const LESSONS = [
-{
-  id:0, name:'¿Qué es una Solución?', icon:'🧪', color:'var(--green2)',
-  phases:[
-    { name:'Básico', xp:15, questions:[
-      { type:'mcq', badge:'Concepto clave',
-        q:'¿Cuál es la definición correcta de una SOLUCIÓN?',
-        opts:['Una mezcla heterogénea visible a simple vista','Una mezcla homogénea de dos o más sustancias a nivel molecular o iónico','Un compuesto puro sin impurezas','Agua con partículas sólidas en suspensión'],
-        correct:1, exp:'Una solución es una mezcla HOMOGÉNEA: sus componentes están distribuidos uniformemente a nivel molecular. No se pueden distinguir a simple vista.' },
-      { type:'image_mcq', badge:'Analiza el diagrama',
-        q:'Observa las botellas del diagrama. ¿Cuál representa la MAYOR concentración de soluto?',
-        svg:SVG_BOTTLES,
-        opts:['Botella izquierda (insaturada — pocos solutos)','Botella central (saturada — concentración media)','Botella derecha (sobresaturada — más soluto)','Todas tienen la misma concentración'],
-        correct:2, exp:'La botella derecha (morada oscura) contiene más partículas de soluto por unidad de solvente. Mayor densidad de partículas = mayor concentración.' },
-      { type:'fill', badge:'Completa el espacio',
-        q:'Completa: En una solución, el ___ se disuelve en el ___.',
-        template:['En una solución, el ','[0]',' se disuelve en el ','[1]','.'],
-        blanks:['soluto','solvente'],
-        opts:['soluto','solvente','catalizador','reactivo','producto'],
-        exp:'SOLUTO = sustancia que se disuelve (generalmente en menor cantidad). SOLVENTE = sustancia que disuelve (generalmente el agua, "disolvente universal").' },
-    ]},
-    { name:'Intermedio', xp:20, questions:[
-      { type:'match', badge:'Emparejamiento',
-        q:'Une cada término con su descripción correcta:',
-        pairs:[{L:'Soluto',R:'Sustancia que se disuelve'},{L:'Solvente',R:'Sustancia que disuelve'},{L:'Solución',R:'Mezcla homogénea resultante'},{L:'Concentración',R:'Cantidad de soluto por unidad'}],
-        exp:'Clave: soLUTO → se diSUELVE. soLVENTE → disuelVE. La solución es el resultado final de ambos.' },
-      { type:'drag', badge:'Arrastrar y soltar',
-        q:'Clasifica cada sustancia como SOLUTO o SOLVENTE en agua con sal:',
-        zones:['Soluto','Solvente'],
-        items:[{t:'Sal (NaCl)',c:0},{t:'Agua (H₂O)',c:1},{t:'Azúcar',c:0},{t:'Alcohol (disuelto)',c:0},{t:'Agua destilada',c:1}],
-        exp:'El AGUA es el solvente (universal). La sal, azúcar y alcohol son solutos — se disuelven en el agua.' },
-      { type:'mcq', badge:'Aplicación',
-        q:'¿Cuál de estos ejemplos es una solución homogénea?',
-        opts:['Agua con aceite','Jugo de naranja sin colar','Agua con sal completamente disuelta','Arena mezclada con grava'],
-        correct:2, exp:'El agua con sal disuelta es homogénea: la sal se distribuye uniformemente a nivel iónico. El aceite, jugo sin colar y arena son mezclas heterogéneas.' },
-    ]},
-    { name:'Avanzado', xp:25, questions:[
-      { type:'order', badge:'Ordenar pasos',
-        q:'Ordena los pasos correctos para preparar una solución 1M de NaCl:',
-        steps:['Pesar la masa molar de NaCl (58.44 g)','Medir el matraz volumétrico de 1 litro','Disolver el NaCl en agua destilada parcialmente','Aforar hasta la marca de 1 litro exacto','Agitar hasta disolución completa'],
-        order:[1,0,2,4,3],
-        exp:'El orden correcto asegura precisión: primero el volumen deseado, pesar el soluto, pre-disolver, aforar con precisión y agitar.' },
-      { type:'image_mcq', badge:'Analiza el diagrama',
-        q:'Según el diagrama de botellas, ¿cuál afirmación es CORRECTA sobre la botella izquierda?',
-        svg:SVG_BOTTLES,
-        opts:['Está sobresaturada y puede precipitar cristales','Está insaturada: puede disolver más soluto','Está exactamente en el punto de saturación','No contiene ningún soluto'],
-        correct:1, exp:'La botella izquierda (pocos puntos/clara) es una solución INSATURADA: aún tiene capacidad para disolver más soluto a esa temperatura.' },
-      { type:'mcq', badge:'Propiedades',
-        q:'¿Cuál propiedad diferencia una solución de una mezcla heterogénea?',
-        opts:['El color de la mezcla','La uniformidad a nivel molecular (homogeneidad)','La temperatura de preparación','La cantidad de sustancias presentes'],
-        correct:1, exp:'La homogeneidad a nivel molecular es la clave: en una solución no se ven los componentes por separado. Las mezclas heterogéneas tienen fases visibles.' },
-    ]},
-  ]
-},
-{
-  id:1, name:'Clasificación por Solubilidad', icon:'⚖️', color:'var(--blue)',
-  phases:[
-    { name:'Básico', xp:15, questions:[
-      { type:'image_mcq', badge:'Analiza el diagrama',
-        q:'Según el diagrama, ¿qué tipo de solución muestra el vaso del CENTRO (verde)?',
-        svg:SVG_CLASSIFICATION,
-        opts:['Insaturada — puede disolver más','Saturada — ya está en el límite máximo','Sobresaturada — tiene exceso de soluto','No es una solución, es una suspensión'],
-        correct:1, exp:'El vaso central muestra cristales en el fondo + partículas en solución: llegó al LÍMITE de saturación. Es una solución saturada.' },
-      { type:'mcq', badge:'Concepto',
-        q:'Una solución INSATURADA es aquella que:',
-        opts:['Tiene más soluto del que puede disolver','Está exactamente en el límite de saturación','Puede disolver más soluto a esa temperatura','No tiene ningún soluto disuelto'],
-        correct:2, exp:'INSATURADA = "incompleta": todavía puede disolver más soluto. Si añades más sal a una solución insaturada de sal, se sigue disolviendo.' },
-      { type:'mcq', badge:'Concepto',
-        q:'¿Qué ocurre cuando se añade más soluto a una solución SATURADA?',
-        opts:['Se disuelve completamente como siempre','El exceso queda sin disolver (precipita)','La solución se vuelve insaturada','El solvente se evapora inmediatamente'],
-        correct:1, exp:'¡Correcto! En una solución saturada el equilibrio de disolución ya se alcanzó. El soluto adicional no puede disolverse y se acumula como precipitado en el fondo.' },
-    ]},
-    { name:'Intermedio', xp:20, questions:[
-      { type:'drag', badge:'Arrastrar y soltar',
-        q:'Clasifica cada ejemplo en su tipo de solución correcto:',
-        zones:['Insaturada','Saturada','Sobresaturada'],
-        items:[{t:'Limonada con poca azúcar',c:0},{t:'Agua azucarada al máximo (25°C)',c:1},{t:'Solución de miel calentada y enfriada',c:2},{t:'Agua con una pizca de sal',c:0},{t:'Agua con cristales que no se disuelven',c:1}],
-        exp:'Clave: insaturada puede recibir más soluto; saturada está en el límite; sobresaturada superó el límite (generalmente por enfriamiento).' },
-      { type:'image_mcq', badge:'Analiza el diagrama',
-        q:'Según el diagrama, ¿qué representa el vaso derecho (amarillo con cristales desbordados)?',
-        svg:SVG_CLASSIFICATION,
-        opts:['Es una solución insaturada típica','Es una solución saturada normal','Es una solución sobresaturada inestable','Es una suspensión coloidal'],
-        correct:2, exp:'El vaso derecho (amarillo, con muchos cristales y partículas desbordando) representa la SOBRESATURACIÓN: superó el límite de solubilidad, estado inestable.' },
-      { type:'mcq', badge:'Temperatura y solubilidad',
-        q:'Al AUMENTAR la temperatura, la solubilidad de sólidos en agua generalmente:',
-        opts:['Disminuye (se disuelve menos)','No cambia para ninguna sustancia','Aumenta (se puede disolver más)','Primero aumenta y luego cae a cero'],
-        correct:2, exp:'Para la mayoría de sólidos, más temperatura = más energía para romper enlaces = mayor solubilidad. Excepción notable: los gases son MÁS solubles en agua FRÍA.' },
-    ]},
-    { name:'Avanzado', xp:25, questions:[
-      { type:'order', badge:'Ordenar conceptos',
-        q:'Ordena de MENOR a MAYOR concentración de soluto:',
-        steps:['Solución sobresaturada (supera el límite)','Solución saturada (en el límite exacto)','Agua pura (sin soluto)','Solución insaturada con poco soluto'],
-        order:[2,3,1,0],
-        exp:'Agua pura (0) → insaturada (algo) → saturada (máximo) → sobresaturada (exceso). La sobresaturada tiene la mayor concentración posible.' },
-      { type:'fill', badge:'Completa el concepto',
-        q:'Al enfriar una solución sobresaturada, el exceso de soluto ___ en forma de ___ visibles.',
-        template:['Al enfriar una sobresaturada, el exceso ','[0]',' en forma de ','[1]',' visibles.'],
-        blanks:['cristaliza','cristales'],
-        opts:['cristaliza','se disuelve','cristales','burbujas','desaparece','gas'],
-        exp:'La cristalización ocurre cuando baja la temperatura: la solubilidad cae y el soluto en exceso debe precipitar. ¡Así se forman los cristales de nieve y las gemasmas naturales!' },
-      { type:'mcq', badge:'Aplicación real',
-        q:'¿Por qué las bebidas gaseosas liberan CO₂ al calentarse?',
-        opts:['El CO₂ reacciona con el calor','Los gases son menos solubles a mayor temperatura','El calor crea más CO₂ dentro de la lata','La presión dentro aumenta con calor'],
-        correct:1, exp:'¡Propiedad coligativa! Los gases se comportan al revés que los sólidos: a mayor temperatura, MENOR solubilidad. El CO₂ sale de la solución porque ya no puede mantenerse disuelto.' },
-    ]},
-  ]
-},
-{
-  id:2, name:'Unidades de Concentración', icon:'📐', color:'var(--purple)',
-  phases:[
-    { name:'Básico', xp:15, questions:[
-      { type:'image_mcq', badge:'Lee el diagrama del cuaderno',
-        q:'Según el diagrama de fórmulas, ¿cuál es la unidad de la MOLARIDAD (M)?',
-        svg:SVG_FORMULAS,
-        opts:['g soluto / 100g solución (% m/m)','mol soluto / L solución','mL soluto / 100mL solución','mol soluto / kg solvente'],
-        correct:1, exp:'Molaridad M = mol de soluto / litro de SOLUCIÓN. Es la unidad más usada en química analítica y en cálculos de reacciones en solución.' },
-      { type:'fill', badge:'Completa la fórmula',
-        q:'Completa la fórmula de Molaridad: M = ___ / ___',
-        template:['M = ','[0]',' / ','[1]'],
-        blanks:['mol soluto','L solución'],
-        opts:['mol soluto','L solución','g soluto','kg solvente','mL solución'],
-        exp:'M = mol de soluto ÷ litros de solución. Siempre verificar que el volumen esté en LITROS, no mililitros.' },
-      { type:'mcq', badge:'Comprensión',
-        q:'¿Cuál es la diferencia clave entre Molaridad y Molalidad?',
-        opts:['No hay diferencia — son lo mismo','Molaridad usa litros de solución; molalidad usa kg de solvente','Molaridad usa kg de solvente; molalidad usa litros de solución','Solo se diferencian en el símbolo (M vs m)'],
-        correct:1, exp:'Diferencia fundamental: M (molaridad) = mol/L de SOLUCIÓN — cambia con la temperatura. m (molalidad) = mol/kg de SOLVENTE — independiente de temperatura, mejor para propiedades coligativas.' },
-    ]},
-    { name:'Intermedio', xp:20, questions:[
-      { type:'match', badge:'Emparejamiento',
-        q:'Une cada unidad de concentración con su fórmula:',
-        pairs:[{L:'Molaridad M',R:'mol / L solución'},{L:'Molalidad m',R:'mol / kg solvente'},{L:'% masa/masa',R:'g soluto / g solución ×100'},{L:'% vol/vol',R:'mL soluto / mL solución ×100'}],
-        exp:'Memoriza: M→L, m→kg. El % siempre multiplica por 100. La diferencia m vs M es solución vs solvente.' },
-      { type:'mcq', badge:'Cálculo',
-        q:'Si tienes 3 moles de NaCl en 2 litros de solución, ¿cuál es la molaridad?',
-        opts:['1.0 M','1.5 M','3.0 M','6.0 M'],
-        correct:1, exp:'M = mol / L = 3 mol ÷ 2 L = 1.5 M. Siempre divides los moles entre el volumen en litros.' },
-      { type:'image_mcq', badge:'Lee el diagrama del cuaderno',
-        q:'Según el diagrama, ¿cuál fórmula corresponde al % m/m?',
-        svg:SVG_FORMULAS,
-        opts:['mol soluto / L solución','mL soluto / mL solución × 100','g soluto / g solución × 100','mol soluto / kg solvente'],
-        correct:2, exp:'% m/m = (g de soluto / g de solución) × 100. Es la unidad más simple: compara masas. Una solución al 5% m/m tiene 5g de soluto por 100g de solución.' },
-    ]},
-    { name:'Avanzado', xp:25, questions:[
-      { type:'fill', badge:'Cálculo avanzado',
-        q:'En 500 mL de solución 2M de glucosa, hay ___ moles de glucosa.',
-        template:['En 500 mL (= 0.5 L) de solución 2M: moles = 2 × 0.5 = ','[0]',' moles'],
-        blanks:['1'],
-        opts:['1','2','0.5','4','3','0.25'],
-        exp:'Moles = M × V(L) = 2 mol/L × 0.5 L = 1 mol. ¡Siempre convertir mL a L! 500 mL = 0.5 L.' },
-      { type:'order', badge:'Ordenar pasos',
-        q:'Ordena los pasos para calcular la molaridad de una solución:',
-        steps:['Identificar el soluto y calcular su masa molar (g/mol)','Convertir gramos a moles: n = masa / MM','Medir o calcular el volumen de solución en litros','Aplicar: M = n (moles) / V (litros)','Verificar unidades y redondear el resultado'],
-        order:[0,1,2,3,4],
-        exp:'Siempre: identifica → calcula moles → mide volumen → aplica M=n/V → verifica. Las unidades son mol/L.' },
-      { type:'mcq', badge:'Normalidad',
-        q:'La NORMALIDAD (N) se define como equivalentes-gramo de soluto por:',
-        opts:['100g de solución','Litro de solución','Kg de solvente','Mol de soluto'],
-        correct:1, exp:'N = eq-g de soluto / L de solución. Los equivalentes-gramo dependen de la reacción (para ácidos = H⁺ que puede dar; para bases = OH⁻). Para HCl: 1M = 1N. Para H₂SO₄: 1M = 2N.' },
-    ]},
-  ]
-},
-{
-  id:3, name:'Coloides y Mezclas', icon:'🌊', color:'var(--orange)',
-  phases:[
-    { name:'Básico', xp:15, questions:[
-      { type:'mcq', badge:'Concepto',
-        q:'¿Qué distingue a un COLOIDE de una solución verdadera?',
-        opts:['El color de la mezcla','El tamaño de partículas (1–1000 nm en coloides)','La temperatura de preparación','El número de sustancias presentes'],
-        correct:1, exp:'Tamaños clave: solución verdadera <1nm (iones/moléculas), coloide 1-1000nm (macromoléculas/partículas), suspensión >1000nm (visible). El tamaño define el tipo.' },
-      { type:'image_mcq', badge:'Lee la tabla del cuaderno',
-        q:'Según la tabla de coloides, ¿cómo se llama un coloide donde el medio es LÍQUIDO y la fase dispersa es LÍQUIDA?',
-        svg:SVG_COLLOIDS_TABLE,
-        opts:['Sol (sol coloidal)','Emulsión','Espuma líquida','Aerosol líquido'],
-        correct:1, exp:'Líquido en líquido = EMULSIÓN. Ejemplos del cuaderno: leche (grasa en agua) y mayonesa. La leche es la emulsión más conocida.' },
-      { type:'mcq', badge:'Efecto Tyndall',
-        q:'El EFECTO TYNDALL ocurre cuando:',
-        opts:['Un sólido se disuelve en agua caliente','La luz se dispersa visible al pasar por un coloide','Una mezcla se separa por gravedad','Los gases se disuelven en líquidos'],
-        correct:1, exp:'Efecto Tyndall: las partículas coloidales (1-1000nm) dispersan la luz haciéndola visible (como el rayo de sol en la niebla). Las soluciones verdaderas NO lo muestran. ¡Puedes usarlo para diferenciar coloides de soluciones!' },
-    ]},
-    { name:'Intermedio', xp:20, questions:[
-      { type:'drag', badge:'Arrastrar y soltar',
-        q:'Clasifica cada mezcla según la tabla del cuaderno:',
-        zones:['Solución','Coloide','Suspensión'],
-        items:[{t:'Agua con sal (NaCl)',c:0},{t:'Leche entera',c:1},{t:'Agua con barro',c:2},{t:'Gelatina preparada',c:1},{t:'Agua de mar',c:0},{t:'Arena en agua',c:2}],
-        exp:'Solución: partículas <1nm, transparente. Coloide: 1-1000nm, efecto Tyndall, no sedimenta. Suspensión: >1000nm, sedimenta con tiempo.' },
-      { type:'image_mcq', badge:'Lee la tabla del cuaderno',
-        q:'Según la tabla, ¿qué tipo de coloide es el HUMO?',
-        svg:SVG_COLLOIDS_TABLE,
-        opts:['Emulsión (líquido en líquido)','Sol sólido (sólido en sólido)','Aerosol sólido (sólido en gaseoso)','Espuma (gas en sólido)'],
-        correct:2, exp:'El humo es un AEROSOL SÓLIDO: partículas sólidas (ceniza, carbón) dispersas en gas (aire). La tabla del cuaderno lo muestra en la celda Gaseoso-Sólida.' },
-      { type:'match', badge:'Emparejamiento',
-        q:'Une el tipo de coloide con su ejemplo real:',
-        pairs:[{L:'Aerosol líquido',R:'Niebla / nubes'},{L:'Emulsión',R:'Leche / mayonesa'},{L:'Sol coloidal',R:'Tinta / pinturas'},{L:'Espuma',R:'Crema chantillí'}],
-        exp:'Aerosol líquido = gotitas de agua en aire (niebla). Emulsión = líquido en líquido. Sol = sólido en líquido. Espuma = gas en sólido/líquido.' },
-    ]},
-    { name:'Avanzado', xp:25, questions:[
-      { type:'order', badge:'Ordenar por tamaño',
-        q:'Ordena de MENOR a MAYOR tamaño de partículas:',
-        steps:['Coloide (1–1000 nm)','Ión hidratado en solución (<0.5 nm)','Partículas de suspensión (>1000 nm)','Molécula pequeña en solución (0.5–1 nm)'],
-        order:[1,3,0,2],
-        exp:'Orden: ión hidratado < molécula < coloide < suspensión. El tamaño define si la mezcla es solución, coloide o suspensión.' },
-      { type:'fill', badge:'Propiedad del coloide',
-        q:'Los coloides NO sedimentan gracias al movimiento ___, y muestran el efecto ___ con la luz.',
-        template:['No sedimentan por movimiento ','[0]',', y muestran el efecto ','[1]'],
-        blanks:['Browniano','Tyndall'],
-        opts:['Browniano','Tyndall','oscilatorio','difracción','lineal','circular'],
-        exp:'Movimiento Browniano: las partículas coloidales se mueven continuamente en zig-zag por las colisiones con moléculas de solvente. Esto evita que sedimenten.' },
-      { type:'mcq', badge:'Aplicación real',
-        q:'¿Por qué el cielo es azul y los atardeceres son rojos? (Pista: Tyndall y tamaño)',
-        opts:['El aire contiene pigmentos azules','La luz azul se dispersa más por partículas pequeñas del aire','El sol emite más luz roja al atardecer','El ojo humano percibe el azul más fácilmente'],
-        correct:1, exp:'¡Efecto Tyndall en acción! Las moléculas de aire dispersan más la luz de longitud de onda corta (azul). Al atardecer, la luz recorre más atmósfera y solo queda la roja/naranja.' },
-    ]},
-  ]
-},
-{
-  id:4, name:'Propiedades Coligativas', icon:'🔬', color:'var(--red)',
-  phases:[
-    { name:'Básico', xp:15, questions:[
-      { type:'mcq', badge:'Definición',
-        q:'Las propiedades coligativas dependen de:',
-        opts:['El tipo químico del soluto disuelto','El color y olor de la solución','Solo la cantidad de partículas disueltas, sin importar qué son','La temperatura del solvente puro'],
-        correct:2, exp:'COLIGATIVAS = "colectivas": dependen del NÚMERO de partículas, no de su naturaleza química. 1 mol de NaCl da 2 partículas (Na⁺ + Cl⁻); 1 mol de glucosa da 1 partícula.' },
-      { type:'mcq', badge:'Tipos',
-        q:'¿Cuáles son las principales propiedades coligativas? (Selecciona la más completa)',
-        opts:['Color, olor y sabor','Ebullición, fusión, condensación','Descenso crioscópico, ascenso ebullioscópico, presión osmótica, descenso de presión de vapor','Conductividad, magnetismo, acidez'],
-        correct:2, exp:'Las 4 propiedades coligativas clásicas: 1) Descenso del punto de congelación, 2) Ascenso del punto de ebullición, 3) Presión osmótica, 4) Descenso de presión de vapor.' },
-      { type:'fill', badge:'Fórmula de presión osmótica',
-        q:'La presión osmótica se calcula: π = ___ × R × T',
-        template:['Presión osmótica: π = ','[0]',' × R × T'],
-        blanks:['M (molaridad)'],
-        opts:['M (molaridad)','m (molalidad)','n (moles)','T (temperatura)','ΔT (cambio)'],
-        exp:'π = MRT: presión osmótica = Molaridad × R (0.0821 L·atm/mol·K) × Temperatura en Kelvin. Esencial en biología para entender el funcionamiento de las células.' },
-    ]},
-    { name:'Intermedio', xp:20, questions:[
-      { type:'mcq', badge:'Aplicación real',
-        q:'¿Por qué se echa sal en carreteras con hielo?',
-        opts:['La sal genera calor al disolverse y derrite el hielo','Al disolver sal, baja el punto de congelación del agua (debajo de 0°C)','La sal absorbe el agua del hielo','La textura de la sal mejora el agarre de los neumáticos'],
-        correct:1, exp:'¡Descenso crioscópico en acción! ΔTf = Kf × m. La sal disuelta baja el punto de congelación del agua hasta -10°C o menos, evitando que se forme hielo.' },
-      { type:'match', badge:'Emparejamiento',
-        q:'Une cada propiedad coligativa con su aplicación real:',
-        pairs:[{L:'Descenso crioscópico',R:'Sal en carreteras con hielo'},{L:'Ascenso ebullioscópico',R:'Pasta se cuece más lento con sal'},{L:'Presión osmótica',R:'Funcionamiento de membranas celulares'},{L:'Presión de vapor',R:'El agua se evapora más lento en solución'}],
-        exp:'Cada propiedad tiene aplicaciones cotidianas. La presión osmótica es crucial en medicina (sueros fisiológicos, diálisis).' },
-      { type:'mcq', badge:'Cálculo conceptual',
-        q:'¿Cuál solución tiene el MAYOR ascenso del punto de ebullición?',
-        opts:['1M de glucosa (C₆H₁₂O₆)','1M de NaCl (Na⁺ + Cl⁻ → 2 partículas)','1M de CaCl₂ (Ca²⁺ + 2Cl⁻ → 3 partículas)','Agua pura sin soluto'],
-        correct:2, exp:'CaCl₂ da 3 iones al ionizarse (Ca²⁺ + 2Cl⁻). Más partículas = mayor efecto coligativo. ΔTb = Kb × m × i, donde i = número de iones (factor de Van\'t Hoff).' },
-    ]},
-    { name:'Avanzado', xp:25, questions:[
-      { type:'order', badge:'Ordenar por punto de ebullición',
-        q:'Ordena de MAYOR a MENOR punto de ebullición:',
-        steps:['1M CaCl₂ (3 iones, mayor efecto)','1M NaCl (2 iones, efecto medio)','1M glucosa (1 partícula, menor efecto)','Agua pura (0°C de ascenso)'],
-        order:[0,1,2,3],
-        exp:'CaCl₂ > NaCl > glucosa > agua pura. Más partículas (factor i) = mayor ΔTb. CaCl₂ tiene el mayor ascenso porque produce 3 iones.' },
-      { type:'fill', badge:'Factor de Van\'t Hoff',
-        q:'Para NaCl que se ioniza en Na⁺ + Cl⁻, el factor i de Van\'t Hoff es ___.',
-        template:['NaCl → Na⁺ + Cl⁻ = 2 iones. Factor i = ','[0]'],
-        blanks:['2'],
-        opts:['2','1','3','0.5','4','1.5'],
-        exp:'i = número de partículas por fórmula unidad disuelta. NaCl → 2 iones (i=2). Glucosa → 1 molécula (i=1). CaCl₂ → 3 iones (i=3). Modifica todos los efectos coligativos.' },
-      { type:'mcq', badge:'Ósmosis',
-        q:'En ósmosis, el agua fluye desde la región de ___ concentración hacia la de ___ concentración.',
-        opts:['mayor → menor (a favor del gradiente)','menor → mayor (a favor del gradiente osmótico)','igual → igual (sin movimiento neto)','caliente → fría (por gradiente térmico)'],
-        correct:1, exp:'En ósmosis, el AGUA fluye desde donde HAY MENOS soluto (mayor concentración de agua) hacia donde HAY MÁS soluto (menor concentración de agua). Esto es crucial para la vida celular.' },
-    ]},
-  ]
-},
-];
-
-// ══════════════════════════════════════
-// GAME STATE
-// ══════════════════════════════════════
-const G = {
-  xp: 0, streak: 0, maxStreak: 0,
-  totalCorrect: 0, consecutiveCorrect: 0,
-  lessons: Object.fromEntries(LESSONS.map(l => [l.id, {phases:[0,0,0]}])),
-  unlocked: new Set(),
-};
-
-// SESSION STATE
-let S = {};
-
-// ══════════════════════════════════════
-// AUDIO
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════
+// AUDIO ENGINE
+// ══════════════════════════════════════════════════
 let AC;
-function getAC(){ if(!AC) AC = new (window.AudioContext||window.webkitAudioContext)(); return AC; }
-function tone(f,d,type='sine',v=.25){
-  try {
-    const a=getAC(),o=a.createOscillator(),g=a.createGain();
-    o.connect(g);g.connect(a.destination);
-    o.type=type;o.frequency.value=f;
-    g.gain.setValueAtTime(v,a.currentTime);
-    g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d);
-    o.start();o.stop(a.currentTime+d);
-  } catch(e){}
+function getAC(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();return AC;}
+function tone(f,d,t='sine',v=.22){
+  try{const a=getAC(),o=a.createOscillator(),g=a.createGain();
+  o.connect(g);g.connect(a.destination);o.type=t;o.frequency.value=f;
+  g.gain.setValueAtTime(v,a.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d);
+  o.start();o.stop(a.currentTime+d);}catch(e){}
 }
-const sfx = {
-  correct:()=>{tone(523,.1,'sine',.2);setTimeout(()=>tone(659,.1,'sine',.2),100);setTimeout(()=>tone(784,.25,'sine',.2),200)},
-  wrong:()=>{tone(280,.15,'sawtooth',.2);setTimeout(()=>tone(240,.2,'sawtooth',.2),160)},
-  select:()=>tone(500,.04,'sine',.08),
-  click:()=>tone(650,.04,'sine',.07),
-  complete:()=>{[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.18,'sine',.18),i*100))},
-  master:()=>{[523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>tone(f,.25,'sine',.22),i*120))},
+const sfx={
+  select:()=>tone(500,.04,'sine',.07),
+  click:()=>tone(640,.04,'sine',.06),
+  correct:()=>{tone(523,.1,'sine',.18);setTimeout(()=>tone(659,.1,'sine',.18),100);setTimeout(()=>tone(784,.22,'sine',.18),200);},
+  wrong:()=>{tone(280,.14,'sawtooth',.18);setTimeout(()=>tone(240,.2,'sawtooth',.18),150);},
+  phase:()=>{[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.16,'sine',.16),i*100));},
+  master:()=>{[523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>tone(f,.22,'sine',.2),i*110));},
+  ach:()=>{tone(880,.1,'sine',.2);setTimeout(()=>tone(1108,.1,'sine',.2),120);setTimeout(()=>tone(1320,.2,'sine',.2),240);},
 };
 
-// ══════════════════════════════════════
-// SCREEN MANAGEMENT
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════
+// LEVELS
+// ══════════════════════════════════════════════════
+const LEVELS=[
+  {n:1,name:'Estudiante',min:0,max:100},
+  {n:2,name:'Aprendiz',min:100,max:250},
+  {n:3,name:'Laboratorista',min:250,max:450},
+  {n:4,name:'Analista',min:450,max:700},
+  {n:5,name:'Científico',min:700,max:1000},
+  {n:6,name:'Maestro',min:1000,max:Infinity},
+];
+function getLevel(xp){for(let i=LEVELS.length-1;i>=0;i--)if(xp>=LEVELS[i].min)return LEVELS[i];return LEVELS[0];}
+
+// ══════════════════════════════════════════════════
+// ACHIEVEMENTS
+// ══════════════════════════════════════════════════
+const ACHS=[
+  {id:'first_q',icon:'🔬',name:'Primera Reacción',desc:'Responde tu primera pregunta correctamente',xp:5,course:'any'},
+  {id:'perfect_phase',icon:'💎',name:'Perfeccionista',desc:'Completa una fase sin ningún error',xp:10,course:'any'},
+  {id:'streak5',icon:'🔥',name:'En Racha',desc:'5 respuestas correctas seguidas',xp:10,course:'any'},
+  {id:'streak10',icon:'⚡',name:'Imparable',desc:'10 respuestas correctas seguidas',xp:20,course:'any'},
+  {id:'chem_l0',icon:'🧪',name:'Maestro de Soluciones',desc:'Domina la lección de Soluciones',xp:15,course:'chemistry'},
+  {id:'chem_l1',icon:'⚖️',name:'Rey de la Solubilidad',desc:'Domina la lección de Solubilidad',xp:15,course:'chemistry'},
+  {id:'chem_all',icon:'🏆',name:'Químico Maestro',desc:'Domina todas las lecciones de Química',xp:50,course:'chemistry'},
+  {id:'phys_l0',icon:'⚖️',name:'Maestro de Densidad',desc:'Domina la lección de Densidad',xp:15,course:'physics'},
+  {id:'phys_l1',icon:'🌊',name:'Bajo Presión',desc:'Domina la lección de Presión',xp:15,course:'physics'},
+  {id:'phys_l2',icon:'💧',name:'Hidrostático',desc:'Domina la lección de Presión Hidrostática',xp:15,course:'physics'},
+  {id:'phys_all',icon:'🚀',name:'Físico Maestro',desc:'Domina todas las lecciones de Física',xp:50,course:'physics'},
+  {id:'both_all',icon:'🌟',name:'Científico Completo',desc:'Domina todos los cursos',xp:100,course:'any'},
+];
+
+// ══════════════════════════════════════════════════
+// COURSE DATA — CHEMISTRY (5 lessons × 3 phases × 4 questions = 12 per lesson)
+// ══════════════════════════════════════════════════
+const CHEMISTRY={
+  id:'chemistry', name:'Química', icon:'⚗️', mode:'chem-mode', cls:'chem',
+  color:'var(--chem)', color3:'var(--chem3)',
+  unit:{title:'Unidad 1: Química de Soluciones',sub:'5 lecciones · Soluciones, coloides y concentración'},
+  lessons:[
+    {id:'c0',name:'¿Qué es una Solución?',icon:'🧪',xpTotal:60,phases:[
+      {name:'Básico',xp:15,qs:[
+        {type:'mcq',badge:'Concepto',q:'¿Cuál es la definición correcta de una SOLUCIÓN?',
+         opts:['Una mezcla heterogénea visible','Una mezcla homogénea a nivel molecular o iónico','Un compuesto químicamente puro','Agua con partículas sólidas en suspensión'],
+         correct:1,exp:'Solución = mezcla HOMOGÉNEA. Sus componentes están uniformemente distribuidos a nivel molecular. No se distinguen fases separadas.'},
+        {type:'fill',badge:'Completa',q:'En una solución: el ___ se disuelve en el ___.',
+         tmpl:['El ','[0]',' se disuelve en el ','[1]','.'],
+         blanks:['soluto','solvente'],opts:['soluto','solvente','catalizador','reactivo'],
+         exp:'SOLUTO = lo que se disuelve (menor cantidad). SOLVENTE = lo que disuelve (mayor cantidad, generalmente agua).'},
+        {type:'mcq',badge:'Ejemplo',q:'¿Cuál de estos es un ejemplo de solución homogénea?',
+         opts:['Aceite y agua','Arena en agua','Sal disuelta en agua','Leche sin homogenizar'],
+         correct:2,exp:'Sal en agua: los iones Na⁺ y Cl⁻ se distribuyen uniformemente. El aceite y la arena forman mezclas heterogéneas.'},
+        {type:'match',badge:'Empareja',q:'Une cada término con su descripción:',
+         pairs:[{L:'Soluto',R:'Se disuelve'},{L:'Solvente',R:'Disuelve'},{L:'Solución',R:'Mezcla homogénea'},{L:'Concentración',R:'Cantidad de soluto/volumen'}],
+         exp:'Clave nemotécnica: soLUTO → se diSUELVE. soLVENTE → disuelVE. La solución es el resultado.'},
+      ]},
+      {name:'Intermedio',xp:20,qs:[
+        {type:'mcq',badge:'Propiedad',q:'¿Qué propiedad diferencia una solución de una mezcla heterogénea?',
+         opts:['El color','La homogeneidad a nivel molecular','La temperatura','El número de sustancias'],
+         correct:1,exp:'La homogeneidad molecular es clave. En soluciones no hay fases visibles; en mezclas heterogéneas sí.'},
+        {type:'drag',badge:'Arrastra',q:'Clasifica como SOLUTO o SOLVENTE en agua con azúcar:',
+         zones:['Soluto','Solvente'],
+         items:[{t:'Azúcar (disuelta)',c:0},{t:'Agua (H₂O)',c:1},{t:'NaCl (sal)',c:0},{t:'Agua destilada',c:1},{t:'Glucosa',c:0}],
+         exp:'Agua = solvente universal. Azúcar, NaCl y glucosa son solutos — se disuelven en el agua.'},
+        {type:'mcq',badge:'Aplicación',q:'El océano es una solución donde el agua de mar tiene sales. ¿Qué es el NaCl en este caso?',
+         opts:['Solvente','Soluto','Catalizador','Precipitado'],
+         correct:1,exp:'El NaCl es el soluto: se disuelve en el agua (solvente). El agua de mar es una solución acuosa con múltiples solutos.'},
+        {type:'fill',badge:'Completa',q:'Una solución es ___ si sus componentes se distribuyen ___ a nivel molecular.',
+         tmpl:['Una solución es ','[0]',' si sus componentes se distribuyen ','[1]',' a nivel molecular.'],
+         blanks:['homogénea','uniformemente'],opts:['homogénea','heterogénea','uniformemente','irregularmente'],
+         exp:'Homogénea + distribución uniforme = solución. Esto la distingue de suspensiones y mezclas heterogéneas.'},
+      ]},
+      {name:'Avanzado',xp:25,qs:[
+        {type:'order',badge:'Ordena',q:'Ordena los pasos para preparar 1L de solución salina:',
+         steps:['Tomar un matraz volumétrico de 1L','Pesar 58.44 g de NaCl (1 mol)','Disolver NaCl en agua destilada parcialmente','Aforar exactamente a 1 litro','Etiquetar: "NaCl 1M, fecha"'],
+         order:[0,1,2,3,4],exp:'El orden asegura precisión. Aforar al final garantiza volumen exacto de 1L de SOLUCIÓN (no 1L de agua + sal).'},
+        {type:'mcq',badge:'Análisis',q:'Si añades más agua a una solución salina, la concentración de NaCl:',
+         opts:['Aumenta (más agua = más concentrado)','Disminuye (mismos moles en más volumen)','No cambia','Se duplica'],
+         correct:1,exp:'Concentración = moles / volumen. Si el volumen aumenta con los mismos moles, la concentración DISMINUYE. C₁V₁ = C₂V₂.'},
+        {type:'fill',badge:'Completa',q:'Al mezclar soluto y solvente: si la mezcla es uniforme es ___, si tiene capas es ___.',
+         tmpl:['Si la mezcla es uniforme → ','[0]','; si tiene capas → ','[1]','.'],
+         blanks:['homogénea','heterogénea'],opts:['homogénea','heterogénea','saturada','insaturada'],
+         exp:'Criterio visual fundamental: sin capas = solución verdadera. Con capas o fases = mezcla heterogénea o suspensión.'},
+        {type:'mcq',badge:'Profundiza',q:'¿Por qué el agua se llama "solvente universal"?',
+         opts:['Porque disuelve absolutamente todo','Por su polaridad y capacidad de formar puentes de hidrógeno','Porque es incolora e inodora','Porque tiene pH neutro 7'],
+         correct:1,exp:'La polaridad del agua (δ+ en H, δ− en O) permite interactuar con iones y moléculas polares. Los puentes de hidrógeno estabilizan las moléculas disueltas.'},
+      ]},
+    ]},
+    {id:'c1',name:'Solubilidad',icon:'⚖️',xpTotal:60,phases:[
+      {name:'Básico',xp:15,qs:[
+        {type:'mcq',badge:'Concepto',q:'Una solución SATURADA es aquella donde:',
+         opts:['No hay soluto','Puede disolver más soluto','Se ha disuelto el máximo de soluto posible','El soluto precipita inmediatamente'],
+         correct:2,exp:'Saturada = en el límite máximo de disolución a esa temperatura. Añadir más soluto → no se disuelve, precipita.'},
+        {type:'mcq',badge:'Comparación',q:'¿Qué diferencia una solución insaturada de una saturada?',
+         opts:['El color de la solución','La insaturada puede disolver más soluto; la saturada no','La saturada tiene menos soluto','Son idénticas'],
+         correct:1,exp:'INSATURADA: capacidad residual de disolver más soluto. SATURADA: el equilibrio de disolución se alcanzó. La clave es si puede o no disolver más.'},
+        {type:'fill',badge:'Completa',q:'Al enfriar una solución sobresaturada, el exceso de soluto ___.',
+         tmpl:['Al enfriar una sobresaturada, el exceso ','[0]',' formando ','[1]','.'],
+         blanks:['cristaliza','cristales'],opts:['cristaliza','se evapora','cristales','gas','desaparece'],
+         exp:'Cristalización: al bajar T, la solubilidad cae. El soluto en exceso debe salir de la solución formando cristales sólidos.'},
+        {type:'drag',badge:'Arrastra',q:'Clasifica cada caso según el tipo de solución:',
+         zones:['Insaturada','Saturada','Sobresaturada'],
+         items:[{t:'Limonada con poca azúcar',c:0},{t:'Agua en límite de sal a 20°C',c:1},{t:'Miel calentada y enfriada rápido',c:2},{t:'Café con una pizca de azúcar',c:0}],
+         exp:'Insaturada = puede disolver más. Saturada = en el límite. Sobresaturada = superó el límite (inestable).'},
+      ]},
+      {name:'Intermedio',xp:20,qs:[
+        {type:'mcq',badge:'Temperatura',q:'Al aumentar la temperatura, la solubilidad de sólidos en agua:',
+         opts:['Siempre disminuye','Generalmente aumenta','No cambia','Primero aumenta luego baja a cero'],
+         correct:1,exp:'Para sólidos: más T → más energía → mayor solubilidad. Excepción: gases son más solubles en agua FRÍA. Por eso las gaseosas liberan CO₂ al calentarse.'},
+        {type:'mcq',badge:'Aplicación',q:'¿Por qué se echa sal en carreteras heladas?',
+         opts:['Aumenta la fricción','Baja el punto de congelación del agua','Absorbe la humedad','Genera calor al disolverse'],
+         correct:1,exp:'Descenso crioscópico: la sal disuelta baja el punto de congelación por debajo de 0°C. El agua no congela tan fácilmente en presencia del soluto.'},
+        {type:'fill',badge:'Completa',q:'Los GASES en agua son más solubles a ___ temperatura y ___ presión.',
+         tmpl:['Los gases son más solubles a ','[0]',' temperatura y ','[1]',' presión.'],
+         blanks:['menor','mayor'],opts:['menor','mayor','igual'],
+         exp:'Ley de Henry: para gases, solubilidad ∝ presión parcial y ∝ 1/T. Agua fría + alta presión = máxima disolución de CO₂ en gaseosas.'},
+        {type:'mcq',badge:'Cristalización',q:'¿Cómo se forman los cristales de sal marina?',
+         opts:['Por reacción química del Na con el Cl','Por evaporación del agua en una solución saturada','Por congelamiento del agua de mar','Por filtración de arena'],
+         correct:1,exp:'Al evaporarse el agua, la concentración de NaCl aumenta hasta sobresaturarse, forzando la cristalización. Las salinas aprovechan este proceso.'},
+      ]},
+      {name:'Avanzado',xp:25,qs:[
+        {type:'order',badge:'Ordena',q:'Ordena de MENOR a MAYOR concentración de soluto:',
+         steps:['Solución sobresaturada','Solución saturada','Agua pura','Solución insaturada con algo de sal'],
+         order:[2,3,1,0],exp:'Agua pura (0) → insaturada (algo) → saturada (máximo) → sobresaturada (supera el límite). Orden ascendente de concentración.'},
+        {type:'mcq',badge:'Equilibrio',q:'¿Qué ocurre en el equilibrio de disolución de una solución saturada?',
+         opts:['Todo el soluto se disuelve','La velocidad de disolución iguala la de cristalización','El solvente se evapora','La solución se vuelve insaturada'],
+         correct:1,exp:'Equilibrio dinámico: tasa de disolución = tasa de cristalización. Aparentemente estático, pero ambos procesos ocurren simultáneamente al mismo ritmo.'},
+        {type:'fill',badge:'Completa',q:'La solubilidad de un soluto sólido ___ con la temperatura; la de gases ___ con la temperatura.',
+         tmpl:['Sólidos: solubilidad ','[0]',' con T. Gases: solubilidad ','[1]',' con T.'],
+         blanks:['aumenta','disminuye'],opts:['aumenta','disminuye','no cambia'],
+         exp:'Regla opuesta: sólidos + T = más solubilidad. Gases + T = menos solubilidad. Esta diferencia explica la "desgasificación" del agua al hervir.'},
+        {type:'mcq',badge:'Factor de solubilidad',q:'¿Qué factor NO afecta significativamente la solubilidad de un sólido en agua?',
+         opts:['Temperatura','Naturaleza química del soluto','Presión atmosférica','Agitación (solo velocidad, no límite)'],
+         correct:2,exp:'La presión apenas afecta la solubilidad de sólidos (sí afecta gases significativamente). La agitación acelera llegar al equilibrio pero no cambia la solubilidad máxima.'},
+      ]},
+    ]},
+    {id:'c2',name:'Concentración',icon:'📐',xpTotal:60,phases:[
+      {name:'Básico',xp:15,qs:[
+        {type:'mcq',badge:'Molaridad',q:'La Molaridad (M) se define como:',
+         opts:['g de soluto / L de solución','mol de soluto / L de solución','mol de soluto / kg de solvente','g de soluto / 100g solución'],
+         correct:1,exp:'M = n(mol) / V(L). La molaridad es la unidad más usada en química: indica cuántos moles de soluto hay en cada litro de SOLUCIÓN total.'},
+        {type:'fill',badge:'Fórmula',q:'M = ___ / ___',
+         tmpl:['M = ','[0]',' / ','[1]'],blanks:['mol soluto','L solución'],
+         opts:['mol soluto','L solución','g soluto','kg solvente','mL solución'],
+         exp:'Molaridad = moles de soluto ÷ litros de SOLUCIÓN (no de agua). Verificar siempre que el volumen esté en litros.'},
+        {type:'numeric',badge:'Cálculo',q:'¿Cuántos moles de NaCl hay en 2L de solución 3M?',
+         hint:'Usa: moles = M × V(L)',steps:['moles = M × V','moles = 3 mol/L × 2 L','moles = 6 mol'],
+         answer:6,tolerance:.05,unit:'mol',
+         exp:'moles = M × V = 3 mol/L × 2 L = 6 mol. Siempre M × V (en litros) = moles totales.'},
+        {type:'mcq',badge:'Diferencia',q:'La diferencia clave entre Molaridad (M) y Molalidad (m) es:',
+         opts:['Solo cambia el símbolo','M usa L de solución; m usa kg de solvente','M usa kg de solvente; m usa L de solución','Son completamente iguales'],
+         correct:1,exp:'M = mol/L solución (cambia con T). m = mol/kg solvente (NO cambia con T). La molalidad es mejor para propiedades coligativas.'},
+      ]},
+      {name:'Intermedio',xp:20,qs:[
+        {type:'match',badge:'Empareja',q:'Une cada unidad de concentración con su fórmula:',
+         pairs:[{L:'Molaridad M',R:'mol / L solución'},{L:'Molalidad m',R:'mol / kg solvente'},{L:'% m/m',R:'g soluto / g solución ×100'},{L:'% v/v',R:'mL soluto / mL solución ×100'}],
+         exp:'M → L, m → kg. El % siempre ×100. Diferencia clave: solución vs solvente.'},
+        {type:'numeric',badge:'Cálculo',q:'¿Cuál es la molaridad de 4 moles de glucosa en 500 mL de solución?',
+         hint:'Convierte mL a L: 500 mL = 0.5 L. Luego M = mol/L',
+         steps:['V = 500 mL = 0.5 L','M = n/V = 4 mol / 0.5 L','M = 8 mol/L'],
+         answer:8,tolerance:.1,unit:'M',
+         exp:'M = n/V = 4 mol ÷ 0.5 L = 8 M. ¡Siempre convertir mL a L antes de calcular!'},
+        {type:'mcq',badge:'Porcentaje',q:'Una solución al 5% m/m significa:',
+         opts:['5 gramos de soluto en 100 mL de solución','5 gramos de soluto en 100 gramos de solución','5 moles de soluto en 100 L de solución','5 mL de soluto en 100 mL de solvente'],
+         correct:1,exp:'% m/m = g soluto / 100g solución. Nota: "de solución" no "de solvente". 5g NaCl en 95g agua = 100g solución → 5% m/m.'},
+        {type:'numeric',badge:'Cálculo',q:'Calcula: 58.44 g de NaCl (MM=58.44) en 1L de solución. ¿Cuántos moles?',
+         hint:'n = masa / masa molar',
+         steps:['n = m / MM','n = 58.44 g / 58.44 g/mol','n = 1 mol → M = 1 mol/1L = 1 M'],
+         answer:1,tolerance:.05,unit:'mol',
+         exp:'n = m/MM = 58.44/58.44 = 1 mol. En 1L → M = 1 mol/1L = 1 M NaCl.'},
+      ]},
+      {name:'Avanzado',xp:25,qs:[
+        {type:'order',badge:'Ordena',q:'Ordena los pasos para calcular la molaridad a partir de gramos:',
+         steps:['Identificar masa molar del soluto','Calcular moles: n = masa(g) / MM','Convertir volumen a litros','Calcular M = n / V','Reportar con unidades mol/L'],
+         order:[0,1,2,3,4],exp:'Flujo: MM → n → L → M → unidades. Siempre en ese orden para evitar errores.'},
+        {type:'numeric',badge:'Dilución',q:'Si 2L de sol. 6M se diluye a 4L, ¿cuál es la nueva concentración?',
+         hint:'Usa C₁V₁ = C₂V₂: 6M × 2L = C₂ × 4L',
+         steps:['C₁V₁ = C₂V₂','6 M × 2 L = C₂ × 4 L','C₂ = 12 / 4 = 3 M'],
+         answer:3,tolerance:.05,unit:'M',
+         exp:'Dilución: C₁V₁ = C₂V₂ → C₂ = (6×2)/4 = 3 M. Al duplicar el volumen, la concentración se reduce a la mitad.'},
+        {type:'mcq',badge:'Normalidad',q:'La Normalidad (N) se diferencia de la Molaridad porque:',
+         opts:['Son exactamente iguales','N usa equivalentes-gramo (depende de la reacción)','N siempre es mayor que M','N solo se usa para bases'],
+         correct:1,exp:'N = eq-g/L. Para HCl: N=M (1 H⁺). Para H₂SO₄: N=2M (2 H⁺). Para CaCl₂: N=2M (2 Cl⁻). Depende del contexto de la reacción.'},
+        {type:'numeric',badge:'Conversión',q:'¿Cuál es la molaridad de una solución al 20% m/m de NaOH (MM=40) con densidad 1.2 g/mL?',
+         hint:'En 1L: masa sol = 1200g; masa NaOH = 240g; n = 240/40 = 6 mol → M = 6M',
+         steps:['1L = 1000 mL × 1.2 g/mL = 1200 g solución','masa NaOH = 20% × 1200 = 240 g','n = 240/40 = 6 mol','M = 6 mol/1 L = 6 M'],
+         answer:6,tolerance:.1,unit:'M',
+         exp:'Proceso: densidad→masa solución→masa soluto (% m/m)→moles→M. Respuesta: 6 M.'},
+      ]},
+    ]},
+    {id:'c3',name:'Coloides',icon:'🌊',xpTotal:60,phases:[
+      {name:'Básico',xp:15,qs:[
+        {type:'mcq',badge:'Tamaño',q:'El tamaño de partículas de un COLOIDE es:',
+         opts:['< 1 nm (igual que solución)','Entre 1 y 1000 nm','> 1000 nm (suspensión)','Exactamente 500 nm'],
+         correct:1,exp:'Coloide: 1-1000 nm. Solución verdadera: <1 nm. Suspensión: >1000 nm. El tamaño determina el tipo de mezcla.'},
+        {type:'mcq',badge:'Efecto Tyndall',q:'¿Qué es el Efecto Tyndall?',
+         opts:['El coloide cambia de color','La luz se dispersa visiblemente al pasar por un coloide','Un sólido se disuelve en agua caliente','La mezcla se separa por gravedad'],
+         correct:1,exp:'Tyndall: partículas coloidales (1-1000nm) dispersan la luz, haciendo visible el "haz". Las soluciones verdaderas no muestran este efecto. Puedes distinguir un coloide de una solución con una linterna.'},
+        {type:'drag',badge:'Clasifica',q:'Clasifica cada mezcla: Solución, Coloide o Suspensión:',
+         zones:['Solución','Coloide','Suspensión'],
+         items:[{t:'Agua con sal',c:0},{t:'Leche',c:1},{t:'Agua con barro',c:2},{t:'Gelatina',c:1},{t:'Agua de mar',c:0}],
+         exp:'Solución: iones <1nm. Coloide: macromoléculas 1-1000nm. Suspensión: partículas visibles >1000nm.'},
+        {type:'mcq',badge:'Movimiento',q:'¿Por qué los coloides NO sedimentan como las suspensiones?',
+         opts:['Porque las partículas son demasiado pesadas','Por el movimiento Browniano que evita su asentamiento','Porque el solvente es muy viscoso','Porque son cargas eléctricas iguales'],
+         correct:1,exp:'Movimiento Browniano: las partículas coloidales son golpeadas por moléculas de solvente en todas direcciones, manteniéndolas en suspensión permanente.'},
+      ]},
+      {name:'Intermedio',xp:20,qs:[
+        {type:'match',badge:'Empareja',q:'Une el tipo de coloide con su ejemplo:',
+         pairs:[{L:'Emulsión (líq-líq)',R:'Leche / Mayonesa'},{L:'Aerosol (líq-gas)',R:'Niebla / Spray'},{L:'Sol (sól-líq)',R:'Tinta / Pinturas'},{L:'Espuma (gas-líq)',R:'Crema / Jabón'}],
+         exp:'Emulsión=líquido en líquido. Aerosol=líquido en gas. Sol=sólido en líquido. Espuma=gas en líquido.'},
+        {type:'mcq',badge:'Coagulación',q:'¿Qué es la COAGULACIÓN de un coloide?',
+         opts:['El coloide se hace más estable','Las partículas se agregan y precipitan','El solvente se evapora','El tamaño de partículas aumenta hasta 1nm'],
+         correct:1,exp:'Coagulación: añadir electrolitos neutraliza las cargas de las partículas coloidales → se agregan → precipitan. La leche "se corta" con limón (ácido) por este proceso.'},
+        {type:'fill',badge:'Completa',q:'El efecto ___ demuestra que una mezcla es un coloide y no una solución verdadera.',
+         tmpl:['El efecto ','[0]',' demuestra que es coloide; las soluciones ','[1]',' este efecto.'],
+         blanks:['Tyndall','no muestran'],opts:['Tyndall','Browniano','no muestran','sí muestran'],
+         exp:'Test de Tyndall: si la luz es visible dentro del líquido = coloide. Si el líquido es completamente transparente al haz = solución verdadera.'},
+        {type:'drag',badge:'Clasifica',q:'Clasifica estos ejemplos en el tipo de coloide correcto:',
+         zones:['Aerosol sólido','Emulsión','Sol coloidal'],
+         items:[{t:'Humo',c:0},{t:'Leche entera',c:1},{t:'Mayonesa',c:1},{t:'Tinta azul',c:2},{t:'Polvo en aire',c:0}],
+         exp:'Aerosol sólido = sólido en gas (humo, polvo). Emulsión = líquido en líquido (leche, mayo). Sol = sólido en líquido (tinta, pinturas).'},
+      ]},
+      {name:'Avanzado',xp:25,qs:[
+        {type:'order',badge:'Ordena',q:'Ordena de MENOR a MAYOR tamaño de partícula:',
+         steps:['Coloides (1-1000 nm)','Iones en solución (<1 nm)','Partículas de suspensión (>1000 nm)','Moléculas pequeñas (1 nm aprox)'],
+         order:[1,3,0,2],exp:'Ión < molécula ≈ 1nm < coloide 1-1000nm < suspensión >1000nm.'},
+        {type:'fill',badge:'Completa',q:'No sedimentan por movimiento ___, muestran efecto ___, y el tamaño es entre 1 y ___ nm.',
+         tmpl:['Movimiento ','[0]',', efecto ','[1]',', tamaño 1-','[2]',' nm.'],
+         blanks:['Browniano','Tyndall','1000'],opts:['Browniano','Tyndall','1000','500','2000','Circular'],
+         exp:'Las tres claves de los coloides: Browniano (no sedimenta), Tyndall (dispersa luz), tamaño 1-1000nm.'},
+        {type:'mcq',badge:'Aplicación',q:'¿Por qué el cielo es azul? (Relacionado con Tyndall)',
+         opts:['El aire contiene pigmento azul','La luz azul se dispersa más por moléculas del aire (Rayleigh)','El sol emite más luz azul','El ojo prefiere el azul'],
+         correct:1,exp:'Dispersión de Rayleigh (variante del efecto Tyndall): moléculas de aire dispersan más la luz de onda corta (azul λ≈450nm). Al atardecer, la luz recorre más camino → solo queda rojo/naranja.'},
+        {type:'mcq',badge:'Industrial',q:'La pasteurización de la leche no destruye su naturaleza coloidal porque:',
+         opts:['Aumenta el tamaño de las partículas','Solo elimina bacterias sin afectar la emulsión','Añade emulsificantes artificiales','Convierte la leche en solución'],
+         correct:1,exp:'La pasteurización (72°C/15s) elimina patógenos pero no afecta las micelas de caseína ni los glóbulos de grasa que forman la emulsión. La leche sigue siendo un coloide.'},
+      ]},
+    ]},
+    {id:'c4',name:'Propiedades Coligativas',icon:'🔬',xpTotal:60,phases:[
+      {name:'Básico',xp:15,qs:[
+        {type:'mcq',badge:'Definición',q:'Las propiedades coligativas dependen de:',
+         opts:['El tipo químico del soluto','El color de la solución','Solo la cantidad de partículas disueltas','La temperatura del solvente'],
+         correct:2,exp:'COLIGATIVAS = "colectivas": dependen solo del NÚMERO de partículas, no de su naturaleza. 1 mol NaCl (2 iones) > 1 mol glucosa (1 molécula) en efecto coligativo.'},
+        {type:'fill',badge:'Enumera',q:'Las 4 propiedades coligativas son: descenso ___, ascenso ___, ___ osmótica y descenso de ___ de vapor.',
+         tmpl:['Descenso ','[0]',', ascenso ','[1]',', ','[2]',' osmótica, descenso ','[3]','.'],
+         blanks:['crioscópico','ebullioscópico','presión','presión de vapor'],
+         opts:['crioscópico','ebullioscópico','presión','presión de vapor','densidad','viscosidad'],
+         exp:'Las 4 propiedades coligativas clásicas. Todas se afectan por el número de partículas (no por su tipo).'},
+        {type:'mcq',badge:'Aplicación',q:'¿Por qué se echa sal al agua para hervir pasta?',
+         opts:['El agua hierve más rápido (mito)','Sube el punto de ebullición (ascenso ebullioscópico)','Mejora el sabor únicamente','Cambia la presión osmótica de la pasta'],
+         correct:1,exp:'La sal sube el punto de ebullición por ascenso ebullioscópico. El efecto es pequeño (~0.5°C con sal normal) pero real. La pasta tarda algo más en cocer.'},
+        {type:'match',badge:'Empareja',q:'Une cada propiedad con su aplicación:',
+         pairs:[{L:'Descenso crioscópico',R:'Sal en carreteras heladas'},{L:'Ascenso ebullioscópico',R:'Anticongelante en motores'},{L:'Presión osmótica',R:'Diálisis renal / sueros'},{L:'Presión de vapor',R:'Desecantes en empaques'}],
+         exp:'Cada propiedad coligativa tiene aplicaciones industriales y cotidianas importantes.'},
+      ]},
+      {name:'Intermedio',xp:20,qs:[
+        {type:'numeric',badge:'Cálculo',q:'ΔTf = Kf × m. Para agua Kf=1.86°C·kg/mol. Si m=2 mol/kg, ¿cuánto baja el punto de congelación?',
+         hint:'ΔTf = Kf × m = 1.86 × 2',
+         steps:['ΔTf = Kf × m','ΔTf = 1.86 °C·kg/mol × 2 mol/kg','ΔTf = 3.72 °C'],
+         answer:3.72,tolerance:.05,unit:'°C',
+         exp:'ΔTf = Kf × m = 1.86 × 2 = 3.72°C. El agua congela a -3.72°C (en vez de 0°C). Con i=1 para soluto no electrolito.'},
+        {type:'mcq',badge:'Factor Van\'t Hoff',q:'El factor de Van\'t Hoff (i) para NaCl que se ioniza completamente es:',
+         opts:['i = 1 (no se ioniza)','i = 2 (Na⁺ + Cl⁻)','i = 3 (Na²⁺ + 2Cl⁻)','i = 0.5'],
+         correct:1,exp:'NaCl → Na⁺ + Cl⁻: 2 iones por unidad. i = 2. Las fórmulas coligativas se multiplican por i para electrolitos: ΔTf = i × Kf × m.'},
+        {type:'mcq',badge:'Osmosis',q:'En ósmosis, el agua fluye desde:',
+         opts:['Alta concentración → baja (como difusión)','Baja concentración de soluto → alta (diluto → concentrado)','Alta temperatura → baja','No fluye en ninguna dirección'],
+         correct:1,exp:'El agua fluye hacia donde puede "diluir" más, es decir, hacia donde HAY MÁS SOLUTO (menor concentración de agua). Crucial para células: sangre isotónica evita lisis/crenación.'},
+        {type:'numeric',badge:'Cálculo',q:'Para NaCl 0.5M (i=2): π = iMRT. Con R=0.0821 y T=298K, ¿cuál es π?',
+         hint:'π = 2 × 0.5 × 0.0821 × 298',
+         steps:['π = i × M × R × T','π = 2 × 0.5 mol/L × 0.0821 L·atm/mol·K × 298 K','π ≈ 24.5 atm'],
+         answer:24.5,tolerance:.5,unit:'atm',
+         exp:'π = 2 × 0.5 × 0.0821 × 298 ≈ 24.5 atm. Alta presión osmótica para soluciones iónicas, por eso el riñón trabaja tanto.'},
+      ]},
+      {name:'Avanzado',xp:25,qs:[
+        {type:'order',badge:'Ordena',q:'Ordena por mayor punto de ebullición (de mayor a menor):',
+         steps:['2M CaCl₂ (i=3) = 6 partículas/L','2M NaCl (i=2) = 4 partículas/L','2M glucosa (i=1) = 2 partículas/L','Agua pura (0 partículas)'],
+         order:[0,1,2,3],exp:'CaCl₂>NaCl>glucosa>agua. Más partículas (factor i×m) = mayor ascenso ebullioscópico.'},
+        {type:'numeric',badge:'Cálculo',q:'ΔTb = Kb × m × i. Agua Kb=0.52. Glucosa 3m (i=1). ¿En cuánto sube el punto de ebullición?',
+         hint:'ΔTb = 0.52 × 3 × 1',
+         steps:['ΔTb = Kb × m × i','ΔTb = 0.52 × 3 × 1','ΔTb = 1.56 °C'],
+         answer:1.56,tolerance:.05,unit:'°C',
+         exp:'ΔTb = 0.52 × 3 × 1 = 1.56°C. El agua herviría a 101.56°C. La glucosa no se ioniza (i=1), por eso el efecto es menor que para electrolitos.'},
+        {type:'mcq',badge:'Análisis',q:'¿Por qué la sangre debe ser isotónica con las células?',
+         opts:['Para que tenga el color rojo correcto','Para evitar que las células exploten (lisis) o se encojan (crenación) por ósmosis','Para mantener el pH neutro','Para que los nutrientes se disuelvan mejor'],
+         correct:1,exp:'Isotónica = misma presión osmótica que el interior celular. Hipotónica → agua entra → lisis. Hipertónica → agua sale → crenación. Los sueros fisiológicos (0.9% NaCl) son isotónicos.'},
+        {type:'fill',badge:'Completa',q:'ΔTf = ___ × Kf × ___. La fórmula completa incluye el factor i para ___.',
+         tmpl:['ΔTf = ','[0]',' × Kf × ','[1]','. Factor i = para ','[2]','.'],
+         blanks:['i','m','electrolitos'],opts:['i','m','electrolitos','no electrolitos','Kf','pH'],
+         exp:'ΔTf = i × Kf × m. El factor i (Van\'t Hoff) corrije para electrolitos que se ionizan. Para glucosa i=1, para NaCl i=2, para CaCl₂ i=3.'},
+      ]},
+    ]},
+  ]
+};
+
+// ══════════════════════════════════════════════════
+// COURSE DATA — PHYSICS (3 lessons × 3 phases × 4 questions = 12 per lesson)
+// ══════════════════════════════════════════════════
+const PHYSICS={
+  id:'physics', name:'Física', icon:'⚡', mode:'phys-mode', cls:'phys',
+  color:'var(--phys)', color3:'var(--phys3)',
+  unit:{title:'Unidad 1: Mecánica de Fluidos',sub:'3 lecciones · Densidad, Presión, Hidrostática'},
+  lessons:[
+    {id:'p0',name:'Densidad',icon:'⚖️',xpTotal:60,phases:[
+      {name:'Básico',xp:15,qs:[
+        {type:'mcq',badge:'Concepto',q:'La DENSIDAD se define como:',
+         opts:['La masa de un objeto','El volumen que ocupa un objeto','La masa por unidad de volumen (ρ = m/V)','El peso de un objeto en el agua'],
+         correct:2,
+         theory:{title:'Densidad — Concepto fundamental',body:'La densidad (ρ) mide cuánta materia hay en cada unidad de volumen. Un objeto denso tiene mucha masa en poco espacio.',formula:'ρ = m / V'},
+         exp:'ρ = m/V. Unidades: kg/m³ o g/cm³. El agua tiene ρ=1000 kg/m³ = 1 g/cm³. El hierro: 7874 kg/m³. El hielo flota en agua porque ρhielo < ρagua.'},
+        {type:'numeric',badge:'Cálculo básico',q:'Un cubo de hierro pesa 78.74 kg y mide 0.01 m³. ¿Cuál es su densidad?',
+         hint:'ρ = m / V = 78.74 / 0.01',
+         steps:['ρ = m / V','ρ = 78.74 kg / 0.01 m³','ρ = 7874 kg/m³'],
+         answer:7874,tolerance:50,unit:'kg/m³',
+         exp:'ρ = m/V = 78.74/0.01 = 7874 kg/m³. Es la densidad del hierro. El agua es 1000 kg/m³, por eso el hierro se hunde.'},
+        {type:'fill',badge:'Despeje',q:'De ρ = m/V, despeja la MASA: m = ___',
+         tmpl:['Despejando m de ρ = m/V: m = ','[0]'],blanks:['ρ × V'],
+         opts:['ρ × V','ρ / V','V / ρ','ρ + V'],
+         exp:'m = ρ × V. Para encontrar la masa: multiplicar densidad por volumen. Ej: ρ_agua=1000 kg/m³, V=0.5m³ → m=500 kg.'},
+        {type:'numeric',badge:'Aplicación',q:'El aceite de oliva tiene ρ = 0.91 g/cm³. Si tienes 200 cm³, ¿cuál es su masa?',
+         hint:'m = ρ × V = 0.91 × 200',
+         steps:['m = ρ × V','m = 0.91 g/cm³ × 200 cm³','m = 182 g'],
+         answer:182,tolerance:2,unit:'g',
+         exp:'m = ρ × V = 0.91 × 200 = 182 g. Como ρ_aceite < ρ_agua, el aceite flota sobre el agua.'},
+      ]},
+      {name:'Intermedio',xp:20,qs:[
+        {type:'mcq',badge:'Comparación',q:'¿Por qué el hielo flota en el agua siendo el mismo compuesto (H₂O)?',
+         opts:['El hielo pesa menos','El hielo tiene menor densidad (0.917 g/cm³ < 1 g/cm³)','El hielo tiene mayor densidad','El agua caliente rechaza el hielo'],
+         correct:1,
+         theory:{title:'Densidad del hielo vs agua',body:'El hielo tiene estructura cristalina hexagonal con más espacio entre moléculas → menor densidad que el agua líquida.',formula:'ρ_hielo = 0.917 g/cm³ < ρ_agua = 1.00 g/cm³'},
+         exp:'El agua es rara: al solidificar AUMENTA de volumen (↓ densidad). La estructura cristalina del hielo es más "abierta". Por eso los lagos se congelan desde arriba, protegiendo la vida abajo.'},
+        {type:'numeric',badge:'Despeje de fórmula',q:'Tienes 500 g de alcohol etílico (ρ=0.789 g/cm³). ¿Cuál es el volumen?',
+         hint:'De ρ=m/V → V = m/ρ = 500/0.789',
+         steps:['V = m / ρ','V = 500 g / 0.789 g/cm³','V ≈ 633.7 cm³'],
+         answer:633.7,tolerance:5,unit:'cm³',
+         exp:'V = m/ρ = 500/0.789 ≈ 633.7 cm³. El despeje: V = m/ρ (multiplicar ambos lados por V y dividir por ρ).'},
+        {type:'match',badge:'Empareja densidades',q:'Une cada sustancia con su densidad aproximada:',
+         pairs:[{L:'Agua (H₂O)',R:'1000 kg/m³'},{L:'Hierro (Fe)',R:'7874 kg/m³'},{L:'Aluminio (Al)',R:'2700 kg/m³'},{L:'Mercurio (Hg)',R:'13600 kg/m³'}],
+         exp:'Densidades de referencia: agua=1000, aluminio≈2700, hierro≈7874, mercurio≈13600 kg/m³. El mercurio es 13.6 veces más denso que el agua.'},
+        {type:'numeric',badge:'Problema',q:'Una bola de plomo (ρ=11340 kg/m³) tiene volumen 0.002 m³. ¿Cuál es su masa?',
+         hint:'m = ρ × V = 11340 × 0.002',
+         steps:['m = ρ × V','m = 11340 kg/m³ × 0.002 m³','m = 22.68 kg'],
+         answer:22.68,tolerance:.3,unit:'kg',
+         exp:'m = ρ × V = 11340 × 0.002 = 22.68 kg. Un objeto de plomo muy pequeño (2L) pesa más de 22 kg.'},
+      ]},
+      {name:'Avanzado',xp:25,qs:[
+        {type:'order',badge:'Ordena pasos',q:'Ordena los pasos para calcular si un objeto flotará en agua:',
+         steps:['Calcular densidad del objeto: ρ = m/V','Comparar con ρ_agua = 1000 kg/m³','Si ρ_objeto < ρ_agua → FLOTA','Si ρ_objeto > ρ_agua → SE HUNDE','Verificar con el principio de Arquímedes'],
+         order:[0,1,2,3,4],exp:'El principio de Arquímedes: un objeto flota si su densidad media es menor que la del fluido. Los barcos de acero flotan por su forma (densidad media < agua).'},
+        {type:'numeric',badge:'Densidad de mezcla',q:'Mezclas 200g de aceite (ρ=0.91g/cm³) con 300g de agua. ¿Cuál es la densidad promedio de la mezcla?',
+         hint:'ρ_mezcla = masa total / volumen total. V_aceite=200/0.91, V_agua=300/1. ρ=500/(219.8+300)',
+         steps:['V_aceite = 200/0.91 = 219.8 cm³','V_agua = 300/1 = 300 cm³','V_total = 519.8 cm³','ρ = 500g / 519.8 cm³ = 0.962 g/cm³'],
+         answer:.962,tolerance:.02,unit:'g/cm³',
+         exp:'No es simplemente el promedio de densidades. Hay que calcular volúmenes separados y sumarlos. ρ_mezcla = 500/519.8 ≈ 0.962 g/cm³.'},
+        {type:'mcq',badge:'Arquímedes',q:'El principio de Arquímedes dice que la fuerza de empuje es igual a:',
+         opts:['El peso del objeto','El peso del fluido desalojado por el objeto','La densidad × el volumen del objeto','La presión × el área del objeto'],
+         correct:1,exp:'E = ρ_fluido × V_sumergido × g. La fuerza de empuje = peso del fluido desplazado. Es independiente de la masa del objeto. ¡Por eso barcos enormes flotan!'},
+        {type:'numeric',badge:'Empuje',q:'Un bloque de 0.001 m³ está sumergido en agua (ρ=1000 kg/m³, g=9.8 m/s²). ¿Cuál es la fuerza de empuje?',
+         hint:'E = ρ × V × g = 1000 × 0.001 × 9.8',
+         steps:['E = ρ_fluido × V × g','E = 1000 kg/m³ × 0.001 m³ × 9.8 m/s²','E = 9.8 N'],
+         answer:9.8,tolerance:.1,unit:'N',
+         exp:'E = ρVg = 1000 × 0.001 × 9.8 = 9.8 N. Esta fuerza hacia arriba equivale al peso de 1 kg de agua. Si el bloque pesa menos de 9.8 N, flotará.'},
+      ]},
+    ]},
+    {id:'p1',name:'Presión',icon:'🌊',xpTotal:60,phases:[
+      {name:'Básico',xp:15,qs:[
+        {type:'mcq',badge:'Definición',q:'La PRESIÓN se define como:',
+         opts:['Fuerza aplicada sobre un objeto','Fuerza por unidad de área (P = F/A)','Masa por volumen','Energía por unidad de tiempo'],
+         correct:1,
+         theory:{title:'Presión — Definición',body:'La presión mide cuánta fuerza se aplica sobre una superficie. La misma fuerza en área menor = mayor presión.',formula:'P = F / A'},
+         exp:'P = F/A. Unidades: Pascal (Pa) = N/m². 1 atm = 101325 Pa ≈ 101.3 kPa. Ejemplo: una aguja concentra la misma fuerza en área mínima → enorme presión.'},
+        {type:'numeric',badge:'Cálculo',q:'Una fuerza de 200 N actúa sobre un área de 0.04 m². ¿Cuál es la presión?',
+         hint:'P = F / A = 200 / 0.04',
+         steps:['P = F / A','P = 200 N / 0.04 m²','P = 5000 Pa'],
+         answer:5000,tolerance:50,unit:'Pa',
+         exp:'P = F/A = 200/0.04 = 5000 Pa = 5 kPa. Si el área se reduce a la mitad, la presión se duplica con la misma fuerza.'},
+        {type:'fill',badge:'Despeje',q:'De P = F/A, despeja la FUERZA: F = ___',
+         tmpl:['Despejando F: F = ','[0]'],blanks:['P × A'],
+         opts:['P × A','P / A','A / P','P + A'],
+         exp:'F = P × A. Para encontrar la fuerza: multiplicar presión por área. Ej: neumático a 250000 Pa con área 0.02 m² → F = 5000 N.'},
+        {type:'mcq',badge:'Unidades',q:'¿Cuántos Pascales equivale 1 atmósfera (atm)?',
+         opts:['1000 Pa','10000 Pa','101325 Pa','1000000 Pa'],
+         correct:2,exp:'1 atm = 101325 Pa ≈ 101.3 kPa. Otras equivalencias: 1 bar = 100000 Pa, 1 mmHg = 133.3 Pa. La presión atmosférica varía ligeramente con la altitud.'},
+      ]},
+      {name:'Intermedio',xp:20,qs:[
+        {type:'numeric',badge:'Despeje área',q:'Una presión de 20000 Pa actúa con una fuerza de 100 N. ¿Cuál es el área?',
+         hint:'A = F / P = 100 / 20000',
+         steps:['P = F/A → A = F/P','A = 100 N / 20000 Pa','A = 0.005 m²'],
+         answer:.005,tolerance:.0001,unit:'m²',
+         exp:'A = F/P = 100/20000 = 0.005 m² = 50 cm². Despeje: multiplicar ambos lados por A, luego dividir por P.'},
+        {type:'mcq',badge:'Aplicación',q:'¿Por qué las cuchillas tienen filo muy delgado?',
+         opts:['Para que sean más ligeras','Al reducir el área de contacto, la presión aumenta con la misma fuerza','Para que no se oxiden','Para mejorar el agarre'],
+         correct:1,exp:'P = F/A: área mínima → presión máxima. Un cuchillo con filo de 0.001 cm² y fuerza de 10N → P = 10/0.0000001 = 100 MPa. Un cuchillo sin filo: área mayor, presión mucho menor.'},
+        {type:'match',badge:'Empareja',q:'Une la aplicación con el principio de presión:',
+         pairs:[{L:'Clavos y agujas',R:'Área pequeña → mayor presión'},{L:'Esquís de nieve',R:'Área grande → menor presión'},{L:'Frenos hidráulicos',R:'Pascal: P se transmite igual'},{L:'Neumáticos',R:'Presión distribuida en área'}],
+         exp:'La presión puede maximizarse (área pequeña) o minimizarse (área grande) con la misma fuerza. El principio de Pascal permite multiplicar fuerzas hidráulicamente.'},
+        {type:'numeric',badge:'Problema real',q:'Un elefante de 5000 kg tiene 4 patas, cada una con área 0.05 m². (g=9.8) ¿Cuánta presión ejerce?',
+         hint:'F=m×g=49000N. A_total=4×0.05=0.2m². P=F/A',
+         steps:['F = m × g = 5000 × 9.8 = 49000 N','A_total = 4 × 0.05 = 0.2 m²','P = 49000 / 0.2 = 245000 Pa'],
+         answer:245000,tolerance:2000,unit:'Pa',
+         exp:'P = F/A = 49000/0.2 = 245 kPa. ¡Comparable a un tacón de mujer! El tacón concentra el mismo peso en área mínima.'},
+      ]},
+      {name:'Avanzado',xp:25,qs:[
+        {type:'mcq',badge:'Pascal',q:'El Principio de Pascal establece que:',
+         opts:['La presión disminuye con la profundidad','La presión aplicada en un fluido confinado se transmite igual en todas direcciones','La fuerza es proporcional al área','Los fluidos siempre fluyen de baja a alta presión'],
+         correct:1,
+         theory:{title:'Principio de Pascal',body:'Una presión aplicada en cualquier punto de un fluido confinado se transmite sin pérdida a todo el fluido.',formula:'P₁ = P₂  →  F₁/A₁ = F₂/A₂'},
+         exp:'Pascal: P se transmite íntegramente. Aplicación: gato hidráulico. Si A₂ = 100×A₁, entonces F₂ = 100×F₁ con la misma presión.'},
+        {type:'numeric',badge:'Prensa hidráulica',q:'Prensa hidráulica: A₁=0.01m², A₂=0.5m², F₁=100N. ¿Cuál es F₂?',
+         hint:'P₁=P₂ → F₁/A₁ = F₂/A₂ → F₂ = F₁×A₂/A₁',
+         steps:['P₁ = P₂','F₁/A₁ = F₂/A₂','F₂ = F₁ × A₂/A₁ = 100 × 0.5/0.01','F₂ = 5000 N'],
+         answer:5000,tolerance:50,unit:'N',
+         exp:'F₂ = F₁ × (A₂/A₁) = 100 × 50 = 5000 N. La prensa hidráulica multiplica la fuerza 50 veces. Así funcionan los gatos de autos y las prensas industriales.'},
+        {type:'order',badge:'Ordena',q:'Ordena los pasos para resolver: "Calcula la fuerza en una prensa hidráulica":',
+         steps:['Identificar datos: F₁, A₁, A₂','Aplicar principio de Pascal: P₁ = P₂','Escribir: F₁/A₁ = F₂/A₂','Despejar F₂: F₂ = F₁ × (A₂/A₁)','Sustituir y calcular'],
+         order:[0,1,2,3,4],exp:'Metodología de resolución de problemas: datos → principio → ecuación → despeje → cálculo.'},
+        {type:'numeric',badge:'Conversión',q:'Convierte 2.5 atm a Pascales. (1 atm = 101325 Pa)',
+         hint:'Pa = atm × 101325',
+         steps:['Pa = atm × 101325','Pa = 2.5 × 101325','Pa = 253312.5 Pa'],
+         answer:253312.5,tolerance:500,unit:'Pa',
+         exp:'P = 2.5 × 101325 = 253312.5 Pa ≈ 253.3 kPa. Conversiones importantes: 1 atm = 101325 Pa = 101.3 kPa = 1.013 bar.'},
+      ]},
+    ]},
+    {id:'p2',name:'Presión Hidrostática',icon:'💧',xpTotal:60,phases:[
+      {name:'Básico',xp:15,qs:[
+        {type:'mcq',badge:'Definición',q:'La presión hidrostática es la presión ejercida por:',
+         opts:['Un gas sobre sus paredes','Un fluido en reposo sobre un punto sumergido','El viento sobre una superficie','La gravedad sobre objetos sólidos'],
+         correct:1,
+         theory:{title:'Presión Hidrostática',body:'Un fluido en reposo ejerce presión sobre cualquier punto sumergido en él. Esta presión solo depende de la profundidad, no de la forma del recipiente.',formula:'P = ρ × g × h'},
+         exp:'P = ρgh. Solo depende de: densidad del fluido (ρ), gravedad (g), y profundidad (h). No depende del área ni de la forma del recipiente (paradoja hidrostática).'},
+        {type:'fill',badge:'Fórmula',q:'La fórmula de presión hidrostática es P = ___ × ___ × ___',
+         tmpl:['P = ','[0]',' × ','[1]',' × ','[2]'],blanks:['ρ','g','h'],
+         opts:['ρ','g','h','m','V','A'],
+         exp:'P = ρ × g × h. ρ = densidad del fluido (kg/m³), g = aceleración gravitacional (9.8 m/s²), h = profundidad (m). Unidades: Pa = kg/m³ × m/s² × m = N/m².'},
+        {type:'numeric',badge:'Cálculo',q:'¿Cuál es la presión hidrostática a 10m de profundidad en agua? (ρ=1000, g=9.8)',
+         hint:'P = ρ × g × h = 1000 × 9.8 × 10',
+         steps:['P = ρ × g × h','P = 1000 kg/m³ × 9.8 m/s² × 10 m','P = 98000 Pa = 98 kPa'],
+         answer:98000,tolerance:500,unit:'Pa',
+         exp:'P = 1000 × 9.8 × 10 = 98000 Pa ≈ 0.97 atm. A 10m en el mar, la presión es casi 2 atm (1 atm del aire + 0.97 atm del agua).'},
+        {type:'mcq',badge:'Dependencia',q:'¿La presión hidrostática depende de la forma del recipiente?',
+         opts:['Sí, un recipiente más ancho tiene más presión','No, solo depende de la profundidad h','Sí, depende del volumen total de fluido','Sí, depende del área de la base'],
+         correct:1,exp:'Paradoja hidrostática: a la misma profundidad, la presión es igual sin importar la forma, el ancho o el volumen del recipiente. Solo h, ρ y g importan.'},
+      ]},
+      {name:'Intermedio',xp:20,qs:[
+        {type:'numeric',badge:'Despeje de h',q:'Si P = 196000 Pa en agua (ρ=1000, g=9.8), ¿a qué profundidad está?',
+         hint:'h = P / (ρ × g) = 196000 / (1000 × 9.8)',
+         steps:['P = ρgh → h = P/(ρg)','h = 196000 / (1000 × 9.8)','h = 196000 / 9800 = 20 m'],
+         answer:20,tolerance:.2,unit:'m',
+         exp:'h = P/(ρg) = 196000/9800 = 20 m. El despeje se hace dividiendo P por ρ×g. Profundidad de 20 m equivale a casi 3 atm absolutas.'},
+        {type:'mcq',badge:'Aplicación',q:'¿Por qué los submarinos tienen paredes más gruesas que los barcos de superficie?',
+         opts:['Para flotar mejor','Para resistir la enorme presión hidrostática a profundidad','Para tener mayor densidad','Para navegar más rápido'],
+         correct:1,exp:'A 300m de profundidad: P = 1000×9.8×300 = 2.94 MPa ≈ 29 atm. Las paredes deben resistir esta presión colosal. El casco del submarino es acero especial de 15-20 cm de espesor.'},
+        {type:'numeric',badge:'Presión total',q:'Buzo a 30m en el mar (ρ_agua=1025 kg/m³, g=9.8). Presión hidrostática del agua en Pa:',
+         hint:'P = ρ × g × h = 1025 × 9.8 × 30',
+         steps:['P = ρ × g × h','P = 1025 × 9.8 × 30','P = 301350 Pa'],
+         answer:301350,tolerance:1000,unit:'Pa',
+         exp:'P = 1025 × 9.8 × 30 = 301350 Pa ≈ 2.97 atm. La presión TOTAL del buzo = P_atm + P_hidro = 1 atm + 2.97 atm ≈ 4 atm absolutas.'},
+        {type:'fill',badge:'Despeje de ρ',q:'De P=ρgh, despeja ρ: ρ = ___',
+         tmpl:['Despejando ρ: ρ = ','[0]'],blanks:['P / (g × h)'],
+         opts:['P / (g × h)','P × g × h','g × h / P','P / g + h'],
+         exp:'ρ = P/(g×h). Útil para encontrar qué fluido es: si mides la presión a cierta profundidad, puedes calcular la densidad del fluido.'},
+      ]},
+      {name:'Avanzado',xp:25,qs:[
+        {type:'order',badge:'Ordena pasos',q:'Ordena para calcular la profundidad dada la presión:',
+         steps:['Escribir fórmula: P = ρgh','Identificar datos: P, ρ, g','Despejar h: h = P / (ρ × g)','Sustituir valores numéricos','Calcular y verificar unidades (metros)'],
+         order:[1,0,2,3,4],exp:'Metodología: datos → fórmula → despeje → sustitución → verificación. Siempre verifica unidades al final.'},
+        {type:'numeric',badge:'Presión manométrica',q:'Presión absoluta = P_atm + P_hidro. Si P_atm=101325 Pa y h=15m en agua (ρ=1000, g=9.8), ¿cuál es P_absoluta?',
+         hint:'P_hidro=1000×9.8×15=147000. P_abs=101325+147000',
+         steps:['P_hidro = ρgh = 1000×9.8×15 = 147000 Pa','P_absoluta = P_atm + P_hidro','P_abs = 101325 + 147000 = 248325 Pa'],
+         answer:248325,tolerance:1000,unit:'Pa',
+         exp:'P_abs = P_atm + ρgh = 101325 + 147000 = 248325 Pa ≈ 2.45 atm. Los buzos deben respirar aire a presión igual a la presión absoluta para que el pulmón funcione.'},
+        {type:'numeric',badge:'Fluido desconocido',q:'A 5m de profundidad, la presión es 44100 Pa (g=9.8). ¿Cuál es la densidad del fluido?',
+         hint:'ρ = P / (g × h) = 44100 / (9.8 × 5)',
+         steps:['ρ = P / (g × h)','ρ = 44100 / (9.8 × 5)','ρ = 44100 / 49 = 900 kg/m³'],
+         answer:900,tolerance:5,unit:'kg/m³',
+         exp:'ρ = P/(gh) = 44100/49 = 900 kg/m³. Es aceite de motor (ρ≈850-900 kg/m³). Así puedes identificar un fluido desconocido midiendo la presión a una profundidad dada.'},
+        {type:'mcq',badge:'Vasos comunicantes',q:'En vasos comunicantes con el mismo fluido, el nivel es el mismo porque:',
+         opts:['Los vasos tienen el mismo volumen','La presión a la misma profundidad es igual independientemente de la forma','El fluido prefiere el recipiente más ancho','La gravedad actúa igual en todos los recipientes'],
+         correct:1,exp:'Principio de vasos comunicantes: P = ρgh. A la misma altura h, la presión es igual en cualquier punto conectado. Esto es por qué el nivel del agua es horizontal en todos los brazos.'},
+      ]},
+    ]},
+  ]
+};
+
+const COURSES={'chemistry':CHEMISTRY,'physics':PHYSICS};
+
+// ══════════════════════════════════════════════════
+// GLOBAL STATE + PERSISTENCE
+// ══════════════════════════════════════════════════
+const SAVE_KEY='scilab_v1_save';
+const G={
+  xp:0, streak:0, consecCorrect:0,
+  activeCourse:'chemistry',
+  progress:{
+    chemistry:{xp:0,lessons:{}},
+    physics:{xp:0,lessons:{}}
+  },
+  unlocked:new Set(),
+};
+
+function initProgress(){
+  ['chemistry','physics'].forEach(cid=>{
+    const course=COURSES[cid];
+    course.lessons.forEach(l=>{
+      if(!G.progress[cid].lessons[l.id])
+        G.progress[cid].lessons[l.id]={phases:[0,0,0],correct:0,wrong:0};
+    });
+  });
+}
+
+function saveGame(){
+  try{
+    const data={
+      xp:G.xp, streak:G.streak, consecCorrect:G.consecCorrect,
+      progress:{
+        chemistry:{xp:G.progress.chemistry.xp,lessons:G.progress.chemistry.lessons},
+        physics:{xp:G.progress.physics.xp,lessons:G.progress.physics.lessons},
+      },
+      unlocked:[...G.unlocked],
+    };
+    localStorage.setItem(SAVE_KEY,JSON.stringify(data));
+  }catch(e){}
+}
+function loadGame(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY);
+    if(!raw)return;
+    const d=JSON.parse(raw);
+    G.xp=d.xp||0; G.streak=d.streak||0; G.consecCorrect=d.consecCorrect||0;
+    if(d.progress){
+      G.progress.chemistry.xp=d.progress.chemistry?.xp||0;
+      G.progress.physics.xp=d.progress.physics?.xp||0;
+      if(d.progress.chemistry?.lessons) Object.assign(G.progress.chemistry.lessons,d.progress.chemistry.lessons);
+      if(d.progress.physics?.lessons) Object.assign(G.progress.physics.lessons,d.progress.physics.lessons);
+    }
+    if(d.unlocked) G.unlocked=new Set(d.unlocked);
+  }catch(e){}
+}
+
+// ══════════════════════════════════════════════════
+// SESSION STATE
+// ══════════════════════════════════════════════════
+let S={};
+
+// ══════════════════════════════════════════════════
+// SCREENS
+// ══════════════════════════════════════════════════
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+  if(id==='achievements')renderAchievements();
 }
 function showHome(){
-  updateHomeStats();
+  updateHomeUI();
   showScreen('home');
 }
 function showMap(){
-  updateMapStats();
+  updateMapUI();
   renderMap();
   showScreen('map');
 }
-
-// ══════════════════════════════════════
-// STATS & LEVEL
-// ══════════════════════════════════════
-function getLevelInfo(xp){
-  for(let i=LEVELS_DEF.length-1;i>=0;i--) if(xp>=LEVELS_DEF[i].min) return LEVELS_DEF[i];
-  return LEVELS_DEF[0];
-}
-function countMastered(){ return Object.values(G.lessons).filter(l=>l.phases.every(p=>p===2)).length; }
-function countPhasesDone(){ return Object.values(G.lessons).reduce((s,l)=>s+l.phases.filter(p=>p===2).length,0); }
-function countAch(){ return G.unlocked.size; }
-
-function updateHomeStats(){
-  const lv=getLevelInfo(G.xp);
-  const prog=Math.min(((G.xp-lv.min)/(lv.max-lv.min)*100),100);
-  document.getElementById('h-xp').textContent=G.xp;
-  document.getElementById('h-streak').textContent=G.streak;
-  document.getElementById('h-level-name').textContent=`Nivel ${lv.level} — ${lv.name}`;
-  document.getElementById('h-level-xp').textContent=`${G.xp} / ${lv.max=== Infinity?'∞':lv.max} XP`;
-  document.getElementById('h-level-bar').style.width=lv.max===Infinity?'100%':prog+'%';
-  document.getElementById('hs-lessons').textContent=countMastered();
-  document.getElementById('hs-phases').textContent=countPhasesDone();
-  document.getElementById('hs-ach').textContent=countAch();
-}
-function updateMapStats(){
-  const lv=getLevelInfo(G.xp);
-  document.getElementById('m-xp').textContent=G.xp;
-  document.getElementById('m-streak').textContent=G.streak;
-  document.getElementById('m-level').textContent=`Nv.${lv.level}`;
-  document.getElementById('a-xp').textContent=G.xp;
+function selectCourse(cid){
+  sfx.click();
+  G.activeCourse=cid;
+  document.body.className=COURSES[cid].mode;
+  showMap();
 }
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════
+// UI UPDATES
+// ══════════════════════════════════════════════════
+function getLv(xp){for(let i=LEVELS.length-1;i>=0;i--)if(xp>=LEVELS[i].min)return LEVELS[i];return LEVELS[0];}
+function countMastered(cid){
+  return Object.values(G.progress[cid].lessons).filter(l=>l.phases.every(p=>p===2)).length;
+}
+function countPhasesTotal(){
+  return ['chemistry','physics'].reduce((s,cid)=>s+Object.values(G.progress[cid].lessons).reduce((ss,l)=>ss+l.phases.filter(p=>p===2).length,0),0);
+}
+
+function updateHomeUI(){
+  const lv=getLv(G.xp);
+  const pct=lv.max===Infinity?100:Math.min(((G.xp-lv.min)/(lv.max-lv.min))*100,100);
+  setText('h-xp',G.xp);
+  setText('h-streak',G.streak);
+  setText('h-lv',`Nv.${lv.n}`);
+  setText('h-lv-name',`Nivel ${lv.n} — ${lv.name}`);
+  setText('h-lv-xp',`${G.xp} / ${lv.max===Infinity?'∞':lv.max} XP`);
+  setWidth('h-lv-bar',pct+'%');
+  setText('hs-lessons',countMastered('chemistry')+countMastered('physics'));
+  setText('hs-phases',countPhasesTotal());
+  setText('hs-ach',G.unlocked.size);
+
+  // Chemistry card
+  const cLessons=CHEMISTRY.lessons.length;
+  const cMastered=countMastered('chemistry');
+  const cPct=Math.round((cMastered/cLessons)*100);
+  setText('chem-prog-label',cPct+'%');
+  setWidth('chem-prog-bar',cPct+'%');
+  setText('chem-s1',cMastered);
+  setText('chem-s2',G.progress.chemistry.xp);
+  setText('chem-s3',cLessons);
+
+  // Physics card
+  const pLessons=PHYSICS.lessons.length;
+  const pMastered=countMastered('physics');
+  const pPct=Math.round((pMastered/pLessons)*100);
+  setText('phys-prog-label',pPct+'%');
+  setWidth('phys-prog-bar',pPct+'%');
+  setText('phys-s1',pMastered);
+  setText('phys-s2',G.progress.physics.xp);
+  setText('phys-s3',pLessons);
+}
+
+function updateMapUI(){
+  const lv=getLv(G.xp);
+  setText('m-xp',G.xp);
+  setText('m-str',G.streak);
+  setText('m-lv',`Nv.${lv.n}`);
+  const course=COURSES[G.activeCourse];
+  setText('map-logo',`${course.icon} ${course.name}`);
+  setText('a-xp',G.xp);
+}
+
+// ══════════════════════════════════════════════════
 // MAP RENDER
-// ══════════════════════════════════════
-const OFFSETS=[0,80,-80,80,0];
+// ══════════════════════════════════════════════════
 function renderMap(){
   const body=document.getElementById('map-body');
-  body.innerHTML=`<div class="unit-badge"><span class="unit-icon">⚗️</span><div class="unit-info"><div class="unit-title">Unidad 1: Química de Soluciones</div><div class="unit-sub">Domina 5 lecciones con 3 fases cada una</div></div></div>`;
-  const path=document.createElement('div');
-  path.className='path-container';
+  const course=COURSES[G.activeCourse];
+  const cls=course.cls;
+  body.innerHTML=`
+    <div class="unit-card ${cls}">
+      <div class="uc-title ${cls}">${course.icon} ${course.unit.title}</div>
+      <div class="uc-sub">${course.unit.sub}</div>
+    </div>
+    <div class="nodes-path" id="nodes-path"></div>`;
+  const path=document.getElementById('nodes-path');
 
-  LESSONS.forEach((lesson,i)=>{
-    const ld=G.lessons[lesson.id];
-    const phases=ld.phases;
-    const mastered=phases.every(p=>p===2);
-    const anyDone=phases.some(p=>p>=1);
-    const prevMastered=i===0||G.lessons[i-1].phases.every(p=>p===2);
+  course.lessons.forEach((lesson,i)=>{
+    const ld=G.progress[G.activeCourse].lessons[lesson.id]||{phases:[0,0,0]};
+    const mastered=ld.phases.every(p=>p===2);
+    const anyDone=ld.phases.some(p=>p>=1);
+    const prevMastered=i===0||G.progress[G.activeCourse].lessons[course.lessons[i-1].id]?.phases.every(p=>p===2);
     const isActive=!mastered&&prevMastered;
     const locked=!mastered&&!prevMastered&&!anyDone;
 
     if(i>0){
-      const c=document.createElement('div');
-      const prevMast=G.lessons[i-1].phases.every(p=>p===2);
-      c.className='node-connector'+(prevMast?' done':'');
-      c.style.marginLeft=OFFSETS[i]+'px';
-      path.appendChild(c);
+      const gap=mk('div',`node-gap${prevMastered?' done '+cls:''}`);
+      path.appendChild(gap);
     }
 
-    const wrap=document.createElement('div');
-    wrap.className='path-node-wrap';
-    wrap.style.marginLeft=OFFSETS[i]+'px';
+    const phaseDots=ld.phases.map(p=>`<div class="lp-dot${p===2?(mastered?' mastered':' done '+cls):''}"></div>`).join('');
+    const phasesDone=ld.phases.filter(p=>p===2).length;
+    const nextPhase=ld.phases.indexOf(0);
+    const totalXP=lesson.xpTotal;
+    const earnedXP=ld.phases.reduce((s,p,pi)=>s+(p===2?lesson.phases[pi].xp:0),0);
 
-    const circleClass=mastered?'mastered':isActive?'active':locked?'locked':'';
-    const clickable=!locked;
-    const nextPhase=phases.indexOf(0);
-    const phaseToStart=nextPhase===-1?2:nextPhase;
+    const node=mk('div',`lesson-node${mastered?' mastered-node':isActive?' active-node':locked?' locked-node':''}`);
+    if(mastered) node.innerHTML+=`<span class="ln-badge gold">⭐ DOMINADO</span>`;
+    else if(isActive) node.innerHTML+=`<span class="ln-badge new">ACTIVO</span>`;
+    else if(locked) node.innerHTML+=`<span class="ln-badge locked">🔒 Bloqueado</span>`;
 
-    wrap.innerHTML=`
-      <div class="lesson-node" ${clickable?`onclick="startLesson(${lesson.id})"`:'style="cursor:not-allowed"'}>
-        <div class="lesson-circle ${circleClass}">
-          <span style="font-size:28px">${mastered?'⭐':lesson.icon}</span>
-          ${mastered?'<div class="star-overlay">⭐</div>':''}
-          ${locked?'<div class="lock-overlay">🔒</div>':''}
-        </div>
-        <div class="lesson-label ${mastered?'mastered':isActive?'active':''}">${lesson.name}</div>
-        <div class="phase-dots">
-          ${phases.map(p=>`<div class="phase-dot ${p===2?(mastered?'mastered':'done'):''}" title="${p===2?'Completada':p===1?'En progreso':'Pendiente'}"></div>`).join('')}
-        </div>
-      </div>`;
-    path.appendChild(wrap);
+    node.innerHTML+=`
+      <div class="ln-icon" style="background:${mastered?'rgba(251,191,36,.15)':isActive?`${cls==='chem'?'rgba(16,185,129,.15)':'rgba(245,158,11,.15)'}`:''}">${mastered?'⭐':lesson.icon}</div>
+      <div class="ln-info">
+        <div class="ln-title">${lesson.name}</div>
+        <div class="ln-phases">${phaseDots}</div>
+        <div class="ln-meta">Fases: ${phasesDone}/3 · <span class="ln-xp">${earnedXP}/${totalXP} XP</span></div>
+      </div>
+      <span style="font-size:20px;color:var(--muted)">${locked?'🔒':'›'}</span>`;
+
+    if(!locked){
+      node.onclick=()=>{sfx.click();startLesson(G.activeCourse,lesson.id);};
+    }
+    path.appendChild(node);
   });
-  body.appendChild(path);
 }
 
-// ══════════════════════════════════════
-// LESSON ENGINE
-// ══════════════════════════════════════
-function startLesson(lessonId){
-  sfx.click();
-  const ld=G.lessons[lessonId];
+// ══════════════════════════════════════════════════
+// LESSON START
+// ══════════════════════════════════════════════════
+function startLesson(cid,lessonId){
+  const course=COURSES[cid];
+  const lesson=course.lessons.find(l=>l.id===lessonId);
+  const ld=G.progress[cid].lessons[lessonId];
   const phaseIdx=ld.phases.indexOf(0);
-  if(phaseIdx===-1){ // All done — replay last phase for fun
-    startPhase(lessonId,2);
-    return;
-  }
-  startPhase(lessonId,phaseIdx);
+  if(phaseIdx===-1){ startPhase(cid,lessonId,2); return; }
+  startPhase(cid,lessonId,phaseIdx);
 }
 
-function startPhase(lessonId,phaseIdx){
-  const lesson=LESSONS[lessonId];
+function startPhase(cid,lessonId,phaseIdx){
+  const course=COURSES[cid];
+  const lesson=course.lessons.find(l=>l.id===lessonId);
   const phase=lesson.phases[phaseIdx];
   S={
-    lessonId, phaseIdx,
-    questions:[...phase.questions],
-    qIdx:0, hearts:5,
-    correct:0, wrong:0, answered:false,
-    totalCorrectLesson: S.totalCorrectLesson||0,
-    totalWrongLesson: S.totalWrongLesson||0,
-    xpEarned:0,
-    sel:null, dragState:{}, matchState:{}, fillState:[], orderState:[],
+    cid, lessonId, phaseIdx, cls:course.cls,
+    qs:[...phase.qs], qIdx:0,
+    hearts:5, correct:0, wrong:0,
+    answered:false,
+    totalCorrect:S.totalCorrect||0, totalWrong:S.totalWrong||0,
+    matchState:{}, dragState:{}, fillState:[], numInput:null,
   };
-  document.getElementById('les-back').onclick=()=>{sfx.click();showMap();};
+  // Set progress bar color
+  const fill=document.getElementById('les-prog-fill');
+  fill.className='prog-fill '+course.cls;
+  const pill=document.getElementById('les-phase-pill');
+  pill.className='phase-pill '+course.cls;
+  document.getElementById('les-back').onclick=()=>{sfx.click();saveGame();showMap();};
   showScreen('lesson');
-  renderQuestion();
+  renderQ();
 }
 
-function renderQuestion(){
-  const q=S.questions[S.qIdx];
-  const pct=(S.qIdx/S.questions.length)*100;
-  document.getElementById('les-prog').style.width=pct+'%';
-  const lesson=LESSONS[S.lessonId];
-  document.getElementById('les-phase-tag').textContent=`${lesson.phases[S.phaseIdx].name} · Fase ${S.phaseIdx+1}/3`;
+// ══════════════════════════════════════════════════
+// QUESTION RENDER
+// ══════════════════════════════════════════════════
+function renderQ(){
+  const q=S.qs[S.qIdx];
+  const pct=(S.qIdx/S.qs.length)*100;
+  setWidth('les-prog-fill',pct+'%');
+  const course=COURSES[S.cid];
+  const lesson=course.lessons.find(l=>l.id===S.lessonId);
+  const phase=lesson.phases[S.phaseIdx];
+  document.getElementById('les-phase-pill').textContent=`${phase.name} · Fase ${S.phaseIdx+1}/3`;
   renderHearts();
-  hideFeedback();
+  hideFB();
   setConfirm(false);
-  S.answered=false; S.sel=null;
+  S.answered=false;
 
   const content=document.getElementById('les-content');
   content.innerHTML='';
-  content.appendChild(mk('div','q-badge',q.badge||'Pregunta'));
 
-  const qtext=mk('div','q-text',q.q);
-  content.appendChild(qtext);
+  // Theory card if present
+  if(q.theory){
+    const card=mk('div','theory-card '+S.cls);
+    card.innerHTML=`<div class="tc-title ${S.cls}">${q.theory.title}</div>
+      <div class="tc-body">${q.theory.body}</div>
+      <div class="formula-box ${S.cls}">${q.theory.formula}</div>`;
+    content.appendChild(card);
+  }
+
+  content.appendChild(mk('div','q-type',q.badge||'Pregunta'));
+  content.appendChild(mk('div','q-text',q.q));
 
   if(q.type==='mcq') renderMCQ(q,content);
-  else if(q.type==='image_mcq') renderImageMCQ(q,content);
+  else if(q.type==='numeric') renderNumeric(q,content);
   else if(q.type==='fill') renderFill(q,content);
   else if(q.type==='match') renderMatch(q,content);
   else if(q.type==='drag') renderDrag(q,content);
@@ -1221,143 +1569,158 @@ function renderQuestion(){
 // ── MCQ ──
 function renderMCQ(q,el){
   const list=mk('div','mcq-list');
-  const LETS=['A','B','C','D'];
+  const LL=['A','B','C','D'];
   q.opts.forEach((opt,i)=>{
-    const btn=mk('button','mcq-opt',`<div class="mcq-letter">${LETS[i]}</div><span>${opt}</span>`);
+    const btn=mk('button','mopt',`<div class="ml">${LL[i]}</div><span>${opt}</span>`);
     btn.onclick=()=>{
       if(S.answered)return; sfx.select();
-      list.querySelectorAll('.mcq-opt').forEach(b=>b.classList.remove('sel'));
+      list.querySelectorAll('.mopt').forEach(b=>b.classList.remove('sel'));
       btn.classList.add('sel'); S.sel=i; setConfirm(true);
     };
     list.appendChild(btn);
   });
   el.appendChild(list);
-  document.getElementById('confirm-btn').onclick=()=>{
-    if(!confirmReady||S.answered)return; S.answered=true;
+  document.getElementById('c-btn').onclick=()=>{
+    if(!cReady||S.answered)return; S.answered=true;
     const ok=S.sel===q.correct;
-    list.querySelectorAll('.mcq-opt').forEach((b,i)=>{
-      if(i===q.correct)b.classList.add('ok');
-      else if(i===S.sel)b.classList.add('bad');
+    list.querySelectorAll('.mopt').forEach((b,i)=>{
       b.disabled=true;
+      if(i===q.correct) b.classList.add('ok');
+      else if(i===S.sel) b.classList.add('bad');
     });
-    handleAnswer(ok,q.exp);
+    answer(ok,q.exp,null);
   };
 }
 
-// ── IMAGE MCQ ──
-function renderImageMCQ(q,el){
-  const wrap=mk('div','img-q-wrap');
-  const label=mk('div','img-q-label','📊 Diagrama de referencia (del cuaderno)');
-  const svgWrap=mk('div','img-q-svg'); svgWrap.innerHTML=q.svg;
-  wrap.appendChild(label); wrap.appendChild(svgWrap);
+// ── NUMERIC ──
+function renderNumeric(q,el){
+  const wrap=mk('div','numeric-wrap');
+  if(q.hint){wrap.appendChild(mk('div','num-label',`💡 ${q.hint}`));}
+  const row=mk('div','num-input-row');
+  const input=document.createElement('input');
+  input.type='number'; input.className='num-input';
+  input.placeholder='0'; input.step='any';
+  input.oninput=()=>setConfirm(input.value.trim()!=='');
+  input.onkeydown=e=>{if(e.key==='Enter'&&cReady)document.getElementById('c-btn').click();};
+  row.appendChild(input);
+  if(q.unit) row.appendChild(mk('span','num-unit',q.unit));
+  wrap.appendChild(row);
+
+  // Steps hint (hidden)
+  const stepsEl=mk('div','calc-steps');
+  stepsEl.innerHTML=`<div class="cs-title">📐 Pasos de resolución</div>`+
+    q.steps.map((s,i)=>`<div class="cs-step"><div class="cs-num">${i+1}</div><span>${s}</span></div>`).join('');
+  wrap.appendChild(stepsEl);
+
+  const hintBtn=mk('button','btn-sec',`👁 Ver pasos`);
+  hintBtn.style.cssText='margin-top:8px;font-size:12px;padding:6px 14px;';
+  hintBtn.onclick=()=>{
+    stepsEl.classList.toggle('show');
+    hintBtn.textContent=stepsEl.classList.contains('show')?'Ocultar pasos':'👁 Ver pasos';
+  };
+  wrap.appendChild(hintBtn);
   el.appendChild(wrap);
-  renderMCQ(q,el);
+
+  document.getElementById('c-btn').onclick=()=>{
+    if(!cReady||S.answered)return; S.answered=true;
+    const val=parseFloat(input.value);
+    const ok=Math.abs(val-q.answer)/Math.max(Math.abs(q.answer),1)<=q.tolerance;
+    input.classList.add(ok?'ok':'bad');
+    input.disabled=true;
+    answer(ok,q.exp,q.steps);
+  };
 }
 
 // ── FILL ──
 function renderFill(q,el){
   S.fillState=new Array(q.blanks.length).fill(null);
-  const sentence=mk('div','fill-sentence');
-  q.template.forEach(part=>{
+  const sent=mk('div','fill-sent');
+  q.tmpl.forEach(part=>{
     if(part.startsWith('[')){
-      const idx=parseInt(part.slice(1));
-      const span=mk('span','fill-blank','_____');
-      span.id=`blank-${idx}`;
-      sentence.appendChild(span);
-    } else sentence.appendChild(document.createTextNode(part));
+      const idx=+part.slice(1);
+      const span=document.createElement('span');
+      span.className='fill-blank'; span.id=`fb${idx}`; span.textContent='___';
+      sent.appendChild(span);
+    } else sent.appendChild(document.createTextNode(part));
   });
-  el.appendChild(sentence);
-
-  const bank=mk('div','fill-word-bank');
+  el.appendChild(sent);
+  const bank=mk('div','word-bank');
   q.opts.forEach(opt=>{
-    const btn=mk('button','fill-word',opt);
+    const btn=mk('button','wb-word',opt);
     btn.onclick=()=>{
       if(S.answered)return; sfx.select();
       const empty=S.fillState.indexOf(null);
       if(empty===-1)return;
       S.fillState[empty]=opt;
-      const span=document.getElementById(`blank-${empty}`);
-      if(span){span.textContent=opt;span.classList.add('filled');}
+      const sp=document.getElementById(`fb${empty}`);
+      if(sp){sp.textContent=opt;sp.classList.add('filled');}
       btn.classList.add('used'); btn.disabled=true;
       if(S.fillState.every(v=>v!==null)) setConfirm(true);
     };
     bank.appendChild(btn);
   });
   el.appendChild(bank);
-
-  document.getElementById('confirm-btn').onclick=()=>{
-    if(!confirmReady||S.answered)return; S.answered=true;
+  document.getElementById('c-btn').onclick=()=>{
+    if(!cReady||S.answered)return; S.answered=true;
     const ok=S.fillState.every((v,i)=>v===q.blanks[i]);
     q.blanks.forEach((b,i)=>{
-      const sp=document.getElementById(`blank-${i}`);
+      const sp=document.getElementById(`fb${i}`);
       if(sp) sp.classList.add(S.fillState[i]===b?'filled':'wrong-b');
     });
-    handleAnswer(ok,q.exp);
+    answer(ok,q.exp,null);
   };
 }
 
 // ── MATCH ──
 function renderMatch(q,el){
-  S.matchState={left:null,right:null,paired:[],wrongPairs:0};
+  S.matchState={l:null,r:null,paired:[],wrong:0};
   const shuffR=[...q.pairs.map((p,i)=>({...p,oi:i}))].sort(()=>Math.random()-.5);
-
-  const cols=mk('div','match-cols');
-  const lc=mk('div','match-col'); lc.innerHTML='<div class="match-col-hdr">Término</div>';
-  const rc=mk('div','match-col'); rc.innerHTML='<div class="match-col-hdr">Descripción</div>';
-
+  const wrap=mk('div','match-wrap');
+  const lc=mk('div','match-col'); lc.innerHTML='<div class="mc-hdr">Término</div>';
+  const rc=mk('div','match-col'); rc.innerHTML='<div class="mc-hdr">Descripción</div>';
   q.pairs.forEach((p,i)=>{
-    const item=mk('div','match-item',p.L); item.dataset.li=i;
-    item.onclick=()=>matchSelectL(i);
-    lc.appendChild(item);
+    const it=mk('div','match-item',p.L); it.dataset.li=i;
+    it.onclick=()=>matchL(i);
+    lc.appendChild(it);
   });
   shuffR.forEach((p,i)=>{
-    const item=mk('div','match-item',p.R); item.dataset.ri=i; item.dataset.oi=p.oi;
-    item.onclick=()=>matchSelectR(i,p.oi);
-    rc.appendChild(item);
+    const it=mk('div','match-item',p.R); it.dataset.ri=i; it.dataset.oi=p.oi;
+    it.onclick=()=>matchR(i,p.oi);
+    rc.appendChild(it);
   });
-  cols.appendChild(lc); cols.appendChild(rc); el.appendChild(cols);
-
-  document.getElementById('confirm-btn').onclick=()=>{
-    if(!confirmReady||S.answered)return; S.answered=true;
-    handleAnswer(S.matchState.wrongPairs===0&&S.matchState.paired.length===q.pairs.length,q.exp);
+  wrap.appendChild(lc); wrap.appendChild(rc); el.appendChild(wrap);
+  S.matchShuffled=shuffR;
+  document.getElementById('c-btn').onclick=()=>{
+    if(!cReady||S.answered)return; S.answered=true;
+    answer(S.matchState.wrong===0&&S.matchState.paired.length===q.pairs.length,q.exp,null);
   };
 }
-function matchSelectL(i){
+function matchL(i){
   if(S.matchState.paired.includes(i))return; sfx.select();
-  document.querySelectorAll('[data-li]').forEach(e=>{
-    if(!S.matchState.paired.includes(+e.dataset.li))e.classList.remove('sel');
-  });
-  S.matchState.left=i;
-  document.querySelector(`[data-li="${i}"]`).classList.add('sel');
-  tryMatch();
+  document.querySelectorAll('[data-li]').forEach(e=>{if(!S.matchState.paired.includes(+e.dataset.li))e.classList.remove('sel');});
+  S.matchState.l=i; document.querySelector(`[data-li="${i}"]`).classList.add('sel'); tryMatchPair();
 }
-function matchSelectR(i,oi){
+function matchR(i,oi){
   const el=document.querySelector(`[data-ri="${i}"]`);
-  if(el&&el.classList.contains('paired'))return; sfx.select();
+  if(el?.classList.contains('paired'))return; sfx.select();
   document.querySelectorAll('[data-ri]').forEach(e=>{if(!e.classList.contains('paired'))e.classList.remove('sel');});
-  S.matchState.right=i; S.matchState.rightOi=oi;
-  el.classList.add('sel');
-  tryMatch();
+  S.matchState.r=i; S.matchState.roi=oi; el?.classList.add('sel'); tryMatchPair();
 }
-function tryMatch(){
-  const {left,right,rightOi}=S.matchState;
-  if(left===null||right===null)return;
-  const lEl=document.querySelector(`[data-li="${left}"]`);
-  const rEl=document.querySelector(`[data-ri="${right}"]`);
-  if(left===rightOi){
-    sfx.correct();
-    lEl.classList.remove('sel');lEl.classList.add('paired');
-    rEl.classList.remove('sel');rEl.classList.add('paired');
-    S.matchState.paired.push(left);
-    showXPFloat('+3');
-  } else {
-    sfx.wrong();
-    S.matchState.wrongPairs++;
-    lEl.classList.add('bad-pair');rEl.classList.add('bad-pair');
-    setTimeout(()=>{lEl.classList.remove('bad-pair','sel');rEl.classList.remove('bad-pair','sel');},600);
+function tryMatchPair(){
+  const {l,r,roi}=S.matchState;
+  if(l===null||r===null)return;
+  const le=document.querySelector(`[data-li="${l}"]`), re=document.querySelector(`[data-ri="${r}"]`);
+  if(l===roi){
+    sfx.correct(); le.classList.remove('sel');le.classList.add('paired');
+    re.classList.remove('sel');re.classList.add('paired');
+    S.matchState.paired.push(l); showXPFloat('+2');
+  }else{
+    sfx.wrong(); S.matchState.wrong++;
+    le.classList.add('bad-m'); re.classList.add('bad-m');
+    setTimeout(()=>{le.classList.remove('bad-m','sel');re.classList.remove('bad-m','sel');},500);
   }
-  S.matchState.left=null;S.matchState.right=null;S.matchState.rightOi=null;
-  const q=S.questions[S.qIdx];
+  S.matchState.l=null; S.matchState.r=null; S.matchState.roi=null;
+  const q=S.qs[S.qIdx];
   if(S.matchState.paired.length===q.pairs.length) setConfirm(true);
 }
 
@@ -1365,355 +1728,337 @@ function tryMatch(){
 function renderDrag(q,el){
   S.dragState={zones:q.zones.map(()=>[]),items:q.items.map((it,i)=>({...it,i}))};
   const scene=mk('div','drag-scene');
-  const zonesRow=mk('div','drag-zones-row');
-  q.zones.forEach((zone,zi)=>{
-    const dz=mk('div','drop-zone');
-    dz.innerHTML=`<div class="dz-label">${zone}</div>`;
-    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over');});
-    dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
-    dz.addEventListener('drop',e=>{
-      e.preventDefault();dz.classList.remove('over');
-      const idx=+e.dataTransfer.getData('text/plain');
-      placeItem(idx,zi,q);sfx.select();
-    });
-    zonesRow.appendChild(dz);
+  const dzRow=mk('div','drop-zones');
+  q.zones.forEach((z,zi)=>{
+    const dz=mk('div','drop-z'); dz.innerHTML=`<div class="dz-lbl">${z}</div>`;
+    dz.ondragover=e=>{e.preventDefault();dz.classList.add('over');};
+    dz.ondragleave=()=>dz.classList.remove('over');
+    dz.ondrop=e=>{e.preventDefault();dz.classList.remove('over');placeChip(+e.dataTransfer.getData('text'),zi,q);sfx.select();};
+    dzRow.appendChild(dz);
   });
-  scene.appendChild(zonesRow);
-  const bank=mk('div','drag-bank'); bank.innerHTML='<div class="db-label">Arrastra aquí ↑</div>';
-  S.dragState.items.sort(()=>Math.random()-.5).forEach(item=>{
-    const chip=mk('div','drag-chip bank-chip',item.t);
-    chip.draggable=true; chip.id=`chip-${item.i}`;
-    chip.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',item.i);chip.style.opacity='.5';});
-    chip.addEventListener('dragend',()=>chip.style.opacity='1');
-    bank.appendChild(chip);
+  scene.appendChild(dzRow);
+  const bank=mk('div','d-bank'); bank.innerHTML='<div class="db-lbl">Arrastra ↑</div>';
+  [...S.dragState.items].sort(()=>Math.random()-.5).forEach(item=>{
+    const c=mk('div','d-chip active-chip',item.t); c.draggable=true; c.id=`dc${item.i}`;
+    c.ondragstart=e=>{e.dataTransfer.setData('text',item.i);c.style.opacity='.5';};
+    c.ondragend=()=>c.style.opacity='1';
+    bank.appendChild(c);
   });
   scene.appendChild(bank); el.appendChild(scene);
-
-  document.getElementById('confirm-btn').onclick=()=>{
-    if(!confirmReady||S.answered)return; S.answered=true;
-    let allOk=true;
+  document.getElementById('c-btn').onclick=()=>{
+    if(!cReady||S.answered)return; S.answered=true;
+    let ok=true;
     q.zones.forEach((_,zi)=>{
-      const dz=document.querySelectorAll('.drop-zone')[zi];
-      const placed=S.dragState.zones[zi];
-      const correctHere=placed.every(i=>q.items[i].c===zi);
-      const allPlaced=q.items.filter(it=>it.c===zi).every(it=>placed.includes(it.i));
-      if(!correctHere||!allPlaced){allOk=false;if(dz)dz.classList.add('bad');}
-      else if(dz) dz.classList.add('ok');
+      const dz=document.querySelectorAll('.drop-z')[zi];
+      const pl=S.dragState.zones[zi];
+      const correct=pl.every(i=>q.items[i].c===zi)&&q.items.filter(it=>it.c===zi).every(it=>pl.includes(it.i));
+      if(!correct){ok=false;dz?.classList.add('bad');}else dz?.classList.add('ok');
     });
-    handleAnswer(allOk,q.exp);
+    answer(ok,q.exp,null);
   };
 }
-function placeItem(idx,zi,q){
-  const chip=document.getElementById(`chip-${idx}`);
+function placeChip(idx,zi,q){
+  const chip=document.getElementById(`dc${idx}`);
   if(!chip)return;
   S.dragState.zones.forEach(z=>{const p=z.indexOf(idx);if(p>-1)z.splice(p,1);});
   S.dragState.zones[zi].push(idx);
-  const dz=document.querySelectorAll('.drop-zone')[zi];
-  chip.classList.remove('bank-chip');
-  if(dz) dz.appendChild(chip);
-  const total=S.dragState.zones.reduce((a,z)=>a+z.length,0);
-  setConfirm(total===q.items.length);
+  chip.classList.remove('active-chip');
+  document.querySelectorAll('.drop-z')[zi]?.appendChild(chip);
+  const tot=S.dragState.zones.reduce((a,z)=>a+z.length,0);
+  setConfirm(tot===q.items.length);
 }
 
 // ── ORDER ──
 function renderOrder(q,el){
-  const shuffled=[...q.steps.map((s,i)=>({text:s,orig:i}))].sort(()=>Math.random()-.5);
-  S.orderState=shuffled;
-  const list=mk('div','order-list'); list.id='order-list';
-  shuffled.forEach((item,i)=>{
-    const div=mk('div','order-item',`<span class="order-handle">⠿</span><div class="order-badge">${i+1}</div><span>${item.text}</span>`);
+  const sh=[...q.steps.map((s,i)=>({s,orig:i}))].sort(()=>Math.random()-.5);
+  const list=mk('div','order-list'); list.id='olist';
+  sh.forEach((item,i)=>{
+    const div=mk('div','order-item',`<span class="order-handle">⠿</span><div class="order-n">${i+1}</div><span>${item.s}</span>`);
     div.draggable=true; div.dataset.idx=i;
-    div.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',i);div.style.opacity='.5';});
-    div.addEventListener('dragend',()=>{div.style.opacity='1';refreshOrderNums();});
-    div.addEventListener('dragover',e=>{e.preventDefault();div.classList.add('drag-over');});
-    div.addEventListener('dragleave',()=>div.classList.remove('drag-over'));
-    div.addEventListener('drop',e=>{
-      e.preventDefault();div.classList.remove('drag-over');
-      const from=+e.dataTransfer.getData('text/plain');
-      const to=+div.dataset.idx;
+    div.ondragstart=e=>{e.dataTransfer.setData('text',i);div.style.opacity='.5';};
+    div.ondragend=()=>{div.style.opacity='1';refreshONums();};
+    div.ondragover=e=>{e.preventDefault();div.classList.add('over');};
+    div.ondragleave=()=>div.classList.remove('over');
+    div.ondrop=e=>{
+      e.preventDefault();div.classList.remove('over');
+      const from=+e.dataTransfer.getData('text'), to=+div.dataset.idx;
       if(from!==to){
         const kids=[...list.children];
-        const fEl=kids[from],tEl=kids[to];
-        if(from<to) list.insertBefore(fEl,tEl.nextSibling);
-        else list.insertBefore(fEl,tEl);
+        from<to?list.insertBefore(kids[from],kids[to].nextSibling):list.insertBefore(kids[from],kids[to]);
         [...list.children].forEach((e,i)=>e.dataset.idx=i);
-        refreshOrderNums(); sfx.select();
+        refreshONums(); sfx.select();
       }
-    });
+    };
     list.appendChild(div);
   });
   el.appendChild(list);
   setConfirm(true);
-  document.getElementById('confirm-btn').onclick=()=>{
-    if(!confirmReady||S.answered)return; S.answered=true;
+  S.orderShuffled=sh;
+  document.getElementById('c-btn').onclick=()=>{
+    if(!cReady||S.answered)return; S.answered=true;
     const kids=[...list.children];
-    const current=kids.map(e=>shuffled[+e.dataset.idx].orig);
-    const ok=JSON.stringify(current)===JSON.stringify(q.order);
-    kids.forEach((e,i)=>{
-      const badge=e.querySelector('.order-badge');
-      const correct=current[i]===q.order[i];
-      if(badge) badge.style.background=correct?'var(--green2)':'var(--red)';
-    });
-    handleAnswer(ok,q.exp);
+    const cur=kids.map(e=>sh[+e.dataset.idx].orig);
+    const ok=JSON.stringify(cur)===JSON.stringify(q.order);
+    kids.forEach((e,i)=>{const n=e.querySelector('.order-n');if(n)n.style.background=cur[i]===q.order[i]?'var(--ok)':'var(--bad)';});
+    answer(ok,q.exp,null);
   };
 }
-function refreshOrderNums(){
-  const list=document.getElementById('order-list');
+function refreshONums(){
+  const list=document.getElementById('olist');
   if(!list)return;
-  [...list.children].forEach((e,i)=>{const b=e.querySelector('.order-badge');if(b)b.textContent=i+1;});
+  [...list.children].forEach((e,i)=>{const n=e.querySelector('.order-n');if(n)n.textContent=i+1;});
 }
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════
 // ANSWER HANDLING
-// ══════════════════════════════════════
-let confirmReady=false;
-function setConfirm(yes){
-  confirmReady=yes;
-  const btn=document.getElementById('confirm-btn');
-  btn.classList.toggle('ready',yes);
+// ══════════════════════════════════════════════════
+let cReady=false;
+function setConfirm(y){
+  cReady=y;
+  const b=document.getElementById('c-btn');
+  b.classList.toggle('ready',y);
 }
-
-function handleAnswer(ok,exp){
+function renderHearts(){
+  document.getElementById('les-hearts').innerHTML=
+    [...Array(5)].map((_,i)=>`<span>${i<S.hearts?'❤️':'🖤'}</span>`).join('');
+}
+function hideFB(){document.getElementById('fb-panel').className='fb-panel';}
+function showFB(ok,exp,steps){
+  const p=document.getElementById('fb-panel');
+  p.className='fb-panel show '+(ok?'fb-ok':'fb-bad');
+  document.getElementById('fb-title').textContent=ok?'¡Correcto! 🎉':'¡Incorrecto! 😅';
+  document.getElementById('fb-exp').textContent=exp;
+  const stepsEl=document.getElementById('fb-steps');
+  const stepsBody=document.getElementById('fb-steps-body');
+  if(steps&&steps.length){
+    stepsBody.innerHTML=steps.map((s,i)=>`<div class="fbs-row"><b>${i+1}.</b> ${s}</div>`).join('');
+    stepsEl.className='fb-steps show';
+  } else stepsEl.className='fb-steps';
+  document.getElementById('fb-btn').onclick=()=>{sfx.click();nextQ();};
+}
+function answer(ok,exp,steps){
   if(ok){
-    sfx.correct(); S.correct++;
-    G.totalCorrect++; G.consecutiveCorrect++;
-    if(G.consecutiveCorrect>G.maxStreak) G.maxStreak=G.consecutiveCorrect;
-    G.xp+=4; showXPFloat('+4');
-    checkStreakAchievement();
-    showFeedback(true,exp);
-  } else {
-    sfx.wrong(); S.wrong++;
-    S.hearts--;G.consecutiveCorrect=0;
+    sfx.correct(); S.correct++; S.totalCorrect++;
+    G.consecCorrect++; G.xp+=4; showXPFloat('+4');
+    checkStreakAch();
+    if(S.correct===1)checkAch('first_q');
+  }else{
+    sfx.wrong(); S.wrong++; S.totalWrong++;
+    G.consecCorrect=0; S.hearts--;
     shakeContent();
-    showFeedback(false,exp);
     renderHearts();
   }
+  // Show combo
+  if(G.consecCorrect>0&&G.consecCorrect%5===0) showCombo(G.consecCorrect);
+  showFB(ok,exp,steps);
 }
-
-function renderHearts(){
-  const r=document.getElementById('les-hearts');
-  r.innerHTML=[...Array(5)].map((_,i)=>`<span>${i<S.hearts?'❤️':'🖤'}</span>`).join('');
-}
-
 function shakeContent(){
   const c=document.getElementById('les-content');
-  c.classList.add('shake');
-  setTimeout(()=>c.classList.remove('shake'),350);
+  c.classList.add('shake'); setTimeout(()=>c.classList.remove('shake'),350);
+}
+function nextQ(){
+  hideFB(); S.qIdx++;
+  if(S.qIdx>=S.qs.length||S.hearts<=0) completePhase();
+  else renderQ();
 }
 
-function showFeedback(ok,exp){
-  const panel=document.getElementById('feedback');
-  panel.className='feedback-panel show '+(ok?'fp-ok':'fp-bad');
-  document.getElementById('fp-title').textContent=ok?'¡Correcto! 🎉':'¡Incorrecto! 😅';
-  document.getElementById('fp-exp').textContent=exp;
-  const btn=document.getElementById('fp-btn');
-  btn.textContent='CONTINUAR';
-  btn.onclick=()=>{sfx.click();nextQuestion();};
-}
-function hideFeedback(){
-  document.getElementById('feedback').className='feedback-panel';
-}
-
-function nextQuestion(){
-  hideFeedback();
-  S.qIdx++;
-  if(S.qIdx>=S.questions.length||S.hearts<=0) completePhase();
-  else renderQuestion();
-}
-
-// ══════════════════════════════════════
-// PHASE & LESSON COMPLETION
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════
+// PHASE / LESSON COMPLETE
+// ══════════════════════════════════════════════════
 function completePhase(){
-  const lesson=LESSONS[S.lessonId];
+  const course=COURSES[S.cid];
+  const lesson=course.lessons.find(l=>l.id===S.lessonId);
   const phase=lesson.phases[S.phaseIdx];
-  const xpGained=S.hearts<=0?Math.floor(phase.xp*.5):phase.xp;
-  G.xp+=xpGained; S.xpEarned+=xpGained;
-  S.totalCorrectLesson=(S.totalCorrectLesson||0)+S.correct;
-  S.totalWrongLesson=(S.totalWrongLesson||0)+S.wrong;
+  const xp=S.hearts<=0?Math.floor(phase.xp*.6):phase.xp;
+  G.xp+=xp; G.progress[S.cid].xp+=xp;
 
-  // Mark phase done
-  G.lessons[S.lessonId].phases[S.phaseIdx]=2;
+  const ld=G.progress[S.cid].lessons[S.lessonId];
+  ld.phases[S.phaseIdx]=2;
+  ld.correct=(ld.correct||0)+S.correct;
+  ld.wrong=(ld.wrong||0)+S.wrong;
 
-  const allPhasesDone=G.lessons[S.lessonId].phases.every(p=>p===2);
-  const nextPhase=S.phaseIdx+1;
-  const hasNextPhase=nextPhase<3&&!allPhasesDone;
-
-  // Achievements
-  checkFirstPhase();
-  if(S.wrong===0) checkPerfectPhase();
-  if(allPhasesDone) checkLessonMastered(S.lessonId);
-  checkHalfway();
-
-  if(allPhasesDone){
-    sfx.master();
-    showLessonDone();
-  } else {
-    sfx.complete();
-    showPhaseDone(hasNextPhase);
+  const allDone=ld.phases.every(p=>p===2);
+  if(S.wrong===0) checkAch('perfect_phase');
+  if(allDone){
+    checkLessonAch(S.cid,S.lessonId);
+    checkCourseAch(S.cid);
+    checkBothAch();
   }
+  G.streak++;
+  saveGame();
+  if(allDone){ sfx.master(); showLessonDone(); }
+  else { sfx.phase(); showPhaseDone(S.phaseIdx+1<3); }
 }
 
 function showPhaseDone(hasNext){
-  const lesson=LESSONS[S.lessonId];
-  const phases=G.lessons[S.lessonId].phases;
-  const phaseXP=lesson.phases[S.phaseIdx].xp;
-  const tot=S.correct+S.wrong;
-  const acc=tot>0?Math.round(S.correct/tot*100):100;
+  const course=COURSES[S.cid];
+  const lesson=course.lessons.find(l=>l.id===S.lessonId);
+  const phase=lesson.phases[S.phaseIdx];
+  const ld=G.progress[S.cid].lessons[S.lessonId];
+  const tot=S.correct+S.wrong, acc=tot?Math.round(S.correct/tot*100):100;
 
-  document.getElementById('pd-icon').textContent=S.wrong===0?'💎':'⭐';
-  document.getElementById('pd-title').textContent=`¡Fase ${S.phaseIdx+1} Completada!`;
-  document.getElementById('pd-sub').textContent=S.wrong===0?'¡Sin errores! ¡Perfecto!':'Buen trabajo, sigue practicando';
-  document.getElementById('pd-xp').textContent='+'+phaseXP;
-  document.getElementById('pd-correct').textContent=S.correct;
-  document.getElementById('pd-wrong').textContent=S.wrong;
-  document.getElementById('pd-acc').textContent=acc+'%';
+  setText('pd-icon',S.wrong===0?'💎':'⭐');
+  setText('pd-title',`¡Fase ${S.phaseIdx+1} Completada!`);
+  setText('pd-sub',S.wrong===0?'¡Sin errores! ¡Perfecto!':'Sigue practicando 💪');
+  setText('pd-xp','+'+phase.xp);
+  setText('pd-ok',S.correct); setText('pd-bad',S.wrong); setText('pd-acc',acc+'%');
 
-  const phDots=document.getElementById('pd-phases');
-  phDots.innerHTML=phases.map((p,i)=>`<div class="pi-dot ${p===2?'done':''}" title="Fase ${i+1}"></div>`).join('');
+  document.getElementById('pd-track').innerHTML=
+    ld.phases.map(p=>`<div class="pt-dot${p===2?' done':''}"></div>`).join('');
 
-  const nextBtn=document.getElementById('pd-next-btn');
+  const nb=document.getElementById('pd-next-btn');
   if(hasNext){
-    nextBtn.textContent=`FASE ${S.phaseIdx+2} →`;
-    nextBtn.onclick=()=>{sfx.click();startPhase(S.lessonId,S.phaseIdx+1);};
-    nextBtn.style.display='';
-  } else {
-    nextBtn.style.display='none';
-  }
+    nb.textContent=`FASE ${S.phaseIdx+2} →`;
+    nb.onclick=()=>{sfx.click();startPhase(S.cid,S.lessonId,S.phaseIdx+1);};
+    nb.style.display='';
+  } else nb.style.display='none';
+
   confetti();
   showScreen('phase-done');
 }
-
 function showLessonDone(){
-  const allC=S.totalCorrectLesson; const allW=S.totalWrongLesson;
-  const tot=allC+allW; const acc=tot>0?Math.round(allC/tot*100):100;
-  const lesson=LESSONS[S.lessonId];
-  const totalXP=lesson.phases.reduce((s,p)=>s+p.xp,0);
-
-  document.getElementById('ld-title').textContent=`¡${lesson.name} Dominada!`;
-  document.getElementById('ld-xp').textContent='+'+totalXP;
-  document.getElementById('ld-correct').textContent=allC;
-  document.getElementById('ld-wrong').textContent=allW;
-  document.getElementById('ld-acc').textContent=acc+'%';
+  const course=COURSES[S.cid];
+  const lesson=course.lessons.find(l=>l.id===S.lessonId);
+  const tot=S.totalCorrect+S.totalWrong, acc=tot?Math.round(S.totalCorrect/tot*100):100;
+  setText('ld-title',`¡${lesson.name} Dominada!`);
+  setText('ld-xp','+'+lesson.xpTotal);
+  setText('ld-ok',S.totalCorrect); setText('ld-bad',S.totalWrong); setText('ld-acc',acc+'%');
   confetti(true);
   showScreen('lesson-done');
 }
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════
 // ACHIEVEMENTS
-// ══════════════════════════════════════
-function unlockAchievement(id){
+// ══════════════════════════════════════════════════
+function checkAch(id){
   if(G.unlocked.has(id))return;
-  G.unlocked.add(id);
-  const a=ACHIEVEMENTS.find(x=>x.id===id);
+  const a=ACHS.find(x=>x.id===id);
   if(!a)return;
-  G.xp+=a.xp;
-  showAchievementPopup(a);
+  G.unlocked.add(id); G.xp+=a.xp; saveGame();
+  sfx.ach();
+  setText('at-ico',a.icon); setText('at-name',a.name); setText('at-xp',`+${a.xp} XP`);
+  const t=document.getElementById('ach-toast');
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3500);
 }
-function showAchievementPopup(a){
-  const popup=document.getElementById('ach-popup');
-  document.getElementById('ap-icon').textContent=a.icon;
-  document.getElementById('ap-name').textContent=a.name;
-  document.getElementById('ap-bonus').textContent=`+${a.xp} XP`;
-  popup.classList.add('show');
-  sfx.complete();
-  setTimeout(()=>popup.classList.remove('show'),3500);
+function checkStreakAch(){
+  if(G.consecCorrect>=10) checkAch('streak10');
+  else if(G.consecCorrect>=5) checkAch('streak5');
+}
+function checkLessonAch(cid,lid){
+  const map={
+    chemistry:{c0:'chem_l0',c1:'chem_l1'},
+    physics:{p0:'phys_l0',p1:'phys_l1',p2:'phys_l2'}
+  };
+  const achId=map[cid]?.[lid];
+  if(achId) checkAch(achId);
+}
+function checkCourseAch(cid){
+  const course=COURSES[cid];
+  const allM=course.lessons.every(l=>G.progress[cid].lessons[l.id]?.phases.every(p=>p===2));
+  if(allM) checkAch(cid==='chemistry'?'chem_all':'phys_all');
+}
+function checkBothAch(){
+  const cAll=CHEMISTRY.lessons.every(l=>G.progress.chemistry.lessons[l.id]?.phases.every(p=>p===2));
+  const pAll=PHYSICS.lessons.every(l=>G.progress.physics.lessons[l.id]?.phases.every(p=>p===2));
+  if(cAll&&pAll) checkAch('both_all');
 }
 
-function checkFirstPhase(){ unlockAchievement('first_phase'); }
-function checkPerfectPhase(){ unlockAchievement('perfect_phase'); }
-function checkStreakAchievement(){
-  if(G.consecutiveCorrect>=5) unlockAchievement('streak_5');
-  if(G.consecutiveCorrect>=10) unlockAchievement('streak_10');
-}
-function checkLessonMastered(id){
-  const map={0:'lesson_0_done',1:'lesson_1_done',2:'lesson_2_done',3:'lesson_3_done',4:'lesson_4_done'};
-  if(map[id]) unlockAchievement(map[id]);
-  const allDone=LESSONS.every(l=>G.lessons[l.id].phases.every(p=>p===2));
-  if(allDone) setTimeout(()=>unlockAchievement('quimico_maestro'),1500);
-}
-function checkHalfway(){
-  if(countMastered()>=3) unlockAchievement('halfway');
-}
-
-// ══════════════════════════════════════
-// ACHIEVEMENTS SCREEN
-// ══════════════════════════════════════
 function renderAchievements(){
+  setText('a-xp',G.xp);
+  const done=G.unlocked.size;
+  document.getElementById('ach-header').textContent=`Logros desbloqueados: ${done} / ${ACHS.length}`;
   const grid=document.getElementById('ach-grid');
   grid.innerHTML='';
-  ACHIEVEMENTS.forEach(a=>{
-    const done=G.unlocked.has(a.id);
-    const card=mk('div','ach-card '+(done?'unlocked':'locked'),
-      `<div class="ach-icon">${a.icon}</div>
-       <div class="ach-info">
-         <div class="ach-name">${a.name}</div>
-         <div class="ach-desc">${a.desc}</div>
-         <div class="${done?'ach-bonus':'ach-lock-label'}">${done?`+${a.xp} XP ganados`:'🔒 Bloqueado'}</div>
-       </div>`);
+  ACHS.forEach(a=>{
+    const unlocked=G.unlocked.has(a.id);
+    const card=mk('div',`ach-card ${unlocked?'done':'locked'}`);
+    card.innerHTML=`<div class="ach-icon">${a.icon}</div>
+      <div class="ach-name">${a.name}</div>
+      <div class="ach-desc">${a.desc}</div>
+      <div class="ach-status">${unlocked?`✅ +${a.xp} XP ganados`:'🔒 Bloqueado'}</div>`;
     grid.appendChild(card);
   });
 }
 
-// ══════════════════════════════════════
-// VISUAL EFFECTS
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════
+// VISUAL FX
+// ══════════════════════════════════════════════════
 function confetti(big=false){
-  const colors=['#4ADE80','#38BDF8','#C084FC','#FB923C','#FBBF24','#F87171'];
-  const count=big?60:30;
-  for(let i=0;i<count;i++){
+  const CC=['#10B981','#38BDF8','#C084FC','#F59E0B','#FBBF24','#F87171'];
+  for(let i=0;i<(big?60:30);i++){
     setTimeout(()=>{
       const c=document.createElement('div');
-      c.className='confetti';
-      const tx=(Math.random()-.5)*400;
-      const r=Math.random()*720-360;
-      const dur=.7+Math.random()*.7;
-      c.style.cssText=`
-        left:${Math.random()*100}vw;top:${10+Math.random()*30}vh;
-        background:${colors[~~(Math.random()*colors.length)]};
-        width:${7+Math.random()*9}px;height:${7+Math.random()*9}px;
+      c.className='cfp';
+      const dur=.7+Math.random()*.7, tx=(Math.random()-.5)*300, r=Math.random()*720;
+      c.style.cssText=`left:${Math.random()*100}vw;top:${5+Math.random()*25}vh;
+        width:${7+Math.random()*8}px;height:${7+Math.random()*8}px;
+        background:${CC[~~(Math.random()*CC.length)]};
         border-radius:${Math.random()>.5?'50%':'3px'};
-        --dur:${dur}s;--tx:${tx}px;--r:${r}deg;
-        animation-delay:${Math.random()*.3}s;
-      `;
+        animation:cfetti ${dur}s ease-out ${Math.random()*.3}s forwards;
+        --dur:${dur}s;`;
+      c.style.setProperty('--tx',tx+'px');
+      c.style.setProperty('--r',r+'deg');
+      // Manually set keyframes via inline style hack
+      const endX = tx, endR = r;
+      c.style.animation=`none`;
       document.body.appendChild(c);
-      setTimeout(()=>c.remove(),dur*1000+500);
-    },i*30);
+      requestAnimationFrame(()=>{
+        c.style.transition=`opacity ${dur}s, transform ${dur}s ease-out`;
+        c.style.transform=`translate(${endX}px, 200px) rotate(${endR}deg)`;
+        c.style.opacity='0';
+      });
+      setTimeout(()=>c.remove(),(dur+.3)*1000);
+    },i*25);
   }
 }
-
-function showXPFloat(text){
-  const f=document.createElement('div');
-  f.className='xp-float'; f.textContent=text;
-  f.style.cssText=`top:100px;right:${60+Math.random()*60}px`;
+function showXPFloat(t){
+  const f=mk('div','xp-float',t);
+  f.style.cssText=`top:90px;right:${50+Math.random()*60}px;`;
   document.body.appendChild(f);
-  setTimeout(()=>f.remove(),900);
+  setTimeout(()=>f.remove(),950);
+}
+function showCombo(n){
+  const b=document.getElementById('combo-badge');
+  setText('combo-n',n);
+  b.classList.add('show');
+  setTimeout(()=>b.classList.remove('show'),1500);
 }
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════
+// PARTICLE ANIMATION FOR COURSE CARDS
+// ══════════════════════════════════════════════════
+function initParticles(){
+  const chemSymbols=['⚗','H₂O','NaCl','pH','mol'];
+  const physSymbols=['⚡','F','ρ','P','g','v'];
+  ['chem','phys'].forEach(prefix=>{
+    const el=document.getElementById(`${prefix}-particles`);
+    if(!el)return;
+    const symbols=prefix==='chem'?chemSymbols:physSymbols;
+    symbols.forEach((sym,i)=>{
+      const sp=document.createElement('span');
+      sp.textContent=sym;
+      sp.style.cssText=`left:${10+i*20}%;animation-delay:${i*.8}s;animation-duration:${3+i*.5}s;`;
+      el.appendChild(sp);
+    });
+  });
+}
+
+// ══════════════════════════════════════════════════
 // UTILS
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════
 function mk(tag,cls='',html=''){
-  const e=document.createElement(tag);
-  if(cls) e.className=cls;
-  if(html) e.innerHTML=html;
-  return e;
+  const e=document.createElement(tag); if(cls)e.className=cls; if(html)e.innerHTML=html; return e;
 }
+function setText(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function setWidth(id,v){const e=document.getElementById(id);if(e)e.style.width=v;}
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════
 // INIT
-// ══════════════════════════════════════
-// Achievements screen needs update before show
-const origShow=showScreen;
-window.showScreen=function(id){
-  if(id==='achievements'){
-    renderAchievements();
-    document.getElementById('a-xp').textContent=G.xp;
-  }
-  origShow(id);
-};
-
-updateHomeStats();
+// ══════════════════════════════════════════════════
+initParticles();
+initProgress();
+loadGame();
+updateHomeUI();
 showScreen('home');
 </script>
 </body>
