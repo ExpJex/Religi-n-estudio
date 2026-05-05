@@ -3,1490 +3,1718 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QuímicaLab — Aprende Química</title>
+<title>QuímicaLab</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
-:root {
-  --primary: #58CC02;
-  --primary-dark: #45a000;
-  --primary-shadow: #3a8700;
-  --blue: #1CB0F6;
-  --blue-dark: #0f8bbf;
-  --purple: #CE82FF;
-  --purple-dark: #9c5ac7;
-  --red: #FF4B4B;
-  --red-dark: #cc3a3a;
-  --orange: #FF9600;
-  --orange-dark: #cc7800;
-  --yellow: #FFC800;
-  --bg: #131F24;
-  --surface: #1D2D35;
-  --surface2: #253540;
-  --border: #2E4057;
-  --text: #FFFFF2;
-  --text-muted: #7A8FA6;
-  --heart: #FF4B4B;
-  --xp-color: #FFC800;
+:root{
+  --bg:#0F1923; --s1:#1A2733; --s2:#213040; --s3:#2A3F52;
+  --border:#2E4560; --text:#F0F4F8; --muted:#6B8AA8;
+  --green:#4ADE80; --green2:#22C55E; --greend:#16A34A; --greens:#14532D;
+  --blue:#38BDF8; --blued:#0EA5E9; --blues:#0C4A6E;
+  --gold:#FBBF24; --goldd:#F59E0B; --golds:#78350F;
+  --red:#F87171; --redd:#EF4444; --reds:#7F1D1D;
+  --purple:#C084FC; --purpled:#A855F7; --purples:#581C87;
+  --orange:#FB923C; --oranged:#F97316;
+  --r16:16px; --r12:12px; --r8:8px;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family: 'Nunito', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+*{margin:0;padding:0;box-sizing:border-box}
+html{height:100%}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+button{font-family:'Nunito',sans-serif;cursor:pointer}
 
-/* SCREENS */
-.screen { display:none; min-height:100vh; }
-.screen.active { display:flex; flex-direction:column; }
+/* ─── HEADER ─── */
+.app-header{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 20px;background:var(--s1);
+  border-bottom:2px solid var(--border);position:sticky;top:0;z-index:50;
+}
+.logo{font-family:'Fredoka One',sans-serif;font-size:24px;color:var(--green2);letter-spacing:.5px}
+.hdr-right{display:flex;align-items:center;gap:10px;margin-left:auto}
+.xp-chip{
+  display:flex;align-items:center;gap:5px;
+  background:var(--s2);border:2px solid var(--border);
+  border-radius:20px;padding:5px 12px;
+  font-weight:800;font-size:13px;color:var(--gold)
+}
+.streak-chip{
+  display:flex;align-items:center;gap:4px;
+  background:var(--s2);border:2px solid var(--border);
+  border-radius:20px;padding:5px 12px;
+  font-weight:800;font-size:13px;color:var(--orange)
+}
+.level-chip{
+  background:var(--s2);border:2px solid var(--border);
+  border-radius:20px;padding:5px 12px;
+  font-weight:700;font-size:12px;color:var(--blue)
+}
+.back-btn{
+  background:none;border:2px solid var(--border);border-radius:10px;
+  color:var(--muted);font-size:18px;padding:6px 10px;
+  transition:color .2s,border-color .2s
+}
+.back-btn:hover{color:var(--text);border-color:var(--text)}
 
-/* === HOME SCREEN === */
-#home {
-  background: linear-gradient(180deg, #0D1B24 0%, #131F24 60%);
-  align-items: center;
-  padding: 0;
+/* ─── HOME ─── */
+#home{background:radial-gradient(ellipse at top,#1A3040 0%,var(--bg) 60%)}
+.home-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
+.mascot{font-size:72px;margin-bottom:12px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.home-title{font-family:'Fredoka One',sans-serif;font-size:44px;line-height:1.1;margin-bottom:8px}
+.home-title span{color:var(--green2)}
+.home-sub{font-size:16px;color:var(--muted);max-width:320px;margin:0 auto 32px;line-height:1.6}
+.level-card{
+  background:var(--s1);border:2px solid var(--border);border-radius:var(--r16);
+  padding:16px 24px;margin-bottom:24px;width:100%;max-width:340px;text-align:left
 }
-.home-header {
-  width:100%; padding:20px 24px;
-  display:flex; justify-content:space-between; align-items:center;
+.lc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.lc-name{font-weight:700;font-size:14px;color:var(--blue)}
+.lc-xp{font-size:12px;color:var(--muted);font-weight:600}
+.lc-bar{height:14px;background:var(--border);border-radius:10px;overflow:hidden}
+.lc-fill{height:100%;background:linear-gradient(90deg,var(--green2),var(--green));border-radius:10px;transition:width .8s cubic-bezier(.34,1.56,.64,1)}
+.home-stats{display:flex;gap:12px;width:100%;max-width:340px;margin-bottom:32px}
+.h-stat{flex:1;background:var(--s1);border:2px solid var(--border);border-radius:var(--r12);padding:12px 8px;text-align:center}
+.h-stat-n{font-family:'Fredoka One',sans-serif;font-size:26px}
+.h-stat-l{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
+.btn-cta{
+  background:var(--green2);color:#fff;border:none;border-radius:var(--r16);
+  font-weight:900;font-size:18px;padding:16px 48px;
+  border-bottom:4px solid var(--greend);letter-spacing:.5px;
+  transition:transform .1s,filter .15s;
 }
-.logo-text { font-family:'Fredoka One',sans-serif; font-size:28px; color:var(--primary); letter-spacing:1px; }
-.streak-pill {
-  display:flex; align-items:center; gap:6px;
-  background:var(--surface); border-radius:20px; padding:8px 14px;
-  font-weight:700; font-size:14px; color:var(--orange);
+.btn-cta:hover{filter:brightness(1.1)}
+.btn-cta:active{transform:translateY(2px);border-bottom-width:2px}
+.btn-secondary{
+  background:var(--s2);color:var(--blue);border:2px solid var(--border);
+  border-radius:var(--r12);font-weight:700;font-size:15px;padding:12px 24px;
+  transition:background .2s;margin-top:12px
 }
-.home-hero {
-  flex:1; display:flex; flex-direction:column; align-items:center;
-  justify-content:center; padding:20px; text-align:center;
-}
-.atom-icon {
-  width:120px; height:120px; margin-bottom:20px; position:relative;
-}
-.atom-nucleus {
-  width:36px; height:36px; background:var(--primary);
-  border-radius:50%; position:absolute; top:50%; left:50%;
-  transform:translate(-50%,-50%);
-  box-shadow:0 0 20px rgba(88,204,2,0.5);
-  animation:pulse 2s infinite;
-}
-.atom-orbit {
-  position:absolute; border:2px solid rgba(88,204,2,0.4);
-  border-radius:50%; top:50%; left:50%;
-  transform-origin:50% 50%;
-}
-.orbit1 { width:70px; height:70px; margin:-35px; animation:spin1 3s linear infinite; }
-.orbit2 { width:100px; height:100px; margin:-50px; animation:spin2 5s linear infinite; }
-.orbit3 { width:120px; height:120px; margin:-60px; animation:spin3 7s linear infinite; }
-.electron {
-  width:8px; height:8px; background:var(--blue);
-  border-radius:50%; position:absolute;
-  box-shadow:0 0 8px var(--blue);
-}
-.orbit1 .electron { top:-4px; left:50%; margin-left:-4px; }
-.orbit2 .electron { top:-4px; left:50%; margin-left:-4px; }
-.orbit3 .electron { top:-4px; left:50%; margin-left:-4px; }
-@keyframes spin1 { to { transform:rotate(360deg) translate(-50%,-50%); } }
-@keyframes spin2 { to { transform:rotate(-360deg) translate(-50%,-50%); } }
-@keyframes spin3 { to { transform:rotate(360deg) translate(-50%,-50%); } }
-@keyframes pulse { 0%,100%{transform:translate(-50%,-50%) scale(1);} 50%{transform:translate(-50%,-50%) scale(1.1);} }
+.btn-secondary:hover{background:var(--s3)}
 
-.home-title { font-family:'Fredoka One',sans-serif; font-size:42px; color:var(--text); margin-bottom:8px; line-height:1.1; }
-.home-sub { font-size:17px; color:var(--text-muted); margin-bottom:36px; max-width:340px; }
-.btn-start {
-  background:var(--primary); color:#fff; border:none;
-  font-family:'Nunito',sans-serif; font-weight:800; font-size:18px;
-  padding:16px 48px; border-radius:16px; cursor:pointer;
-  border-bottom:4px solid var(--primary-shadow);
-  transition:transform .1s, border-bottom-width .1s;
-  letter-spacing:.5px;
+/* ─── MAP ─── */
+#map{background:var(--bg)}
+.map-body{flex:1;padding:20px;overflow-y:auto;padding-bottom:80px}
+.unit-badge{
+  background:var(--s1);border:2px solid var(--border);
+  border-radius:var(--r16);padding:14px 18px;margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;
 }
-.btn-start:hover { background:var(--primary-dark); }
-.btn-start:active { transform:translateY(2px); border-bottom-width:2px; }
-.stats-row {
-  display:flex; gap:24px; margin-top:36px;
+.unit-icon{font-size:28px}
+.unit-info .unit-title{font-family:'Fredoka One',sans-serif;font-size:18px;color:var(--blue)}
+.unit-info .unit-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.path-container{display:flex;flex-direction:column;align-items:center;gap:0}
+.path-node-wrap{display:flex;flex-direction:column;align-items:center}
+.node-connector{width:3px;height:24px;border-radius:3px;background:var(--border);transition:background .4s}
+.node-connector.done{background:var(--green2)}
+.zigzag{margin-left:80px}.zigzag.r{margin-left:-80px}
+.lesson-node{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  cursor:pointer;padding:4px;
 }
-.stat-item {
-  text-align:center;
-  background:var(--surface); border-radius:16px;
-  padding:12px 20px; border:2px solid var(--border);
+.lesson-circle{
+  width:80px;height:80px;border-radius:50%;border:4px solid var(--border);
+  background:var(--s2);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;font-size:30px;position:relative;
+  transition:transform .15s,border-color .3s,background .3s,box-shadow .3s;
+  border-bottom:6px solid var(--border);
 }
-.stat-num { font-family:'Fredoka One',sans-serif; font-size:28px; color:var(--primary); }
-.stat-label { font-size:12px; color:var(--text-muted); font-weight:600; }
-
-/* LEVEL MAP */
-#map {
-  background: var(--bg);
-  padding-bottom: 80px;
+.lesson-circle:hover{transform:scale(1.05)}
+.lesson-circle.active{
+  border-color:var(--green2);background:var(--greens);
+  border-bottom-color:var(--greend);
+  box-shadow:0 0 0 6px rgba(74,222,128,.12);
+  animation:pulse-node 2s ease-in-out infinite;
 }
-.map-header {
-  background: var(--surface);
-  padding: 16px 20px;
-  border-bottom: 2px solid var(--border);
-  display:flex; align-items:center; gap:16px;
+.lesson-circle.mastered{
+  border-color:var(--gold);background:var(--golds);
+  border-bottom-color:var(--goldd);
+  box-shadow:0 0 0 8px rgba(251,191,36,.12);
 }
-.map-title { font-family:'Fredoka One',sans-serif; font-size:22px; flex:1; }
-.xp-bar-wrap { display:flex; align-items:center; gap:10px; }
-.xp-bar {
-  width:120px; height:12px; background:var(--border);
-  border-radius:10px; overflow:hidden;
+.lesson-circle.locked{opacity:.45;cursor:not-allowed;filter:grayscale(.4)}
+@keyframes pulse-node{0%,100%{box-shadow:0 0 0 6px rgba(74,222,128,.12)}50%{box-shadow:0 0 0 12px rgba(74,222,128,.06)}}
+.star-overlay{
+  position:absolute;top:-8px;right:-8px;
+  width:24px;height:24px;background:var(--gold);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:12px;border:2px solid var(--bg);
 }
-.xp-bar-fill {
-  height:100%; background:var(--xp-color);
-  border-radius:10px; transition:width .5s ease;
+.lock-overlay{
+  position:absolute;bottom:-6px;right:-6px;
+  font-size:14px;
 }
-.xp-label { font-size:12px; font-weight:700; color:var(--xp-color); }
-.hearts-row { display:flex; gap:4px; }
-.heart-icon { font-size:20px; }
-
-.unit-section { padding:20px; }
-.unit-header {
-  background: linear-gradient(135deg, #1a5c8a, #0d3e61);
-  border-radius:16px; padding:16px 20px;
-  margin-bottom:16px; border:2px solid #2a7ab5;
+.lesson-label{
+  font-size:12px;font-weight:800;text-align:center;max-width:100px;
+  color:var(--muted);line-height:1.3
 }
-.unit-title { font-family:'Fredoka One',sans-serif; font-size:20px; color:var(--blue); }
-.unit-desc { font-size:13px; color:var(--text-muted); margin-top:4px; }
-
-.lessons-grid { display:flex; flex-direction:column; align-items:center; gap:8px; }
-.lesson-node {
-  display:flex; flex-direction:column; align-items:center; gap:6px;
-  cursor:pointer;
+.lesson-label.active{color:var(--text)}
+.lesson-label.mastered{color:var(--gold)}
+.phase-dots{display:flex;gap:6px;align-items:center;margin-top:2px}
+.phase-dot{
+  width:10px;height:10px;border-radius:50%;background:var(--border);
+  transition:background .3s,transform .3s
 }
-.lesson-btn {
-  width:72px; height:72px; border-radius:50%;
-  border:none; cursor:pointer; position:relative;
-  font-size:28px;
-  display:flex; align-items:center; justify-content:center;
+.phase-dot.done{background:var(--green2);transform:scale(1.1)}
+.phase-dot.mastered{background:var(--gold)}
+.achiev-btn{
+  position:fixed;bottom:20px;right:20px;z-index:40;
+  background:var(--gold);color:var(--golds);border:none;
+  border-radius:50%;width:56px;height:56px;font-size:24px;
+  border-bottom:4px solid var(--goldd);
+  box-shadow:0 4px 20px rgba(251,191,36,.3);
   transition:transform .15s;
-  border-bottom:4px solid transparent;
 }
-.lesson-btn:active { transform:translateY(2px); border-bottom-width:1px; }
-.lesson-btn.done { background:#3a5c2a; border-color:#2a4a1e; }
-.lesson-btn.active { background:var(--primary); border-color:var(--primary-shadow); animation:bounce 1s ease-in-out infinite; }
-.lesson-btn.locked { background:var(--surface2); border-color:var(--border); cursor:not-allowed; opacity:.6; }
-.lesson-btn.locked::after {
-  content:'🔒'; font-size:16px; position:absolute;
-  bottom:-4px; right:-4px;
-}
-@keyframes bounce {
-  0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);}
-}
-.lesson-name { font-size:12px; font-weight:700; color:var(--text-muted); text-align:center; max-width:90px; }
-.connector { width:4px; height:24px; background:var(--border); border-radius:4px; }
-.connector.done { background:var(--primary-dark); }
-.zigzag { margin-left:60px; }
-.zigzag.right { margin-left:-60px; }
+.achiev-btn:hover{transform:scale(1.1)}
 
-/* LESSON SCREEN */
-#lesson {
-  background:var(--bg);
-  flex-direction:column;
+/* ─── LESSON ─── */
+#lesson{background:var(--bg)}
+.les-header{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 18px;background:var(--s1);border-bottom:2px solid var(--border);
+  position:sticky;top:0;z-index:50
 }
-.lesson-header {
-  display:flex; align-items:center; gap:16px;
-  padding:14px 20px; background:var(--surface);
-  border-bottom:2px solid var(--border);
+.prog-outer{flex:1;height:16px;background:var(--border);border-radius:10px;overflow:hidden}
+.prog-inner{height:100%;background:var(--green2);border-radius:10px;transition:width .4s ease}
+.hearts{display:flex;gap:3px;font-size:18px}
+.phase-tag{
+  font-size:11px;font-weight:800;color:var(--blue);
+  background:var(--blues);border-radius:8px;padding:4px 10px;
+  letter-spacing:.5px;white-space:nowrap
 }
-.back-btn {
-  background:none; border:none; color:var(--text-muted);
-  font-size:22px; cursor:pointer; padding:4px;
-  transition:color .2s;
-}
-.back-btn:hover { color:var(--text); }
-.progress-track {
-  flex:1; height:14px; background:var(--border);
-  border-radius:10px; overflow:hidden;
-}
-.progress-fill {
-  height:100%; background:var(--primary);
-  border-radius:10px; transition:width .4s ease;
-}
-.hearts-counter { display:flex; gap:3px; }
+.les-content{flex:1;padding:24px 20px 120px;overflow-y:auto;display:flex;flex-direction:column;align-items:center}
+.q-badge{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;align-self:flex-start}
+.q-text{font-size:21px;font-weight:800;line-height:1.35;margin-bottom:20px;width:100%;max-width:500px}
 
-.lesson-content {
-  flex:1; padding:24px 20px; overflow-y:auto;
-  display:flex; flex-direction:column; align-items:center;
+/* MCQ */
+.mcq-list{display:flex;flex-direction:column;gap:10px;width:100%;max-width:490px}
+.mcq-opt{
+  display:flex;align-items:center;gap:12px;
+  background:var(--s1);border:2.5px solid var(--border);
+  border-radius:var(--r16);padding:14px 16px;
+  font-size:15px;font-weight:700;color:var(--text);text-align:left;
+  transition:background .15s,border-color .15s;width:100%;
 }
-.q-type-badge {
-  font-size:11px; font-weight:700; color:var(--text-muted);
-  letter-spacing:1.5px; text-transform:uppercase; margin-bottom:12px;
-  align-self:flex-start;
+.mcq-opt:hover:not(:disabled){background:var(--s2);border-color:#4a6a8a}
+.mcq-opt.sel{border-color:var(--blue);background:rgba(56,189,248,.12);color:var(--blue)}
+.mcq-opt.ok{border-color:var(--green2);background:rgba(74,222,128,.12);color:var(--green2)}
+.mcq-opt.bad{border-color:var(--red);background:rgba(248,113,113,.12);color:var(--red)}
+.mcq-letter{
+  width:34px;height:34px;border-radius:10px;background:var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;flex-shrink:0;transition:background .15s;
 }
-.q-question {
-  font-size:22px; font-weight:800; margin-bottom:24px;
-  line-height:1.3; width:100%; max-width:500px;
-}
-.q-instruction {
-  font-size:15px; color:var(--text-muted);
-  margin-bottom:16px; width:100%; max-width:500px;
+.mcq-opt.sel .mcq-letter{background:var(--blue);color:#fff}
+.mcq-opt.ok .mcq-letter{background:var(--green2);color:#fff}
+.mcq-opt.bad .mcq-letter{background:var(--red);color:#fff}
+
+/* IMAGE MCQ */
+.img-q-wrap{width:100%;max-width:490px;margin-bottom:16px}
+.img-q-label{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.img-q-svg{
+  background:var(--s1);border:2px solid var(--border);border-radius:var(--r16);
+  padding:16px;overflow:hidden;
 }
 
-/* MCQ OPTIONS */
-.mcq-options { display:flex; flex-direction:column; gap:12px; width:100%; max-width:480px; }
-.mcq-btn {
-  background:var(--surface); border:2px solid var(--border);
-  border-radius:16px; padding:16px 18px;
-  font-family:'Nunito',sans-serif; font-size:16px; font-weight:700;
-  color:var(--text); cursor:pointer; text-align:left;
-  transition:background .15s, border-color .15s, transform .1s;
-  display:flex; align-items:center; gap:12px;
+/* FILL */
+.fill-sentence{
+  font-size:20px;font-weight:700;line-height:2.2;
+  width:100%;max-width:490px;margin-bottom:18px;
+  padding:16px;background:var(--s1);border:2px solid var(--border);border-radius:var(--r16);
 }
-.mcq-btn:hover:not(:disabled) { background:var(--surface2); border-color:#4a6a8a; }
-.mcq-btn.selected { border-color:var(--blue); background:rgba(28,176,246,.15); }
-.mcq-btn.correct { border-color:var(--primary); background:rgba(88,204,2,.2); color:var(--primary); }
-.mcq-btn.wrong { border-color:var(--red); background:rgba(255,75,75,.2); color:var(--red); }
-.mcq-letter {
-  width:32px; height:32px; border-radius:8px;
-  background:var(--border); display:flex; align-items:center;
-  justify-content:center; font-size:14px; font-weight:800;
-  flex-shrink:0; transition:background .15s;
+.fill-blank{
+  display:inline-block;min-width:90px;border-bottom:3px solid var(--blue);
+  padding:0 6px;color:var(--blue);text-align:center;cursor:default;
+  transition:color .2s,border-color .2s;
 }
-.mcq-btn.selected .mcq-letter { background:var(--blue); color:#fff; }
-.mcq-btn.correct .mcq-letter { background:var(--primary); color:#fff; }
-.mcq-btn.wrong .mcq-letter { background:var(--red); color:#fff; }
+.fill-blank.filled{border-color:var(--green2);color:var(--green2)}
+.fill-blank.wrong-b{border-color:var(--red);color:var(--red)}
+.fill-word-bank{display:flex;flex-wrap:wrap;gap:8px;max-width:490px;padding:12px;background:var(--s1);border:2px solid var(--border);border-radius:var(--r16)}
+.fill-word{
+  background:var(--s2);border:2.5px solid var(--border);
+  border-radius:12px;padding:8px 16px;font-size:14px;font-weight:700;
+  color:var(--text);transition:background .15s,border-color .15s;
+}
+.fill-word:hover:not(:disabled){border-color:var(--blue);background:rgba(56,189,248,.12)}
+.fill-word.used{opacity:.35;cursor:not-allowed}
+.fill-word.ok{border-color:var(--green2);background:rgba(74,222,128,.12);color:var(--green2)}
+.fill-word.bad{border-color:var(--red);background:rgba(248,113,113,.12);color:var(--red)}
 
-/* DRAG AND DROP */
-.drag-area {
-  width:100%; max-width:500px;
-  display:flex; flex-direction:column; gap:16px;
+/* MATCH */
+.match-cols{display:flex;gap:14px;width:100%;max-width:490px}
+.match-col{flex:1;display:flex;flex-direction:column;gap:8px}
+.match-col-hdr{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.match-item{
+  background:var(--s1);border:2.5px solid var(--border);
+  border-radius:14px;padding:11px 14px;font-size:13px;font-weight:700;
+  cursor:pointer;text-align:center;transition:all .15s;
 }
-.drag-zones { display:flex; gap:16px; margin-bottom:8px; }
-.drop-zone {
-  flex:1; min-height:80px; border:2px dashed var(--border);
-  border-radius:16px; padding:12px;
-  display:flex; flex-direction:column; gap:6px;
-  transition:border-color .2s, background .2s;
-}
-.drop-zone.dragover { border-color:var(--blue); background:rgba(28,176,246,.1); }
-.drop-zone.correct { border-color:var(--primary); background:rgba(88,204,2,.1); }
-.drop-zone.wrong { border-color:var(--red); background:rgba(255,75,75,.1); }
-.drop-label { font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
-.drag-chip {
-  background:var(--blue); color:#fff;
-  padding:8px 14px; border-radius:10px;
-  font-size:14px; font-weight:700; cursor:grab;
-  user-select:none; transition:transform .15s, box-shadow .15s;
-  display:inline-block;
-}
-.drag-chip:active { cursor:grabbing; transform:scale(1.05); }
-.drag-chip.in-bank { background:var(--surface2); color:var(--text); border:2px solid var(--border); }
-.drag-bank { display:flex; flex-wrap:wrap; gap:8px; padding:12px; background:var(--surface); border-radius:16px; border:2px solid var(--border); }
-.drag-bank-label { font-size:11px; color:var(--text-muted); font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; width:100%; }
+.match-item:hover{border-color:#4a6a8a}
+.match-item.sel{border-color:var(--blue);background:rgba(56,189,248,.15);color:var(--blue)}
+.match-item.paired{border-color:var(--green2);background:rgba(74,222,128,.12);color:var(--green2);cursor:default}
+.match-item.bad-pair{border-color:var(--red);background:rgba(248,113,113,.12);color:var(--red)}
 
-/* ORDERING */
-.order-list { display:flex; flex-direction:column; gap:8px; width:100%; max-width:480px; }
-.order-item {
-  background:var(--surface); border:2px solid var(--border);
-  border-radius:14px; padding:14px 16px;
-  display:flex; align-items:center; gap:12px;
-  cursor:grab; font-size:15px; font-weight:600;
-  transition:transform .15s, border-color .15s;
-  user-select:none;
+/* DRAG */
+.drag-scene{width:100%;max-width:490px;display:flex;flex-direction:column;gap:14px}
+.drag-zones-row{display:flex;gap:12px}
+.drop-zone{
+  flex:1;min-height:90px;border:2.5px dashed var(--border);
+  border-radius:var(--r16);padding:10px;
+  display:flex;flex-direction:column;gap:6px;
+  transition:border-color .2s,background .2s;
 }
-.order-item:active { cursor:grabbing; transform:scale(1.02); border-color:var(--blue); }
-.order-item.correct-pos { border-color:var(--primary); }
-.order-handle { color:var(--text-muted); font-size:18px; }
-.order-num {
-  width:28px; height:28px; border-radius:8px;
-  background:var(--border); display:flex;
-  align-items:center; justify-content:center;
-  font-size:13px; font-weight:800; flex-shrink:0;
+.drop-zone.over{border-color:var(--blue);background:rgba(56,189,248,.08)}
+.drop-zone.ok{border-color:var(--green2);background:rgba(74,222,128,.08)}
+.drop-zone.bad{border-color:var(--red);background:rgba(248,113,113,.08)}
+.dz-label{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.drag-chip{
+  background:var(--blue);color:#fff;border-radius:10px;
+  padding:8px 12px;font-size:13px;font-weight:700;
+  cursor:grab;user-select:none;display:inline-block;
+  border-bottom:3px solid var(--blued);transition:transform .1s;
 }
+.drag-chip:active{cursor:grabbing;transform:scale(1.04)}
+.drag-chip.bank-chip{background:var(--s2);color:var(--text);border:2px solid var(--border);border-bottom:none}
+.drag-bank{display:flex;flex-wrap:wrap;gap:8px;padding:12px;background:var(--s1);border:2px solid var(--border);border-radius:var(--r16)}
+.db-label{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;width:100%;margin-bottom:4px}
 
-/* FILL IN THE BLANK */
-.fill-equation {
-  font-size:22px; font-weight:700; width:100%; max-width:480px;
-  line-height:2; margin-bottom:20px; text-align:center;
+/* ORDER */
+.order-list{display:flex;flex-direction:column;gap:8px;width:100%;max-width:490px}
+.order-item{
+  display:flex;align-items:center;gap:12px;
+  background:var(--s1);border:2.5px solid var(--border);
+  border-radius:14px;padding:13px 15px;
+  cursor:grab;font-size:14px;font-weight:700;
+  user-select:none;transition:border-color .15s,background .15s;
 }
-.fill-blank {
-  display:inline-block; min-width:80px; border-bottom:3px solid var(--blue);
-  padding:0 8px; text-align:center; color:var(--blue);
-  cursor:pointer;
+.order-item:active{cursor:grabbing}
+.order-item.drag-over{border-color:var(--blue);background:var(--s2)}
+.order-handle{color:var(--muted);font-size:16px;flex-shrink:0}
+.order-badge{
+  width:28px;height:28px;border-radius:8px;background:var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:900;flex-shrink:0;
 }
-.fill-options { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; max-width:480px; }
-.fill-opt {
-  background:var(--surface); border:2px solid var(--border);
-  border-radius:12px; padding:10px 18px;
-  font-size:15px; font-weight:700; cursor:pointer;
-  transition:background .15s, border-color .15s;
-}
-.fill-opt:hover:not(:disabled) { border-color:var(--blue); background:rgba(28,176,246,.1); }
-.fill-opt.selected { border-color:var(--blue); background:rgba(28,176,246,.2); color:var(--blue); }
-.fill-opt.correct { border-color:var(--primary); background:rgba(88,204,2,.2); color:var(--primary); }
-.fill-opt.wrong { border-color:var(--red); background:rgba(255,75,75,.2); color:var(--red); }
+.order-item.ok .order-badge{background:var(--green2);color:#fff}
+.order-item.bad .order-badge{background:var(--red);color:#fff}
 
-/* MATCHING */
-.match-area { display:flex; gap:20px; width:100%; max-width:500px; }
-.match-col { flex:1; display:flex; flex-direction:column; gap:10px; }
-.match-col-label { font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
-.match-item {
-  background:var(--surface); border:2px solid var(--border);
-  border-radius:14px; padding:12px 16px;
-  font-size:14px; font-weight:700; cursor:pointer;
-  transition:all .15s; text-align:center;
+/* CONFIRM */
+.confirm-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  padding:14px 20px;background:var(--s1);border-top:2px solid var(--border);z-index:40
 }
-.match-item:hover { border-color:#4a6a8a; }
-.match-item.selected { border-color:var(--blue); background:rgba(28,176,246,.15); color:var(--blue); }
-.match-item.matched { border-color:var(--primary); background:rgba(88,204,2,.15); color:var(--primary); cursor:default; }
-.match-item.wrong-match { border-color:var(--red); background:rgba(255,75,75,.15); color:var(--red); }
+.confirm-btn{
+  width:100%;max-width:480px;display:block;margin:0 auto;
+  background:var(--s3);color:var(--muted);border:2px solid var(--border);
+  border-radius:var(--r16);font-weight:900;font-size:18px;padding:15px;
+  cursor:not-allowed;transition:all .2s;
+}
+.confirm-btn.ready{
+  background:var(--green2);color:#fff;border-color:var(--greend);
+  cursor:pointer;border-bottom:4px solid var(--greend);
+}
+.confirm-btn.ready:active{transform:translateY(2px);border-bottom-width:2px}
 
-/* FEEDBACK PANEL */
-.feedback-panel {
-  position:fixed; bottom:0; left:0; right:0;
-  padding:20px; border-top:3px solid;
-  transform:translateY(100%);
-  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
-  z-index:100;
+/* FEEDBACK */
+.feedback-panel{
+  position:fixed;bottom:0;left:0;right:0;
+  padding:18px 20px 24px;border-top:3px solid;
+  transform:translateY(100%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);z-index:60
 }
-.feedback-panel.show { transform:translateY(0); }
-.feedback-panel.correct-fb { background:#1a3d0a; border-color:var(--primary); }
-.feedback-panel.wrong-fb { background:#3d0a0a; border-color:var(--red); }
-.fb-title { font-family:'Fredoka One',sans-serif; font-size:24px; margin-bottom:4px; }
-.fb-correct .fb-title { color:var(--primary); }
-.fb-wrong .fb-title { color:var(--red); }
-.fb-explanation { font-size:14px; color:var(--text-muted); margin-bottom:16px; }
-.fb-btn {
-  background:var(--primary); color:#fff; border:none;
-  font-family:'Nunito',sans-serif; font-weight:800; font-size:16px;
-  padding:14px 32px; border-radius:14px; cursor:pointer;
-  border-bottom:4px solid var(--primary-shadow);
-  width:100%; transition:transform .1s;
+.feedback-panel.show{transform:translateY(0)}
+.fp-ok{background:#0F2A15;border-color:var(--green2)}
+.fp-bad{background:#2A0F0F;border-color:var(--redd)}
+.fp-title{font-family:'Fredoka One',sans-serif;font-size:26px;margin-bottom:4px}
+.fp-ok .fp-title{color:var(--green2)}
+.fp-bad .fp-title{color:var(--red)}
+.fp-exp{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5;max-width:480px}
+.fp-btn{
+  width:100%;max-width:480px;border:none;border-radius:var(--r16);
+  font-weight:900;font-size:16px;padding:14px;
+  border-bottom:4px solid;
 }
-.fb-btn:active { transform:translateY(2px); border-bottom-width:2px; }
-.fb-btn.wrong-btn { background:var(--red); border-color:var(--red-dark); }
+.fp-ok .fp-btn{background:var(--green2);color:#fff;border-bottom-color:var(--greend)}
+.fp-bad .fp-btn{background:var(--redd);color:#fff;border-bottom-color:#B91C1C}
+.fp-btn:active{transform:translateY(2px);border-bottom-width:2px}
 
-/* CONFIRM BTN */
-.confirm-wrap {
-  padding:16px 20px;
-  background:var(--bg);
-  border-top:2px solid var(--border);
+/* PHASE DONE */
+#phase-done{background:radial-gradient(ellipse at center,#0F2A15 0%,var(--bg) 70%);align-items:center;justify-content:center}
+.pd-inner{text-align:center;padding:32px 24px}
+.pd-icon{font-size:64px;animation:spin-in .5s cubic-bezier(.34,1.56,.64,1);margin-bottom:12px}
+.pd-title{font-family:'Fredoka One',sans-serif;font-size:38px;color:var(--green2);margin-bottom:6px}
+.pd-sub{font-size:16px;color:var(--muted);margin-bottom:24px}
+.pd-stats{display:flex;gap:14px;justify-content:center;margin-bottom:28px}
+.pd-stat{background:var(--s1);border:2px solid var(--border);border-radius:var(--r12);padding:14px 18px;text-align:center}
+.pd-sn{font-family:'Fredoka One',sans-serif;font-size:28px}
+.pd-sl{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
+.xp-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(251,191,36,.15);border:2px solid var(--gold);
+  border-radius:20px;padding:10px 20px;margin-bottom:24px;
 }
-.confirm-btn {
-  width:100%; background:var(--surface2); color:var(--text-muted);
-  border:2px solid var(--border); border-radius:16px;
-  font-family:'Nunito',sans-serif; font-weight:800; font-size:18px;
-  padding:16px; cursor:not-allowed; transition:all .2s;
-}
-.confirm-btn.ready {
-  background:var(--primary); color:#fff;
-  border-color:var(--primary-shadow); cursor:pointer;
-  border-bottom:4px solid var(--primary-shadow);
-}
-.confirm-btn.ready:active { transform:translateY(2px); border-bottom-width:2px; }
+.xp-pill-n{font-family:'Fredoka One',sans-serif;font-size:32px;color:var(--gold)}
+.xp-pill-l{font-size:16px;font-weight:700;color:var(--gold)}
+.phase-indicator{display:flex;gap:10px;justify-content:center;margin-bottom:20px}
+.pi-dot{width:36px;height:14px;border-radius:10px;background:var(--border);transition:background .4s}
+.pi-dot.done{background:var(--green2)}
+.pi-dot.gold{background:var(--gold)}
 
-/* LEVEL COMPLETE */
-#complete {
-  align-items:center; justify-content:center;
-  background: radial-gradient(circle at center, #1a3d0a 0%, #131F24 70%);
+/* LESSON DONE */
+#lesson-done{background:radial-gradient(ellipse at center,#1A2A0A 0%,var(--bg) 70%);align-items:center;justify-content:center}
+.ld-inner{text-align:center;padding:32px 24px;width:100%;max-width:420px;margin:0 auto}
+.ld-trophy{font-size:90px;animation:spin-in .6s cubic-bezier(.34,1.56,.64,1);margin-bottom:10px}
+@keyframes spin-in{from{transform:scale(0) rotate(-180deg)}to{transform:scale(1) rotate(0)}}
+.ld-title{font-family:'Fredoka One',sans-serif;font-size:46px;line-height:1;margin-bottom:6px}
+.ld-badge{
+  display:inline-block;background:var(--gold);color:var(--golds);
+  border-radius:20px;padding:6px 16px;font-weight:900;font-size:14px;
+  margin-bottom:16px;border:2px solid var(--goldd)
 }
-.complete-inner { text-align:center; padding:32px 24px; }
-.trophy { font-size:80px; margin-bottom:16px; animation:spin-in .5s cubic-bezier(.34,1.56,.64,1); }
-@keyframes spin-in { from{transform:scale(0) rotate(-180deg);} to{transform:scale(1) rotate(0);} }
-.complete-title { font-family:'Fredoka One',sans-serif; font-size:42px; color:var(--primary); }
-.complete-sub { font-size:18px; color:var(--text-muted); margin:8px 0 32px; }
-.xp-gained { display:inline-flex; align-items:center; gap:8px; background:var(--surface); border-radius:20px; padding:12px 24px; margin-bottom:24px; }
-.xp-big { font-family:'Fredoka One',sans-serif; font-size:36px; color:var(--xp-color); }
-.complete-stats { display:flex; gap:16px; margin-bottom:32px; justify-content:center; }
-.c-stat { background:var(--surface); border-radius:16px; padding:16px 20px; border:2px solid var(--border); text-align:center; }
-.c-stat-num { font-family:'Fredoka One',sans-serif; font-size:28px; }
-.c-stat-label { font-size:12px; color:var(--text-muted); font-weight:600; }
-.complete-btns { display:flex; flex-direction:column; gap:12px; max-width:300px; margin:0 auto; }
+.ld-stats{display:flex;gap:12px;justify-content:center;margin-bottom:24px}
+.ld-stat{flex:1;background:var(--s1);border:2px solid var(--border);border-radius:var(--r12);padding:14px;text-align:center}
+.ld-sn{font-family:'Fredoka One',sans-serif;font-size:30px}
+.ld-sl{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
+.ld-btns{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+
+/* ACHIEVEMENTS */
+#achievements{background:var(--bg)}
+.ach-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:20px}
+.ach-card{
+  background:var(--s1);border:2px solid var(--border);
+  border-radius:var(--r16);padding:16px 14px;display:flex;gap:12px;
+  transition:border-color .2s;align-items:flex-start;
+}
+.ach-card.unlocked{border-color:var(--gold);background:rgba(251,191,36,.06)}
+.ach-card.locked{filter:grayscale(.5);opacity:.6}
+.ach-icon{font-size:32px;flex-shrink:0}
+.ach-info{}
+.ach-name{font-weight:900;font-size:14px;margin-bottom:3px}
+.ach-card.unlocked .ach-name{color:var(--gold)}
+.ach-desc{font-size:12px;color:var(--muted);line-height:1.4}
+.ach-bonus{font-size:11px;font-weight:800;color:var(--green2);margin-top:4px}
+.ach-lock-label{font-size:11px;color:var(--red);font-weight:700;margin-top:4px}
+
+/* ACHIEVEMENT POPUP */
+.ach-popup{
+  position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-40px);
+  background:var(--s1);border:2px solid var(--gold);border-radius:var(--r16);
+  padding:14px 20px;display:flex;align-items:center;gap:12px;
+  z-index:200;pointer-events:none;opacity:0;
+  transition:opacity .3s,transform .3s;max-width:340px;width:90%;
+}
+.ach-popup.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.ap-icon{font-size:32px}
+.ap-title{font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px;text-transform:uppercase}
+.ap-name{font-weight:900;font-size:16px;color:var(--text)}
+.ap-bonus{font-size:12px;color:var(--green2);font-weight:700}
+
+/* XP FLOAT */
+.xp-float{
+  position:fixed;z-index:300;font-family:'Fredoka One',sans-serif;
+  font-size:20px;color:var(--green2);pointer-events:none;
+  animation:float-up .8s ease-out forwards;
+}
+@keyframes float-up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-50px)}}
 
 /* CONFETTI */
-.confetti-piece {
-  position:fixed; width:10px; height:10px; pointer-events:none;
-  z-index:999; animation:confetti-fall 1s ease-out forwards;
-}
-@keyframes confetti-fall {
-  0%{opacity:1;transform:translateY(0) rotate(0);}
-  100%{opacity:0;transform:translateY(300px) rotate(720deg);}
-}
+.confetti{position:fixed;pointer-events:none;z-index:999;animation:cfetti var(--dur,.8s) ease-out forwards}
+@keyframes cfetti{0%{opacity:1;transform:translate(0,0) rotate(0deg)}100%{opacity:0;transform:translate(var(--tx,0),200px) rotate(var(--r,360deg))}}
 
-/* XP POPUP */
-.xp-popup {
-  position:fixed; top:80px; right:20px; z-index:200;
-  background:var(--surface); border:2px solid var(--primary);
-  border-radius:16px; padding:10px 20px;
-  font-family:'Fredoka One',sans-serif; font-size:22px; color:var(--primary);
-  animation:popup-anim .6s ease-out;
-  pointer-events:none;
-}
-@keyframes popup-anim {
-  0%{transform:translateY(20px);opacity:0;}
-  30%{transform:translateY(-10px);opacity:1;}
-  70%{transform:translateY(-10px);opacity:1;}
-  100%{transform:translateY(-30px);opacity:0;}
-}
-
-/* IMAGE QUESTION */
-.img-question {
-  width:100%; max-width:480px; border-radius:16px; overflow:hidden;
-  margin-bottom:20px; border:2px solid var(--border);
-  background:var(--surface);
-}
-.img-q-inner { padding:20px; position:relative; }
-.molecule-display {
-  width:100%; min-height:160px; display:flex; align-items:center;
-  justify-content:center; flex-direction:column; gap:12px;
-  background:var(--surface2); border-radius:12px;
-  margin-bottom:12px; padding:20px;
-}
-.mol-formula { font-family:'Fredoka One',sans-serif; font-size:48px; color:var(--primary); }
-.mol-name { font-size:14px; color:var(--text-muted); font-weight:600; }
-
-/* VISUAL TABLE (Colloids) */
-.visual-table { width:100%; border-collapse:collapse; font-size:13px; }
-.visual-table th { background:var(--surface2); color:var(--blue); font-weight:700; padding:10px; text-align:left; border:1px solid var(--border); }
-.visual-table td { padding:8px 10px; border:1px solid var(--border); color:var(--text); }
-.visual-table tr:hover td { background:var(--surface2); }
-
-/* ANIMATIONS */
-.shake { animation:shake .3s ease; }
-@keyframes shake {
-  0%,100%{transform:translateX(0);} 25%{transform:translateX(-8px);} 75%{transform:translateX(8px);}
-}
-.pop { animation:pop .3s cubic-bezier(.34,1.56,.64,1); }
-@keyframes pop {
-  0%{transform:scale(.8);} 100%{transform:scale(1);}
-}
-
-/* TOOLTIP */
-.tooltip {
-  position:fixed; z-index:300; background:var(--surface);
-  border:2px solid var(--border); border-radius:12px; padding:8px 12px;
-  font-size:13px; font-weight:600; max-width:200px; pointer-events:none;
-  opacity:0; transition:opacity .2s;
-}
-.tooltip.show { opacity:1; }
+/* MISC */
+.shake{animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.pop{animation:pop .25s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(.7)}to{transform:scale(1)}}
 </style>
 </head>
 <body>
 
-<!-- HOME -->
+<!-- ═══════════ HOME ═══════════ -->
 <div id="home" class="screen active">
-  <div class="home-header">
-    <div class="logo-text">⚗️ QuímicaLab</div>
-    <div class="streak-pill">🔥 <span id="streak-count">3</span> días</div>
+  <div class="app-header">
+    <div class="logo">⚗️ QuímicaLab</div>
+    <div class="hdr-right">
+      <div class="streak-chip">🔥 <span id="h-streak">0</span></div>
+      <div class="xp-chip">⭐ <span id="h-xp">0</span> XP</div>
+    </div>
   </div>
-  <div class="home-hero">
-    <div class="atom-icon">
-      <div class="atom-nucleus"></div>
-      <div class="atom-orbit orbit1"><div class="electron"></div></div>
-      <div class="atom-orbit orbit2"><div class="electron"></div></div>
-      <div class="atom-orbit orbit3"><div class="electron"></div></div>
+  <div class="home-body">
+    <div class="mascot">🧪</div>
+    <div class="home-title">Aprende<br><span>Química</span></div>
+    <div class="home-sub">Domina soluciones, coloides y más con lecciones interactivas y divertidas</div>
+    <div class="level-card">
+      <div class="lc-row">
+        <span class="lc-name" id="h-level-name">Nivel 1 — Estudiante</span>
+        <span class="lc-xp" id="h-level-xp">0 / 100 XP</span>
+      </div>
+      <div class="lc-bar"><div class="lc-fill" id="h-level-bar" style="width:0%"></div></div>
     </div>
-    <div class="home-title">¡Aprende<br>Química!</div>
-    <div class="home-sub">Domina soluciones, mezclas y más a través de lecciones interactivas divertidas</div>
-    <button class="btn-start" onclick="showMap()">COMENZAR →</button>
-    <div class="stats-row">
-      <div class="stat-item">
-        <div class="stat-num" id="home-xp">120</div>
-        <div class="stat-label">⭐ XP Total</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num" id="home-level">2</div>
-        <div class="stat-label">🏆 Nivel</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num" id="home-done">3</div>
-        <div class="stat-label">✅ Lecciones</div>
-      </div>
+    <div class="home-stats">
+      <div class="h-stat"><div class="h-stat-n" id="hs-lessons" style="color:var(--green2)">0</div><div class="h-stat-l">Lecciones</div></div>
+      <div class="h-stat"><div class="h-stat-n" id="hs-phases" style="color:var(--blue)">0</div><div class="h-stat-l">Fases</div></div>
+      <div class="h-stat"><div class="h-stat-n" id="hs-ach" style="color:var(--gold)">0</div><div class="h-stat-l">Logros</div></div>
     </div>
+    <button class="btn-cta" onclick="showMap()">EMPEZAR →</button>
+    <button class="btn-secondary" onclick="showScreen('achievements')">🏆 Ver Logros</button>
   </div>
 </div>
 
-<!-- MAP -->
+<!-- ═══════════ MAP ═══════════ -->
 <div id="map" class="screen">
-  <div class="map-header">
+  <div class="app-header">
     <button class="back-btn" onclick="showHome()">←</button>
-    <div class="map-title">🗺️ Mapa de Aprendizaje</div>
-    <div class="xp-bar-wrap">
-      <div class="xp-bar"><div class="xp-bar-fill" id="xp-fill" style="width:40%"></div></div>
-      <div class="xp-label" id="xp-label">120 XP</div>
+    <div class="logo">Mapa de Aprendizaje</div>
+    <div class="hdr-right">
+      <div class="streak-chip">🔥 <span id="m-streak">0</span></div>
+      <div class="xp-chip">⭐ <span id="m-xp">0</span></div>
+      <div class="level-chip" id="m-level">Nv.1</div>
     </div>
   </div>
-  <div class="unit-section">
-    <!-- UNIT 1 -->
-    <div class="unit-header">
-      <div class="unit-title">🧪 Unidad 1: Soluciones</div>
-      <div class="unit-desc">Mezclas homogéneas, soluto, solvente y concentración</div>
-    </div>
-    <div class="lessons-grid" id="map-grid">
-      <!-- JS fills this -->
-    </div>
-  </div>
+  <div class="map-body" id="map-body"></div>
+  <button class="achiev-btn" onclick="showScreen('achievements')" title="Logros">🏆</button>
 </div>
 
-<!-- LESSON -->
+<!-- ═══════════ LESSON ═══════════ -->
 <div id="lesson" class="screen">
-  <div class="lesson-header">
-    <button class="back-btn" id="lesson-back">✕</button>
-    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
-    <div class="hearts-counter" id="hearts-row"></div>
+  <div class="les-header">
+    <button class="back-btn" id="les-back">✕</button>
+    <div class="prog-outer"><div class="prog-inner" id="les-prog"></div></div>
+    <div class="phase-tag" id="les-phase-tag">Fase 1</div>
+    <div class="hearts" id="les-hearts"></div>
   </div>
-  <div class="lesson-content" id="lesson-content"></div>
-  <div class="confirm-wrap">
+  <div class="les-content" id="les-content"></div>
+  <div class="confirm-bar">
     <button class="confirm-btn" id="confirm-btn">VERIFICAR</button>
   </div>
   <div class="feedback-panel" id="feedback">
-    <div class="fb-icon" id="fb-icon"></div>
-    <div class="fb-title" id="fb-title"></div>
-    <div class="fb-explanation" id="fb-exp"></div>
-    <button class="fb-btn" id="fb-btn">CONTINUAR</button>
+    <div class="fp-title" id="fp-title"></div>
+    <div class="fp-exp" id="fp-exp"></div>
+    <button class="fp-btn" id="fp-btn">CONTINUAR</button>
   </div>
 </div>
 
-<!-- COMPLETE -->
-<div id="complete" class="screen">
-  <div class="complete-inner">
-    <div class="trophy">🏆</div>
-    <div class="complete-title">¡Lección Completada!</div>
-    <div class="complete-sub" id="complete-sub">¡Excelente trabajo!</div>
-    <div class="xp-gained">
-      <span>+</span><span class="xp-big" id="xp-gained-num">20</span><span style="font-size:18px;font-weight:700;color:var(--xp-color)"> XP</span>
+<!-- ═══════════ PHASE DONE ═══════════ -->
+<div id="phase-done" class="screen">
+  <div class="pd-inner">
+    <div class="pd-icon" id="pd-icon">⭐</div>
+    <div class="pd-title" id="pd-title">¡Fase Completada!</div>
+    <div class="pd-sub" id="pd-sub">Buen trabajo, sigue así</div>
+    <div class="xp-pill"><span>+</span><span class="xp-pill-n" id="pd-xp">20</span><span class="xp-pill-l">XP</span></div>
+    <div class="phase-indicator" id="pd-phases"></div>
+    <div class="pd-stats">
+      <div class="pd-stat"><div class="pd-sn" style="color:var(--green2)" id="pd-correct">0</div><div class="pd-sl">Correctas</div></div>
+      <div class="pd-stat"><div class="pd-sn" style="color:var(--red)" id="pd-wrong">0</div><div class="pd-sl">Errores</div></div>
+      <div class="pd-stat"><div class="pd-sn" style="color:var(--gold)" id="pd-acc">0%</div><div class="pd-sl">Precisión</div></div>
     </div>
-    <div class="complete-stats">
-      <div class="c-stat">
-        <div class="c-stat-num" style="color:var(--primary)" id="cs-correct">5</div>
-        <div class="c-stat-label">Correctas</div>
-      </div>
-      <div class="c-stat">
-        <div class="c-stat-num" style="color:var(--red)" id="cs-wrong">1</div>
-        <div class="c-stat-label">Errores</div>
-      </div>
-      <div class="c-stat">
-        <div class="c-stat-num" style="color:var(--xp-color)" id="cs-acc">83%</div>
-        <div class="c-stat-label">Precisión</div>
-      </div>
+    <button class="btn-cta" id="pd-next-btn">SIGUIENTE FASE →</button>
+    <button class="btn-secondary" onclick="showMap()" style="margin-top:12px">Ir al mapa</button>
+  </div>
+</div>
+
+<!-- ═══════════ LESSON DONE ═══════════ -->
+<div id="lesson-done" class="screen">
+  <div class="ld-inner">
+    <div class="ld-trophy">🏆</div>
+    <div class="ld-title" id="ld-title" style="color:var(--gold)">¡Dominado!</div>
+    <div class="ld-badge">⭐ LECCIÓN MAESTRA</div>
+    <div class="xp-pill"><span>+</span><span class="xp-pill-n" id="ld-xp">60</span><span class="xp-pill-l">XP Total</span></div>
+    <div class="ld-stats">
+      <div class="ld-stat"><div class="ld-sn" style="color:var(--green2)" id="ld-correct">0</div><div class="ld-sl">Correctas</div></div>
+      <div class="ld-stat"><div class="ld-sn" style="color:var(--red)" id="ld-wrong">0</div><div class="ld-sl">Errores</div></div>
+      <div class="ld-stat"><div class="ld-sn" style="color:var(--gold)" id="ld-acc">0%</div><div class="ld-sl">Precisión</div></div>
     </div>
-    <div class="complete-btns">
-      <button class="btn-start" onclick="showMap()">VER MAPA →</button>
-      <button class="btn-start" style="background:var(--surface);border:2px solid var(--border);color:var(--text);border-bottom:4px solid var(--border)" onclick="showHome()">INICIO</button>
+    <div class="ld-btns">
+      <button class="btn-cta" onclick="showMap()">VER MAPA →</button>
+      <button class="btn-secondary" onclick="showHome()">Inicio</button>
     </div>
   </div>
 </div>
 
-<div class="tooltip" id="tooltip"></div>
+<!-- ═══════════ ACHIEVEMENTS ═══════════ -->
+<div id="achievements" class="screen">
+  <div class="app-header">
+    <button class="back-btn" onclick="showMap()">←</button>
+    <div class="logo">🏆 Logros</div>
+    <div class="hdr-right">
+      <div class="xp-chip">⭐ <span id="a-xp">0</span></div>
+    </div>
+  </div>
+  <div class="ach-grid" id="ach-grid"></div>
+</div>
+
+<!-- Popups -->
+<div class="ach-popup" id="ach-popup">
+  <div class="ap-icon" id="ap-icon">🏆</div>
+  <div><div class="ap-title">¡Logro Desbloqueado!</div><div class="ap-name" id="ap-name"></div><div class="ap-bonus" id="ap-bonus"></div></div>
+</div>
 
 <script>
-// ==================== STATE ====================
-const state = {
-  xp: 120, hearts: 5, streak: 3, level: 2, lessonsCompleted: [0,1,2],
-  currentLesson: 0, currentQ: 0, answers: [], correctCount: 0, wrongCount: 0
-};
-
-// ==================== AUDIO ====================
-const AC = new (window.AudioContext || window.webkitAudioContext)();
-function playTone(freq, dur, type='sine', vol=0.3) {
-  const o = AC.createOscillator(); const g = AC.createGain();
-  o.connect(g); g.connect(AC.destination);
-  o.type = type; o.frequency.value = freq;
-  g.gain.setValueAtTime(vol, AC.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + dur);
-  o.start(); o.stop(AC.currentTime + dur);
-}
-function sfxCorrect() {
-  playTone(523, .1,'sine',.25); 
-  setTimeout(()=>playTone(659,.1,'sine',.25),100); 
-  setTimeout(()=>playTone(784,.2,'sine',.25),200);
-}
-function sfxWrong() {
-  playTone(300,.15,'sawtooth',.2);
-  setTimeout(()=>playTone(250,.2,'sawtooth',.2),160);
-}
-function sfxSelect() { playTone(440,.05,'sine',.1); }
-function sfxComplete() {
-  [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,.15,'sine',.2),i*100));
-}
-function sfxClick() { playTone(600,.04,'sine',.08); }
-
-// ==================== LESSONS DATA ====================
-const lessons = [
-  {
-    id:0, name:'¿Qué es una Solución?', icon:'🧪', type:'intro',
-    xp:20, color:'#58CC02',
-    questions:[
-      {
-        type:'mcq',
-        question:'¿Cuál es la definición correcta de una SOLUCIÓN?',
-        badge:'Opción múltiple',
-        options:[
-          'Una mezcla heterogénea visible a simple vista',
-          'Una mezcla homogénea de dos o más sustancias a nivel molecular',
-          'Un compuesto puro sin impurezas',
-          'Agua con partículas sólidas en suspensión'
-        ],
-        correct:1,
-        explanation:'Una solución es una mezcla homogénea donde las sustancias se mezclan uniformemente a nivel molecular o iónico. No se pueden distinguir sus componentes a simple vista.'
-      },
-      {
-        type:'fill',
-        question:'Completa la ecuación de una solución:',
-        badge:'Completa el espacio',
-        template:['En una solución, el ','[BLANK1]',' se disuelve en el ','[BLANK2]'],
-        blanks:['soluto','solvente'],
-        options:['soluto','solvente','reactivo','catalizador','mezcla','átomo'],
-        explanation:'El SOLUTO es la sustancia que se disuelve (generalmente en menor cantidad). El SOLVENTE es la sustancia que disuelve (generalmente en mayor cantidad).'
-      },
-      {
-        type:'mcq',
-        question:'¿Cuál es un ejemplo de solución homogénea?',
-        badge:'Opción múltiple',
-        options:[
-          'Aceite y agua mezclados',
-          'Arena en agua',
-          'Sal disuelta en agua',
-          'Piedras en arena'
-        ],
-        correct:2,
-        explanation:'La sal disuelta en agua es una solución homogénea porque la sal (NaCl) se disuelve completamente en el agua formando una mezcla uniforme.'
-      },
-      {
-        type:'match',
-        question:'Une cada término con su descripción:',
-        badge:'Emparejamiento',
-        pairs:[
-          {left:'Soluto', right:'Sustancia que disuelve'},
-          {left:'Solvente', right:'Sustancia que se disuelve'},
-          {left:'Solución', right:'Mezcla homogénea'},
-          {left:'Concentración', right:'Cantidad de soluto en solvente'}
-        ],
-        explanation:'Recuerda: SOLuto → se diSUELVE; SOLvente → diSUELVE. El solvente siempre está en mayor cantidad.'
-      },
-      {
-        type:'order',
-        question:'Ordena los pasos para preparar una solución salina:',
-        badge:'Ordenar pasos',
-        steps:[
-          'Medir 100 mL de agua destilada',
-          'Añadir 5g de sal (NaCl)',
-          'Agitar hasta disolver completamente',
-          'Verificar que la solución sea homogénea',
-          'Etiquetar con concentración y fecha'
-        ],
-        correctOrder:[0,1,2,3,4],
-        explanation:'El proceso de preparación de una solución requiere medir primero el solvente, añadir el soluto, agitar y verificar la homogeneidad.'
-      }
-    ]
-  },
-  {
-    id:1, name:'Clasificación por Solubilidad', icon:'⚖️', type:'intermediate',
-    xp:25, color:'#1CB0F6',
-    questions:[
-      {
-        type:'mcq',
-        question:'Una solución SATURADA es aquella en la que:',
-        badge:'Opción múltiple',
-        options:[
-          'No se ha disuelto ningún soluto todavía',
-          'Se ha disuelto la máxima cantidad de soluto posible',
-          'Contiene más soluto que el máximo posible',
-          'Solo tiene agua sin soluto'
-        ],
-        correct:1,
-        explanation:'Una solución saturada contiene la máxima cantidad de soluto que puede disolverse en el solvente a una temperatura dada. Si se añade más soluto, ya no se disuelve.'
-      },
-      {
-        type:'drag',
-        question:'Clasifica cada solución según su tipo:',
-        badge:'Arrastrar y soltar',
-        zones:['Insaturada','Saturada','Sobresaturada'],
-        items:[
-          {text:'Limonada ligera (poco azúcar)', correct:0},
-          {text:'Agua con cristales sin disolver', correct:1},
-          {text:'Agua azucarada al máximo', correct:1},
-          {text:'Solución con exceso de sal calentada', correct:2},
-          {text:'Agua con una pizca de sal', correct:0}
-        ],
-        explanation:'Insaturada: puede disolver más soluto. Saturada: en el límite máximo. Sobresaturada: supera el límite (inestable, generalmente con temperatura).'
-      },
-      {
-        type:'mcq',
-        question:'¿Qué ocurre al enfriar una solución SOBRESATURADA?',
-        badge:'Opción múltiple',
-        options:[
-          'Se evapora rápidamente',
-          'Cristaliza y precipita el exceso de soluto',
-          'Se convierte en una mezcla heterogénea permanente',
-          'No cambia porque ya es estable'
-        ],
-        correct:1,
-        explanation:'Al enfriar una solución sobresaturada, el exceso de soluto comienza a cristalizar y precipitar, ya que la solubilidad disminuye con la temperatura.'
-      },
-      {
-        type:'fill',
-        question:'Completa: A mayor temperatura, la solubilidad de sólidos en agua generalmente:',
-        badge:'Completa el espacio',
-        template:['A mayor temperatura, la solubilidad ','[BLANK1]',' para sólidos y ','[BLANK2]',' para gases'],
-        blanks:['aumenta','disminuye'],
-        options:['aumenta','disminuye','no cambia','se neutraliza','se duplica'],
-        explanation:'Para sólidos: mayor temperatura = mayor solubilidad. Para gases (como CO₂): mayor temperatura = menor solubilidad (por eso las bebidas gaseosas pierden gas al calentarse).'
-      }
-    ]
-  },
-  {
-    id:2, name:'Unidades de Concentración', icon:'📐', type:'advanced',
-    xp:35, color:'#CE82FF',
-    questions:[
-      {
-        type:'mcq',
-        question:'La MOLARIDAD (M) se define como:',
-        badge:'Opción múltiple',
-        options:[
-          'Gramos de soluto por litro de solvente',
-          'Moles de soluto por litro de solución',
-          'Moles de soluto por kilogramo de solvente',
-          'Gramos de soluto por 100g de solución'
-        ],
-        correct:1,
-        explanation:'Molaridad M = mol de soluto / litro de solución. Es la unidad de concentración más usada en química. Ejemplo: 2M NaCl = 2 moles de NaCl en 1 litro de solución.'
-      },
-      {
-        type:'match',
-        question:'Relaciona la unidad con su fórmula:',
-        badge:'Emparejamiento',
-        pairs:[
-          {left:'Molaridad (M)', right:'mol soluto / L solución'},
-          {left:'Molalidad (m)', right:'mol soluto / kg solvente'},
-          {left:'% m/m', right:'g soluto / 100g solución'},
-          {left:'% v/v', right:'mL soluto / 100mL solución'}
-        ],
-        explanation:'Molaridad usa litros de SOLUCIÓN; Molalidad usa kg de SOLVENTE. Esta diferencia es importante para propiedades coligativas.'
-      },
-      {
-        type:'fill',
-        question:'Calcula: ¿Cuántos moles hay en 2L de solución 3M?',
-        badge:'Completar cálculo',
-        template:['Moles = M × V = 3 × 2 = ','[BLANK1]',' moles'],
-        blanks:['6'],
-        options:['6','5','3','1.5','9','2'],
-        explanation:'Moles = Molaridad × Volumen(L) = 3 mol/L × 2L = 6 moles. Siempre verifica que el volumen esté en LITROS.'
-      },
-      {
-        type:'mcq',
-        question:'¿Cuál es la diferencia entre Molaridad y Molalidad?',
-        badge:'Opción múltiple',
-        options:[
-          'No hay diferencia, son lo mismo',
-          'La molaridad usa kg de solvente; la molalidad usa L de solución',
-          'La molaridad usa L de solución; la molalidad usa kg de solvente',
-          'Solo se diferencian por la temperatura'
-        ],
-        correct:2,
-        explanation:'Molaridad (M): mol/L de SOLUCIÓN (cambia con temperatura). Molalidad (m): mol/kg de SOLVENTE (no cambia con temperatura, mejor para propiedades coligativas).'
-      },
-      {
-        type:'order',
-        question:'Ordena estos pasos para calcular la molaridad:',
-        badge:'Ordenar pasos',
-        steps:[
-          'Convertir gramos a moles (÷ masa molar)',
-          'Identificar el soluto y su masa molar',
-          'Verificar el volumen de la solución en litros',
-          'Aplicar M = moles / litros',
-          'Interpretar el resultado con unidades mol/L'
-        ],
-        correctOrder:[1,0,2,3,4],
-        explanation:'Primero identificamos la sustancia, calculamos sus moles, medimos el volumen y finalmente calculamos M = n/V.'
-      }
-    ]
-  },
-  {
-    id:3, name:'Coloides y Suspensiones', icon:'🌊', type:'advanced',
-    xp:30, color:'#FF9600',
-    questions:[
-      {
-        type:'mcq',
-        question:'¿Cuál es el tamaño típico de las partículas en un COLOIDE?',
-        badge:'Opción múltiple',
-        options:[
-          'Menores a 1 nm (solución verdadera)',
-          'Entre 1 y 1000 nm',
-          'Mayores a 1000 nm (visibles a simple vista)',
-          'Exactamente 500 nm siempre'
-        ],
-        correct:1,
-        explanation:'Los coloides tienen partículas de 1-1000 nm. Son más grandes que las soluciones verdaderas pero más pequeñas que las suspensiones. Pueden observarse con el microscopio electrónico.'
-      },
-      {
-        type:'drag',
-        question:'Clasifica estas mezclas según su tipo:',
-        badge:'Arrastrar y soltar',
-        zones:['Solución','Coloide','Suspensión'],
-        items:[
-          {text:'Agua con sal', correct:0},
-          {text:'Leche', correct:1},
-          {text:'Agua con barro', correct:2},
-          {text:'Gelatina', correct:1},
-          {text:'Agua de mar', correct:0},
-          {text:'Arena en agua', correct:2}
-        ],
-        explanation:'Solución: partículas < 1nm. Coloide: 1-1000nm, no sedimenta. Suspensión: > 1000nm, sedimenta con tiempo.'
-      },
-      {
-        type:'mcq',
-        question:'El EFECTO TYNDALL ocurre cuando:',
-        badge:'Opción múltiple',
-        options:[
-          'Una solución cambia de color al calentar',
-          'La luz dispersa al pasar por un coloide',
-          'Un sólido se disuelve en agua',
-          'Una mezcla se separa por gravedad'
-        ],
-        correct:1,
-        explanation:'El efecto Tyndall es la dispersión de luz por las partículas coloidales. Puedes verlo cuando un rayo de luz atraviesa niebla o humo. Las soluciones verdaderas NO muestran este efecto.'
-      },
-      {
-        type:'match',
-        question:'Relaciona el tipo de coloide con su ejemplo:',
-        badge:'Emparejamiento',
-        pairs:[
-          {left:'Aerosol líquido', right:'Niebla / Nube'},
-          {left:'Emulsión', right:'Leche / Mayonesa'},
-          {left:'Sol', right:'Pinturas / Tinta'},
-          {left:'Espuma', right:'Crema chantillí'}
-        ],
-        explanation:'Los coloides se clasifican según el estado del medio dispersante y la fase dispersa. La leche es una emulsión (líquido en líquido).'
-      }
-    ]
-  },
-  {
-    id:4, name:'Propiedades Coligativas', icon:'🔬', type:'expert',
-    xp:40, color:'#FF4B4B',
-    questions:[
-      {
-        type:'mcq',
-        question:'Las propiedades coligativas dependen de:',
-        badge:'Opción múltiple',
-        options:[
-          'El tipo de soluto disuelto',
-          'El color y olor de la solución',
-          'El número de partículas disueltas, no su naturaleza',
-          'La temperatura de ebullición del solvente puro'
-        ],
-        correct:2,
-        explanation:'Las propiedades coligativas (presión osmótica, descenso crioscópico, ascenso ebullioscópico) dependen SOLO de la cantidad de partículas, no de qué tipo de soluto es.'
-      },
-      {
-        type:'mcq',
-        question:'¿Por qué se echa sal en las carreteras nevadas?',
-        badge:'Aplicación real',
-        options:[
-          'La sal calienta el hielo directamente',
-          'Baja el punto de congelación del agua',
-          'La sal absorbe el agua del hielo',
-          'Aumenta la tracción por su textura'
-        ],
-        correct:1,
-        explanation:'¡Descenso crioscópico en acción! Al disolver sal en agua, el punto de congelación baja por debajo de 0°C. Por eso el agua no se congela tan fácilmente en presencia de sal.'
-      },
-      {
-        type:'fill',
-        question:'La PRESIÓN OSMÓTICA se calcula con:',
-        badge:'Completar fórmula',
-        template:['π = ','[BLANK1]','RT, donde n/V es la ','[BLANK2]'],
-        blanks:['(n/V)','molaridad'],
-        options:['(n/V)','(m/V)','molaridad','molalidad','presión','densidad'],
-        explanation:'π = MRT (presión osmótica = molaridad × constante de gas × temperatura en Kelvin). La presión osmótica es fundamental en biología y medicina.'
-      },
-      {
-        type:'order',
-        question:'Ordena según punto de ebullición (mayor a menor):',
-        badge:'Ordenar',
-        steps:[
-          'Agua con 3 mol/L de NaCl',
-          'Agua pura',
-          'Agua con 1 mol/L de glucosa',
-          'Agua con 2 mol/L de CaCl₂'
-        ],
-        correctOrder:[3,0,2,1],
-        explanation:'NaCl da 2 iones, CaCl₂ da 3 iones. Más partículas = mayor ascenso ebullioscópico. El orden es: CaCl₂(2M) > NaCl(3M) > glucosa(1M) > agua pura.'
-      }
-    ]
-  }
+// ══════════════════════════════════════
+// DATA
+// ══════════════════════════════════════
+const LEVELS_DEF = [
+  {level:1,name:'Estudiante',min:0,max:100},
+  {level:2,name:'Aprendiz',min:100,max:250},
+  {level:3,name:'Laboratorista',min:250,max:450},
+  {level:4,name:'Analista',min:450,max:700},
+  {level:5,name:'Químico',min:700,max:1000},
+  {level:6,name:'Químico Maestro',min:1000,max:Infinity},
 ];
 
-// ==================== LESSON STATE ====================
-let lState = {
-  questions:[], qIdx:0, hearts:5,
-  wrongInLesson:0, correctInLesson:0,
-  answered:false, lessonId:0,
-  dragData:{}, matchSel:{leftIdx:null, rightIdx:null},
-  orderItems:[], fillAnswers:[], fillBlankIdx:0
+const ACHIEVEMENTS = [
+  {id:'first_phase',icon:'🔬',name:'Primera Reacción',desc:'Completa tu primera fase de lección',xp:5},
+  {id:'perfect_phase',icon:'⭐',name:'Perfeccionista',desc:'Completa una fase sin ningún error',xp:10},
+  {id:'streak_5',icon:'🔥',name:'En Racha',desc:'Responde 5 preguntas seguidas correctamente',xp:10},
+  {id:'streak_10',icon:'⚡',name:'Imparable',desc:'Responde 10 preguntas seguidas correctamente',xp:20},
+  {id:'lesson_0_done',icon:'🧪',name:'Maestro de Soluciones',desc:'Domina todas las fases de Soluciones',xp:15},
+  {id:'lesson_1_done',icon:'⚖️',name:'Experto en Solubilidad',desc:'Domina todas las fases de Solubilidad',xp:15},
+  {id:'lesson_2_done',icon:'📐',name:'Calculista',desc:'Domina todas las fases de Concentración',xp:15},
+  {id:'lesson_3_done',icon:'🌊',name:'Maestro Coloidal',desc:'Domina todas las fases de Coloides',xp:15},
+  {id:'halfway',icon:'🏅',name:'A Mitad del Camino',desc:'Domina al menos 3 lecciones',xp:20},
+  {id:'quimico_maestro',icon:'🏆',name:'Químico Maestro',desc:'¡Domina absolutamente todas las lecciones del curso!',xp:50},
+];
+
+// SVG DIAGRAMS (from notebook images)
+const SVG_BOTTLES = `
+<svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+  <rect width="320" height="180" rx="12" fill="#1A2733"/>
+  <!-- Bottle 1: dilute (from img 1 - left bottle) -->
+  <g transform="translate(30,20)">
+    <rect x="18" y="40" width="44" height="80" rx="6" fill="#253040" stroke="#38BDF8" stroke-width="1.5"/>
+    <rect x="24" y="90" width="32" height="30" rx="3" fill="rgba(200,180,240,0.15)"/>
+    <rect x="22" y="30" width="36" height="14" rx="4" fill="#2A3F52"/>
+    <circle cx="26" cy="75" r="3" fill="rgba(200,180,240,0.4)"/>
+    <circle cx="38" cy="82" r="2" fill="rgba(200,180,240,0.4)"/>
+    <circle cx="32" cy="68" r="2" fill="rgba(200,180,240,0.4)"/>
+    <text x="40" y="140" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700">Insaturada</text>
+  </g>
+  <!-- Bottle 2: medium (from img 1 - middle bottle) -->
+  <g transform="translate(118,10)">
+    <rect x="18" y="40" width="44" height="90" rx="6" fill="#253040" stroke="#38BDF8" stroke-width="1.5"/>
+    <rect x="24" y="68" width="32" height="62" rx="3" fill="rgba(180,120,255,0.35)"/>
+    <rect x="22" y="28" width="36" height="16" rx="4" fill="#2A3F52"/>
+    <circle cx="30" cy="75" r="3" fill="rgba(200,150,255,0.7)"/>
+    <circle cx="42" cy="70" r="2.5" fill="rgba(200,150,255,0.7)"/>
+    <circle cx="36" cy="82" r="2" fill="rgba(200,150,255,0.7)"/>
+    <circle cx="28" cy="64" r="2" fill="rgba(200,150,255,0.7)"/>
+    <circle cx="44" cy="85" r="2" fill="rgba(200,150,255,0.7)"/>
+    <text x="40" y="150" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700">Saturada</text>
+  </g>
+  <!-- Bottle 3: concentrated (from img 1 - right, darkest) -->
+  <g transform="translate(210,5)">
+    <rect x="12" y="40" width="56" height="100" rx="8" fill="#253040" stroke="#38BDF8" stroke-width="1.5"/>
+    <rect x="18" y="55" width="44" height="85" rx="5" fill="rgba(130,60,220,0.65)"/>
+    <rect x="18" y="28" width="44" height="16" rx="5" fill="#2A3F52"/>
+    <circle cx="28" cy="65" r="4" fill="rgba(220,160,255,0.9)"/>
+    <circle cx="44" cy="58" r="3" fill="rgba(220,160,255,0.9)"/>
+    <circle cx="36" cy="72" r="3.5" fill="rgba(220,160,255,0.9)"/>
+    <circle cx="52" cy="67" r="2.5" fill="rgba(220,160,255,0.9)"/>
+    <circle cx="24" cy="80" r="3" fill="rgba(220,160,255,0.9)"/>
+    <circle cx="48" cy="78" r="3" fill="rgba(220,160,255,0.9)"/>
+    <circle cx="34" cy="88" r="2" fill="rgba(220,160,255,0.9)"/>
+    <text x="40" y="155" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700">Sobresaturada</text>
+  </g>
+  <text x="160" y="17" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700" letter-spacing="1">TIPOS DE SOLUCIONES</text>
+</svg>`;
+
+const SVG_FORMULAS = `
+<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+  <rect width="320" height="160" rx="12" fill="#1A2733"/>
+  <text x="160" y="20" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700" letter-spacing="1">UNIDADES DE CONCENTRACIÓN (del cuaderno)</text>
+  <!-- % m/m -->
+  <rect x="10" y="28" width="140" height="55" rx="10" fill="#213040" stroke="#38BDF8" stroke-width="1.5"/>
+  <text x="80" y="46" text-anchor="middle" fill="#38BDF8" font-size="11" font-family="Nunito" font-weight="800">% m/m</text>
+  <text x="80" y="62" text-anchor="middle" fill="#C084FC" font-size="13" font-family="Nunito" font-weight="900">g soluto</text>
+  <line x1="30" y1="68" x2="130" y2="68" stroke="#6B8AA8" stroke-width="1"/>
+  <text x="80" y="78" text-anchor="middle" fill="#C084FC" font-size="13" font-family="Nunito" font-weight="900">g solución</text>
+  <text x="138" y="58" fill="#4ADE80" font-size="14" font-family="Nunito" font-weight="900">×100</text>
+  <!-- Molaridad M -->
+  <rect x="165" y="28" width="145" height="55" rx="10" fill="#213040" stroke="#4ADE80" stroke-width="1.5"/>
+  <text x="237" y="46" text-anchor="middle" fill="#4ADE80" font-size="11" font-family="Nunito" font-weight="800">Molaridad (M)</text>
+  <text x="237" y="63" text-anchor="middle" fill="#FBBF24" font-size="13" font-family="Nunito" font-weight="900">mol soluto</text>
+  <line x1="185" y1="68" x2="290" y2="68" stroke="#6B8AA8" stroke-width="1"/>
+  <text x="237" y="78" text-anchor="middle" fill="#FBBF24" font-size="13" font-family="Nunito" font-weight="900">L solución</text>
+  <!-- Molalidad m -->
+  <rect x="10" y="92" width="140" height="55" rx="10" fill="#213040" stroke="#FB923C" stroke-width="1.5"/>
+  <text x="80" y="110" text-anchor="middle" fill="#FB923C" font-size="11" font-family="Nunito" font-weight="800">Molalidad (m)</text>
+  <text x="80" y="127" text-anchor="middle" fill="#F87171" font-size="13" font-family="Nunito" font-weight="900">mol soluto</text>
+  <line x1="30" y1="132" x2="130" y2="132" stroke="#6B8AA8" stroke-width="1"/>
+  <text x="80" y="142" text-anchor="middle" fill="#F87171" font-size="13" font-family="Nunito" font-weight="900">kg solvente</text>
+  <!-- % v/v -->
+  <rect x="165" y="92" width="145" height="55" rx="10" fill="#213040" stroke="#C084FC" stroke-width="1.5"/>
+  <text x="237" y="110" text-anchor="middle" fill="#C084FC" font-size="11" font-family="Nunito" font-weight="800">% v/v</text>
+  <text x="237" y="127" text-anchor="middle" fill="#38BDF8" font-size="13" font-family="Nunito" font-weight="900">mL soluto</text>
+  <line x1="185" y1="132" x2="290" y2="132" stroke="#6B8AA8" stroke-width="1"/>
+  <text x="237" y="142" text-anchor="middle" fill="#38BDF8" font-size="13" font-family="Nunito" font-weight="900">mL solución</text>
+  <text x="295" y="122" fill="#4ADE80" font-size="14" font-family="Nunito" font-weight="900">×100</text>
+</svg>`;
+
+const SVG_COLLOIDS_TABLE = `
+<svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+  <rect width="320" height="200" rx="12" fill="#1A2733"/>
+  <text x="160" y="18" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700" letter-spacing="1">TABLA DE COLOIDES (del cuaderno)</text>
+  <!-- Header row -->
+  <rect x="10" y="25" width="90" height="28" rx="6" fill="#2A3F52"/>
+  <text x="55" y="44" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="800">Medio / Fase</text>
+  <rect x="104" y="25" width="66" height="28" rx="6" fill="#0C4A6E"/>
+  <text x="137" y="44" text-anchor="middle" fill="#38BDF8" font-size="10" font-family="Nunito" font-weight="800">Sólida</text>
+  <rect x="174" y="25" width="66" height="28" rx="6" fill="#0C4A6E"/>
+  <text x="207" y="44" text-anchor="middle" fill="#38BDF8" font-size="10" font-family="Nunito" font-weight="800">Líquida</text>
+  <rect x="244" y="25" width="66" height="28" rx="6" fill="#0C4A6E"/>
+  <text x="277" y="44" text-anchor="middle" fill="#38BDF8" font-size="10" font-family="Nunito" font-weight="800">Gaseosa</text>
+  <!-- Row Sólido -->
+  <rect x="10" y="57" width="90" height="42" rx="4" fill="#14532D"/>
+  <text x="55" y="82" text-anchor="middle" fill="#4ADE80" font-size="11" font-family="Nunito" font-weight="800">Sólido</text>
+  <rect x="104" y="57" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
+  <text x="137" y="71" text-anchor="middle" fill="#C084FC" font-size="9" font-family="Nunito" font-weight="700">Sol sólido</text>
+  <text x="137" y="84" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Gemas,rubíes</text>
+  <rect x="174" y="57" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
+  <text x="207" y="71" text-anchor="middle" fill="#C084FC" font-size="9" font-family="Nunito" font-weight="700">Emulsión s.</text>
+  <text x="207" y="84" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Perlas</text>
+  <rect x="244" y="57" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
+  <text x="277" y="71" text-anchor="middle" fill="#C084FC" font-size="9" font-family="Nunito" font-weight="700">Espuma s.</text>
+  <text x="277" y="84" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Ámbar</text>
+  <!-- Row Líquido -->
+  <rect x="10" y="103" width="90" height="42" rx="4" fill="#0C4A6E"/>
+  <text x="55" y="128" text-anchor="middle" fill="#38BDF8" font-size="11" font-family="Nunito" font-weight="800">Líquido</text>
+  <rect x="104" y="103" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
+  <text x="137" y="117" text-anchor="middle" fill="#FBBF24" font-size="9" font-family="Nunito" font-weight="700">Sol</text>
+  <text x="137" y="130" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Tintas,plasma</text>
+  <rect x="174" y="103" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
+  <text x="207" y="117" text-anchor="middle" fill="#FBBF24" font-size="9" font-family="Nunito" font-weight="700">Emulsión</text>
+  <text x="207" y="130" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Leche,mayo</text>
+  <rect x="244" y="103" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
+  <text x="277" y="117" text-anchor="middle" fill="#FBBF24" font-size="9" font-family="Nunito" font-weight="700">Espuma</text>
+  <text x="277" y="130" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Merengue</text>
+  <!-- Row Gaseoso -->
+  <rect x="10" y="149" width="90" height="42" rx="4" fill="#3D1A0F"/>
+  <text x="55" y="174" text-anchor="middle" fill="#FB923C" font-size="11" font-family="Nunito" font-weight="800">Gaseoso</text>
+  <rect x="104" y="149" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
+  <text x="137" y="163" text-anchor="middle" fill="#F87171" font-size="9" font-family="Nunito" font-weight="700">Aerosol s.</text>
+  <text x="137" y="176" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Humo,polvo</text>
+  <rect x="174" y="149" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
+  <text x="207" y="163" text-anchor="middle" fill="#F87171" font-size="9" font-family="Nunito" font-weight="700">Aerosol l.</text>
+  <text x="207" y="176" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Niebla</text>
+  <rect x="244" y="149" width="66" height="42" rx="4" fill="#1A2733" stroke="#2E4560" stroke-width="1"/>
+  <text x="277" y="163" text-anchor="middle" fill="#6B8AA8" font-size="9" font-family="Nunito" font-weight="700">—</text>
+</svg>`;
+
+const SVG_CLASSIFICATION = `
+<svg viewBox="0 0 320 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+  <rect width="320" height="150" rx="12" fill="#1A2733"/>
+  <text x="160" y="18" text-anchor="middle" fill="#6B8AA8" font-size="10" font-family="Nunito" font-weight="700" letter-spacing="1">CLASIFICACIÓN POR SOLUBILIDAD</text>
+  <!-- Insaturada beaker -->
+  <g transform="translate(15,25)">
+    <rect x="10" y="15" width="55" height="80" rx="4" fill="#213040" stroke="#38BDF8" stroke-width="1.5"/>
+    <rect x="14" y="75" width="47" height="20" rx="2" fill="rgba(56,189,248,0.15)"/>
+    <circle cx="25" cy="55" r="3" fill="rgba(56,189,248,0.5)"/>
+    <circle cx="40" cy="60" r="2" fill="rgba(56,189,248,0.5)"/>
+    <circle cx="55" cy="50" r="2.5" fill="rgba(56,189,248,0.5)"/>
+    <rect x="15" y="8" width="45" height="10" rx="2" fill="#2A3F52"/>
+    <text x="37" y="112" text-anchor="middle" fill="#38BDF8" font-size="10" font-family="Nunito" font-weight="800">Insaturada</text>
+    <text x="37" y="125" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Puede disolver más</text>
+  </g>
+  <!-- Saturada beaker -->
+  <g transform="translate(118,25)">
+    <rect x="5" y="15" width="65" height="80" rx="4" fill="#213040" stroke="#4ADE80" stroke-width="1.5"/>
+    <rect x="9" y="60" width="57" height="35" rx="2" fill="rgba(74,222,128,0.2)"/>
+    <!-- crystals at bottom -->
+    <polygon points="15,95 22,80 29,95" fill="rgba(74,222,128,0.6)"/>
+    <polygon points="28,95 35,83 42,95" fill="rgba(74,222,128,0.6)"/>
+    <polygon points="44,95 51,82 58,95" fill="rgba(74,222,128,0.6)"/>
+    <circle cx="20" cy="68" r="2.5" fill="rgba(74,222,128,0.7)"/>
+    <circle cx="45" cy="65" r="2" fill="rgba(74,222,128,0.7)"/>
+    <circle cx="60" cy="72" r="2" fill="rgba(74,222,128,0.7)"/>
+    <rect x="15" y="8" width="45" height="10" rx="2" fill="#2A3F52"/>
+    <text x="37" y="112" text-anchor="middle" fill="#4ADE80" font-size="10" font-family="Nunito" font-weight="800">Saturada</text>
+    <text x="37" y="125" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">En el límite máximo</text>
+  </g>
+  <!-- Sobresaturada beaker -->
+  <g transform="translate(225,25)">
+    <rect x="5" y="15" width="65" height="80" rx="4" fill="#213040" stroke="#FBBF24" stroke-width="2"/>
+    <rect x="9" y="35" width="57" height="60" rx="2" fill="rgba(251,191,36,0.2)"/>
+    <!-- overflow drops -->
+    <circle cx="10" cy="28" r="4" fill="rgba(251,191,36,0.5)"/>
+    <circle cx="60" cy="24" r="3" fill="rgba(251,191,36,0.5)"/>
+    <!-- many crystals -->
+    <polygon points="12,95 18,78 24,95" fill="rgba(251,191,36,0.7)"/>
+    <polygon points="24,95 30,80 36,95" fill="rgba(251,191,36,0.7)"/>
+    <polygon points="36,95 42,78 48,95" fill="rgba(251,191,36,0.7)"/>
+    <polygon points="48,95 54,80 60,95" fill="rgba(251,191,36,0.7)"/>
+    <circle cx="20" cy="52" r="3" fill="rgba(251,191,36,0.8)"/>
+    <circle cx="45" cy="45" r="2.5" fill="rgba(251,191,36,0.8)"/>
+    <circle cx="60" cy="56" r="2" fill="rgba(251,191,36,0.8)"/>
+    <circle cx="30" cy="60" r="2" fill="rgba(251,191,36,0.8)"/>
+    <rect x="15" y="8" width="45" height="10" rx="2" fill="#2A3F52"/>
+    <text x="37" y="112" text-anchor="middle" fill="#FBBF24" font-size="10" font-family="Nunito" font-weight="800">Sobresaturada</text>
+    <text x="37" y="125" text-anchor="middle" fill="#6B8AA8" font-size="8" font-family="Nunito">Supera el límite</text>
+  </g>
+</svg>`;
+
+// ══════════════════════════════════════
+// LESSON CONTENT: 5 lessons × 3 phases × 3 questions
+// ══════════════════════════════════════
+const LESSONS = [
+{
+  id:0, name:'¿Qué es una Solución?', icon:'🧪', color:'var(--green2)',
+  phases:[
+    { name:'Básico', xp:15, questions:[
+      { type:'mcq', badge:'Concepto clave',
+        q:'¿Cuál es la definición correcta de una SOLUCIÓN?',
+        opts:['Una mezcla heterogénea visible a simple vista','Una mezcla homogénea de dos o más sustancias a nivel molecular o iónico','Un compuesto puro sin impurezas','Agua con partículas sólidas en suspensión'],
+        correct:1, exp:'Una solución es una mezcla HOMOGÉNEA: sus componentes están distribuidos uniformemente a nivel molecular. No se pueden distinguir a simple vista.' },
+      { type:'image_mcq', badge:'Analiza el diagrama',
+        q:'Observa las botellas del diagrama. ¿Cuál representa la MAYOR concentración de soluto?',
+        svg:SVG_BOTTLES,
+        opts:['Botella izquierda (insaturada — pocos solutos)','Botella central (saturada — concentración media)','Botella derecha (sobresaturada — más soluto)','Todas tienen la misma concentración'],
+        correct:2, exp:'La botella derecha (morada oscura) contiene más partículas de soluto por unidad de solvente. Mayor densidad de partículas = mayor concentración.' },
+      { type:'fill', badge:'Completa el espacio',
+        q:'Completa: En una solución, el ___ se disuelve en el ___.',
+        template:['En una solución, el ','[0]',' se disuelve en el ','[1]','.'],
+        blanks:['soluto','solvente'],
+        opts:['soluto','solvente','catalizador','reactivo','producto'],
+        exp:'SOLUTO = sustancia que se disuelve (generalmente en menor cantidad). SOLVENTE = sustancia que disuelve (generalmente el agua, "disolvente universal").' },
+    ]},
+    { name:'Intermedio', xp:20, questions:[
+      { type:'match', badge:'Emparejamiento',
+        q:'Une cada término con su descripción correcta:',
+        pairs:[{L:'Soluto',R:'Sustancia que se disuelve'},{L:'Solvente',R:'Sustancia que disuelve'},{L:'Solución',R:'Mezcla homogénea resultante'},{L:'Concentración',R:'Cantidad de soluto por unidad'}],
+        exp:'Clave: soLUTO → se diSUELVE. soLVENTE → disuelVE. La solución es el resultado final de ambos.' },
+      { type:'drag', badge:'Arrastrar y soltar',
+        q:'Clasifica cada sustancia como SOLUTO o SOLVENTE en agua con sal:',
+        zones:['Soluto','Solvente'],
+        items:[{t:'Sal (NaCl)',c:0},{t:'Agua (H₂O)',c:1},{t:'Azúcar',c:0},{t:'Alcohol (disuelto)',c:0},{t:'Agua destilada',c:1}],
+        exp:'El AGUA es el solvente (universal). La sal, azúcar y alcohol son solutos — se disuelven en el agua.' },
+      { type:'mcq', badge:'Aplicación',
+        q:'¿Cuál de estos ejemplos es una solución homogénea?',
+        opts:['Agua con aceite','Jugo de naranja sin colar','Agua con sal completamente disuelta','Arena mezclada con grava'],
+        correct:2, exp:'El agua con sal disuelta es homogénea: la sal se distribuye uniformemente a nivel iónico. El aceite, jugo sin colar y arena son mezclas heterogéneas.' },
+    ]},
+    { name:'Avanzado', xp:25, questions:[
+      { type:'order', badge:'Ordenar pasos',
+        q:'Ordena los pasos correctos para preparar una solución 1M de NaCl:',
+        steps:['Pesar la masa molar de NaCl (58.44 g)','Medir el matraz volumétrico de 1 litro','Disolver el NaCl en agua destilada parcialmente','Aforar hasta la marca de 1 litro exacto','Agitar hasta disolución completa'],
+        order:[1,0,2,4,3],
+        exp:'El orden correcto asegura precisión: primero el volumen deseado, pesar el soluto, pre-disolver, aforar con precisión y agitar.' },
+      { type:'image_mcq', badge:'Analiza el diagrama',
+        q:'Según el diagrama de botellas, ¿cuál afirmación es CORRECTA sobre la botella izquierda?',
+        svg:SVG_BOTTLES,
+        opts:['Está sobresaturada y puede precipitar cristales','Está insaturada: puede disolver más soluto','Está exactamente en el punto de saturación','No contiene ningún soluto'],
+        correct:1, exp:'La botella izquierda (pocos puntos/clara) es una solución INSATURADA: aún tiene capacidad para disolver más soluto a esa temperatura.' },
+      { type:'mcq', badge:'Propiedades',
+        q:'¿Cuál propiedad diferencia una solución de una mezcla heterogénea?',
+        opts:['El color de la mezcla','La uniformidad a nivel molecular (homogeneidad)','La temperatura de preparación','La cantidad de sustancias presentes'],
+        correct:1, exp:'La homogeneidad a nivel molecular es la clave: en una solución no se ven los componentes por separado. Las mezclas heterogéneas tienen fases visibles.' },
+    ]},
+  ]
+},
+{
+  id:1, name:'Clasificación por Solubilidad', icon:'⚖️', color:'var(--blue)',
+  phases:[
+    { name:'Básico', xp:15, questions:[
+      { type:'image_mcq', badge:'Analiza el diagrama',
+        q:'Según el diagrama, ¿qué tipo de solución muestra el vaso del CENTRO (verde)?',
+        svg:SVG_CLASSIFICATION,
+        opts:['Insaturada — puede disolver más','Saturada — ya está en el límite máximo','Sobresaturada — tiene exceso de soluto','No es una solución, es una suspensión'],
+        correct:1, exp:'El vaso central muestra cristales en el fondo + partículas en solución: llegó al LÍMITE de saturación. Es una solución saturada.' },
+      { type:'mcq', badge:'Concepto',
+        q:'Una solución INSATURADA es aquella que:',
+        opts:['Tiene más soluto del que puede disolver','Está exactamente en el límite de saturación','Puede disolver más soluto a esa temperatura','No tiene ningún soluto disuelto'],
+        correct:2, exp:'INSATURADA = "incompleta": todavía puede disolver más soluto. Si añades más sal a una solución insaturada de sal, se sigue disolviendo.' },
+      { type:'mcq', badge:'Concepto',
+        q:'¿Qué ocurre cuando se añade más soluto a una solución SATURADA?',
+        opts:['Se disuelve completamente como siempre','El exceso queda sin disolver (precipita)','La solución se vuelve insaturada','El solvente se evapora inmediatamente'],
+        correct:1, exp:'¡Correcto! En una solución saturada el equilibrio de disolución ya se alcanzó. El soluto adicional no puede disolverse y se acumula como precipitado en el fondo.' },
+    ]},
+    { name:'Intermedio', xp:20, questions:[
+      { type:'drag', badge:'Arrastrar y soltar',
+        q:'Clasifica cada ejemplo en su tipo de solución correcto:',
+        zones:['Insaturada','Saturada','Sobresaturada'],
+        items:[{t:'Limonada con poca azúcar',c:0},{t:'Agua azucarada al máximo (25°C)',c:1},{t:'Solución de miel calentada y enfriada',c:2},{t:'Agua con una pizca de sal',c:0},{t:'Agua con cristales que no se disuelven',c:1}],
+        exp:'Clave: insaturada puede recibir más soluto; saturada está en el límite; sobresaturada superó el límite (generalmente por enfriamiento).' },
+      { type:'image_mcq', badge:'Analiza el diagrama',
+        q:'Según el diagrama, ¿qué representa el vaso derecho (amarillo con cristales desbordados)?',
+        svg:SVG_CLASSIFICATION,
+        opts:['Es una solución insaturada típica','Es una solución saturada normal','Es una solución sobresaturada inestable','Es una suspensión coloidal'],
+        correct:2, exp:'El vaso derecho (amarillo, con muchos cristales y partículas desbordando) representa la SOBRESATURACIÓN: superó el límite de solubilidad, estado inestable.' },
+      { type:'mcq', badge:'Temperatura y solubilidad',
+        q:'Al AUMENTAR la temperatura, la solubilidad de sólidos en agua generalmente:',
+        opts:['Disminuye (se disuelve menos)','No cambia para ninguna sustancia','Aumenta (se puede disolver más)','Primero aumenta y luego cae a cero'],
+        correct:2, exp:'Para la mayoría de sólidos, más temperatura = más energía para romper enlaces = mayor solubilidad. Excepción notable: los gases son MÁS solubles en agua FRÍA.' },
+    ]},
+    { name:'Avanzado', xp:25, questions:[
+      { type:'order', badge:'Ordenar conceptos',
+        q:'Ordena de MENOR a MAYOR concentración de soluto:',
+        steps:['Solución sobresaturada (supera el límite)','Solución saturada (en el límite exacto)','Agua pura (sin soluto)','Solución insaturada con poco soluto'],
+        order:[2,3,1,0],
+        exp:'Agua pura (0) → insaturada (algo) → saturada (máximo) → sobresaturada (exceso). La sobresaturada tiene la mayor concentración posible.' },
+      { type:'fill', badge:'Completa el concepto',
+        q:'Al enfriar una solución sobresaturada, el exceso de soluto ___ en forma de ___ visibles.',
+        template:['Al enfriar una sobresaturada, el exceso ','[0]',' en forma de ','[1]',' visibles.'],
+        blanks:['cristaliza','cristales'],
+        opts:['cristaliza','se disuelve','cristales','burbujas','desaparece','gas'],
+        exp:'La cristalización ocurre cuando baja la temperatura: la solubilidad cae y el soluto en exceso debe precipitar. ¡Así se forman los cristales de nieve y las gemasmas naturales!' },
+      { type:'mcq', badge:'Aplicación real',
+        q:'¿Por qué las bebidas gaseosas liberan CO₂ al calentarse?',
+        opts:['El CO₂ reacciona con el calor','Los gases son menos solubles a mayor temperatura','El calor crea más CO₂ dentro de la lata','La presión dentro aumenta con calor'],
+        correct:1, exp:'¡Propiedad coligativa! Los gases se comportan al revés que los sólidos: a mayor temperatura, MENOR solubilidad. El CO₂ sale de la solución porque ya no puede mantenerse disuelto.' },
+    ]},
+  ]
+},
+{
+  id:2, name:'Unidades de Concentración', icon:'📐', color:'var(--purple)',
+  phases:[
+    { name:'Básico', xp:15, questions:[
+      { type:'image_mcq', badge:'Lee el diagrama del cuaderno',
+        q:'Según el diagrama de fórmulas, ¿cuál es la unidad de la MOLARIDAD (M)?',
+        svg:SVG_FORMULAS,
+        opts:['g soluto / 100g solución (% m/m)','mol soluto / L solución','mL soluto / 100mL solución','mol soluto / kg solvente'],
+        correct:1, exp:'Molaridad M = mol de soluto / litro de SOLUCIÓN. Es la unidad más usada en química analítica y en cálculos de reacciones en solución.' },
+      { type:'fill', badge:'Completa la fórmula',
+        q:'Completa la fórmula de Molaridad: M = ___ / ___',
+        template:['M = ','[0]',' / ','[1]'],
+        blanks:['mol soluto','L solución'],
+        opts:['mol soluto','L solución','g soluto','kg solvente','mL solución'],
+        exp:'M = mol de soluto ÷ litros de solución. Siempre verificar que el volumen esté en LITROS, no mililitros.' },
+      { type:'mcq', badge:'Comprensión',
+        q:'¿Cuál es la diferencia clave entre Molaridad y Molalidad?',
+        opts:['No hay diferencia — son lo mismo','Molaridad usa litros de solución; molalidad usa kg de solvente','Molaridad usa kg de solvente; molalidad usa litros de solución','Solo se diferencian en el símbolo (M vs m)'],
+        correct:1, exp:'Diferencia fundamental: M (molaridad) = mol/L de SOLUCIÓN — cambia con la temperatura. m (molalidad) = mol/kg de SOLVENTE — independiente de temperatura, mejor para propiedades coligativas.' },
+    ]},
+    { name:'Intermedio', xp:20, questions:[
+      { type:'match', badge:'Emparejamiento',
+        q:'Une cada unidad de concentración con su fórmula:',
+        pairs:[{L:'Molaridad M',R:'mol / L solución'},{L:'Molalidad m',R:'mol / kg solvente'},{L:'% masa/masa',R:'g soluto / g solución ×100'},{L:'% vol/vol',R:'mL soluto / mL solución ×100'}],
+        exp:'Memoriza: M→L, m→kg. El % siempre multiplica por 100. La diferencia m vs M es solución vs solvente.' },
+      { type:'mcq', badge:'Cálculo',
+        q:'Si tienes 3 moles de NaCl en 2 litros de solución, ¿cuál es la molaridad?',
+        opts:['1.0 M','1.5 M','3.0 M','6.0 M'],
+        correct:1, exp:'M = mol / L = 3 mol ÷ 2 L = 1.5 M. Siempre divides los moles entre el volumen en litros.' },
+      { type:'image_mcq', badge:'Lee el diagrama del cuaderno',
+        q:'Según el diagrama, ¿cuál fórmula corresponde al % m/m?',
+        svg:SVG_FORMULAS,
+        opts:['mol soluto / L solución','mL soluto / mL solución × 100','g soluto / g solución × 100','mol soluto / kg solvente'],
+        correct:2, exp:'% m/m = (g de soluto / g de solución) × 100. Es la unidad más simple: compara masas. Una solución al 5% m/m tiene 5g de soluto por 100g de solución.' },
+    ]},
+    { name:'Avanzado', xp:25, questions:[
+      { type:'fill', badge:'Cálculo avanzado',
+        q:'En 500 mL de solución 2M de glucosa, hay ___ moles de glucosa.',
+        template:['En 500 mL (= 0.5 L) de solución 2M: moles = 2 × 0.5 = ','[0]',' moles'],
+        blanks:['1'],
+        opts:['1','2','0.5','4','3','0.25'],
+        exp:'Moles = M × V(L) = 2 mol/L × 0.5 L = 1 mol. ¡Siempre convertir mL a L! 500 mL = 0.5 L.' },
+      { type:'order', badge:'Ordenar pasos',
+        q:'Ordena los pasos para calcular la molaridad de una solución:',
+        steps:['Identificar el soluto y calcular su masa molar (g/mol)','Convertir gramos a moles: n = masa / MM','Medir o calcular el volumen de solución en litros','Aplicar: M = n (moles) / V (litros)','Verificar unidades y redondear el resultado'],
+        order:[0,1,2,3,4],
+        exp:'Siempre: identifica → calcula moles → mide volumen → aplica M=n/V → verifica. Las unidades son mol/L.' },
+      { type:'mcq', badge:'Normalidad',
+        q:'La NORMALIDAD (N) se define como equivalentes-gramo de soluto por:',
+        opts:['100g de solución','Litro de solución','Kg de solvente','Mol de soluto'],
+        correct:1, exp:'N = eq-g de soluto / L de solución. Los equivalentes-gramo dependen de la reacción (para ácidos = H⁺ que puede dar; para bases = OH⁻). Para HCl: 1M = 1N. Para H₂SO₄: 1M = 2N.' },
+    ]},
+  ]
+},
+{
+  id:3, name:'Coloides y Mezclas', icon:'🌊', color:'var(--orange)',
+  phases:[
+    { name:'Básico', xp:15, questions:[
+      { type:'mcq', badge:'Concepto',
+        q:'¿Qué distingue a un COLOIDE de una solución verdadera?',
+        opts:['El color de la mezcla','El tamaño de partículas (1–1000 nm en coloides)','La temperatura de preparación','El número de sustancias presentes'],
+        correct:1, exp:'Tamaños clave: solución verdadera <1nm (iones/moléculas), coloide 1-1000nm (macromoléculas/partículas), suspensión >1000nm (visible). El tamaño define el tipo.' },
+      { type:'image_mcq', badge:'Lee la tabla del cuaderno',
+        q:'Según la tabla de coloides, ¿cómo se llama un coloide donde el medio es LÍQUIDO y la fase dispersa es LÍQUIDA?',
+        svg:SVG_COLLOIDS_TABLE,
+        opts:['Sol (sol coloidal)','Emulsión','Espuma líquida','Aerosol líquido'],
+        correct:1, exp:'Líquido en líquido = EMULSIÓN. Ejemplos del cuaderno: leche (grasa en agua) y mayonesa. La leche es la emulsión más conocida.' },
+      { type:'mcq', badge:'Efecto Tyndall',
+        q:'El EFECTO TYNDALL ocurre cuando:',
+        opts:['Un sólido se disuelve en agua caliente','La luz se dispersa visible al pasar por un coloide','Una mezcla se separa por gravedad','Los gases se disuelven en líquidos'],
+        correct:1, exp:'Efecto Tyndall: las partículas coloidales (1-1000nm) dispersan la luz haciéndola visible (como el rayo de sol en la niebla). Las soluciones verdaderas NO lo muestran. ¡Puedes usarlo para diferenciar coloides de soluciones!' },
+    ]},
+    { name:'Intermedio', xp:20, questions:[
+      { type:'drag', badge:'Arrastrar y soltar',
+        q:'Clasifica cada mezcla según la tabla del cuaderno:',
+        zones:['Solución','Coloide','Suspensión'],
+        items:[{t:'Agua con sal (NaCl)',c:0},{t:'Leche entera',c:1},{t:'Agua con barro',c:2},{t:'Gelatina preparada',c:1},{t:'Agua de mar',c:0},{t:'Arena en agua',c:2}],
+        exp:'Solución: partículas <1nm, transparente. Coloide: 1-1000nm, efecto Tyndall, no sedimenta. Suspensión: >1000nm, sedimenta con tiempo.' },
+      { type:'image_mcq', badge:'Lee la tabla del cuaderno',
+        q:'Según la tabla, ¿qué tipo de coloide es el HUMO?',
+        svg:SVG_COLLOIDS_TABLE,
+        opts:['Emulsión (líquido en líquido)','Sol sólido (sólido en sólido)','Aerosol sólido (sólido en gaseoso)','Espuma (gas en sólido)'],
+        correct:2, exp:'El humo es un AEROSOL SÓLIDO: partículas sólidas (ceniza, carbón) dispersas en gas (aire). La tabla del cuaderno lo muestra en la celda Gaseoso-Sólida.' },
+      { type:'match', badge:'Emparejamiento',
+        q:'Une el tipo de coloide con su ejemplo real:',
+        pairs:[{L:'Aerosol líquido',R:'Niebla / nubes'},{L:'Emulsión',R:'Leche / mayonesa'},{L:'Sol coloidal',R:'Tinta / pinturas'},{L:'Espuma',R:'Crema chantillí'}],
+        exp:'Aerosol líquido = gotitas de agua en aire (niebla). Emulsión = líquido en líquido. Sol = sólido en líquido. Espuma = gas en sólido/líquido.' },
+    ]},
+    { name:'Avanzado', xp:25, questions:[
+      { type:'order', badge:'Ordenar por tamaño',
+        q:'Ordena de MENOR a MAYOR tamaño de partículas:',
+        steps:['Coloide (1–1000 nm)','Ión hidratado en solución (<0.5 nm)','Partículas de suspensión (>1000 nm)','Molécula pequeña en solución (0.5–1 nm)'],
+        order:[1,3,0,2],
+        exp:'Orden: ión hidratado < molécula < coloide < suspensión. El tamaño define si la mezcla es solución, coloide o suspensión.' },
+      { type:'fill', badge:'Propiedad del coloide',
+        q:'Los coloides NO sedimentan gracias al movimiento ___, y muestran el efecto ___ con la luz.',
+        template:['No sedimentan por movimiento ','[0]',', y muestran el efecto ','[1]'],
+        blanks:['Browniano','Tyndall'],
+        opts:['Browniano','Tyndall','oscilatorio','difracción','lineal','circular'],
+        exp:'Movimiento Browniano: las partículas coloidales se mueven continuamente en zig-zag por las colisiones con moléculas de solvente. Esto evita que sedimenten.' },
+      { type:'mcq', badge:'Aplicación real',
+        q:'¿Por qué el cielo es azul y los atardeceres son rojos? (Pista: Tyndall y tamaño)',
+        opts:['El aire contiene pigmentos azules','La luz azul se dispersa más por partículas pequeñas del aire','El sol emite más luz roja al atardecer','El ojo humano percibe el azul más fácilmente'],
+        correct:1, exp:'¡Efecto Tyndall en acción! Las moléculas de aire dispersan más la luz de longitud de onda corta (azul). Al atardecer, la luz recorre más atmósfera y solo queda la roja/naranja.' },
+    ]},
+  ]
+},
+{
+  id:4, name:'Propiedades Coligativas', icon:'🔬', color:'var(--red)',
+  phases:[
+    { name:'Básico', xp:15, questions:[
+      { type:'mcq', badge:'Definición',
+        q:'Las propiedades coligativas dependen de:',
+        opts:['El tipo químico del soluto disuelto','El color y olor de la solución','Solo la cantidad de partículas disueltas, sin importar qué son','La temperatura del solvente puro'],
+        correct:2, exp:'COLIGATIVAS = "colectivas": dependen del NÚMERO de partículas, no de su naturaleza química. 1 mol de NaCl da 2 partículas (Na⁺ + Cl⁻); 1 mol de glucosa da 1 partícula.' },
+      { type:'mcq', badge:'Tipos',
+        q:'¿Cuáles son las principales propiedades coligativas? (Selecciona la más completa)',
+        opts:['Color, olor y sabor','Ebullición, fusión, condensación','Descenso crioscópico, ascenso ebullioscópico, presión osmótica, descenso de presión de vapor','Conductividad, magnetismo, acidez'],
+        correct:2, exp:'Las 4 propiedades coligativas clásicas: 1) Descenso del punto de congelación, 2) Ascenso del punto de ebullición, 3) Presión osmótica, 4) Descenso de presión de vapor.' },
+      { type:'fill', badge:'Fórmula de presión osmótica',
+        q:'La presión osmótica se calcula: π = ___ × R × T',
+        template:['Presión osmótica: π = ','[0]',' × R × T'],
+        blanks:['M (molaridad)'],
+        opts:['M (molaridad)','m (molalidad)','n (moles)','T (temperatura)','ΔT (cambio)'],
+        exp:'π = MRT: presión osmótica = Molaridad × R (0.0821 L·atm/mol·K) × Temperatura en Kelvin. Esencial en biología para entender el funcionamiento de las células.' },
+    ]},
+    { name:'Intermedio', xp:20, questions:[
+      { type:'mcq', badge:'Aplicación real',
+        q:'¿Por qué se echa sal en carreteras con hielo?',
+        opts:['La sal genera calor al disolverse y derrite el hielo','Al disolver sal, baja el punto de congelación del agua (debajo de 0°C)','La sal absorbe el agua del hielo','La textura de la sal mejora el agarre de los neumáticos'],
+        correct:1, exp:'¡Descenso crioscópico en acción! ΔTf = Kf × m. La sal disuelta baja el punto de congelación del agua hasta -10°C o menos, evitando que se forme hielo.' },
+      { type:'match', badge:'Emparejamiento',
+        q:'Une cada propiedad coligativa con su aplicación real:',
+        pairs:[{L:'Descenso crioscópico',R:'Sal en carreteras con hielo'},{L:'Ascenso ebullioscópico',R:'Pasta se cuece más lento con sal'},{L:'Presión osmótica',R:'Funcionamiento de membranas celulares'},{L:'Presión de vapor',R:'El agua se evapora más lento en solución'}],
+        exp:'Cada propiedad tiene aplicaciones cotidianas. La presión osmótica es crucial en medicina (sueros fisiológicos, diálisis).' },
+      { type:'mcq', badge:'Cálculo conceptual',
+        q:'¿Cuál solución tiene el MAYOR ascenso del punto de ebullición?',
+        opts:['1M de glucosa (C₆H₁₂O₆)','1M de NaCl (Na⁺ + Cl⁻ → 2 partículas)','1M de CaCl₂ (Ca²⁺ + 2Cl⁻ → 3 partículas)','Agua pura sin soluto'],
+        correct:2, exp:'CaCl₂ da 3 iones al ionizarse (Ca²⁺ + 2Cl⁻). Más partículas = mayor efecto coligativo. ΔTb = Kb × m × i, donde i = número de iones (factor de Van\'t Hoff).' },
+    ]},
+    { name:'Avanzado', xp:25, questions:[
+      { type:'order', badge:'Ordenar por punto de ebullición',
+        q:'Ordena de MAYOR a MENOR punto de ebullición:',
+        steps:['1M CaCl₂ (3 iones, mayor efecto)','1M NaCl (2 iones, efecto medio)','1M glucosa (1 partícula, menor efecto)','Agua pura (0°C de ascenso)'],
+        order:[0,1,2,3],
+        exp:'CaCl₂ > NaCl > glucosa > agua pura. Más partículas (factor i) = mayor ΔTb. CaCl₂ tiene el mayor ascenso porque produce 3 iones.' },
+      { type:'fill', badge:'Factor de Van\'t Hoff',
+        q:'Para NaCl que se ioniza en Na⁺ + Cl⁻, el factor i de Van\'t Hoff es ___.',
+        template:['NaCl → Na⁺ + Cl⁻ = 2 iones. Factor i = ','[0]'],
+        blanks:['2'],
+        opts:['2','1','3','0.5','4','1.5'],
+        exp:'i = número de partículas por fórmula unidad disuelta. NaCl → 2 iones (i=2). Glucosa → 1 molécula (i=1). CaCl₂ → 3 iones (i=3). Modifica todos los efectos coligativos.' },
+      { type:'mcq', badge:'Ósmosis',
+        q:'En ósmosis, el agua fluye desde la región de ___ concentración hacia la de ___ concentración.',
+        opts:['mayor → menor (a favor del gradiente)','menor → mayor (a favor del gradiente osmótico)','igual → igual (sin movimiento neto)','caliente → fría (por gradiente térmico)'],
+        correct:1, exp:'En ósmosis, el AGUA fluye desde donde HAY MENOS soluto (mayor concentración de agua) hacia donde HAY MÁS soluto (menor concentración de agua). Esto es crucial para la vida celular.' },
+    ]},
+  ]
+},
+];
+
+// ══════════════════════════════════════
+// GAME STATE
+// ══════════════════════════════════════
+const G = {
+  xp: 0, streak: 0, maxStreak: 0,
+  totalCorrect: 0, consecutiveCorrect: 0,
+  lessons: Object.fromEntries(LESSONS.map(l => [l.id, {phases:[0,0,0]}])),
+  unlocked: new Set(),
 };
 
-// ==================== MAP RENDERING ====================
-function showHome() {
-  document.getElementById('home-xp').textContent = state.xp;
-  document.getElementById('home-level').textContent = state.level;
-  document.getElementById('home-done').textContent = state.lessonsCompleted.length;
+// SESSION STATE
+let S = {};
+
+// ══════════════════════════════════════
+// AUDIO
+// ══════════════════════════════════════
+let AC;
+function getAC(){ if(!AC) AC = new (window.AudioContext||window.webkitAudioContext)(); return AC; }
+function tone(f,d,type='sine',v=.25){
+  try {
+    const a=getAC(),o=a.createOscillator(),g=a.createGain();
+    o.connect(g);g.connect(a.destination);
+    o.type=type;o.frequency.value=f;
+    g.gain.setValueAtTime(v,a.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d);
+    o.start();o.stop(a.currentTime+d);
+  } catch(e){}
+}
+const sfx = {
+  correct:()=>{tone(523,.1,'sine',.2);setTimeout(()=>tone(659,.1,'sine',.2),100);setTimeout(()=>tone(784,.25,'sine',.2),200)},
+  wrong:()=>{tone(280,.15,'sawtooth',.2);setTimeout(()=>tone(240,.2,'sawtooth',.2),160)},
+  select:()=>tone(500,.04,'sine',.08),
+  click:()=>tone(650,.04,'sine',.07),
+  complete:()=>{[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.18,'sine',.18),i*100))},
+  master:()=>{[523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>tone(f,.25,'sine',.22),i*120))},
+};
+
+// ══════════════════════════════════════
+// SCREEN MANAGEMENT
+// ══════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function showHome(){
+  updateHomeStats();
   showScreen('home');
 }
-
-function showMap() {
+function showMap(){
+  updateMapStats();
   renderMap();
   showScreen('map');
 }
 
-function renderMap() {
-  const grid = document.getElementById('map-grid');
-  grid.innerHTML = '';
-  document.getElementById('xp-label').textContent = state.xp + ' XP';
-  document.getElementById('xp-fill').style.width = ((state.xp % 100)) + '%';
+// ══════════════════════════════════════
+// STATS & LEVEL
+// ══════════════════════════════════════
+function getLevelInfo(xp){
+  for(let i=LEVELS_DEF.length-1;i>=0;i--) if(xp>=LEVELS_DEF[i].min) return LEVELS_DEF[i];
+  return LEVELS_DEF[0];
+}
+function countMastered(){ return Object.values(G.lessons).filter(l=>l.phases.every(p=>p===2)).length; }
+function countPhasesDone(){ return Object.values(G.lessons).reduce((s,l)=>s+l.phases.filter(p=>p===2).length,0); }
+function countAch(){ return G.unlocked.size; }
 
-  const offsets = [0, 60, -60, 60, 0];
-  lessons.forEach((l, i) => {
-    const done = state.lessonsCompleted.includes(i);
-    const active = !done && (i === 0 || state.lessonsCompleted.includes(i-1));
-    const locked = !done && !active;
-
-    if (i > 0) {
-      const conn = document.createElement('div');
-      conn.className = 'connector' + (done ? ' done':'');
-      conn.style.marginLeft = offsets[i] + 'px';
-      grid.appendChild(conn);
-    }
-    const node = document.createElement('div');
-    node.className = 'lesson-node';
-    node.style.marginLeft = offsets[i] + 'px';
-
-    const status = done ? 'done' : active ? 'active' : 'locked';
-    node.innerHTML = `
-      <button class="lesson-btn ${status}" ${locked ? 'disabled' : `onclick="startLesson(${i})"`}>
-        ${done ? '✅' : l.icon}
-      </button>
-      <div class="lesson-name" style="color:${done?'var(--primary)':active?'var(--text)':'var(--text-muted)'}">${l.name}</div>
-    `;
-    grid.appendChild(node);
-  });
+function updateHomeStats(){
+  const lv=getLevelInfo(G.xp);
+  const prog=Math.min(((G.xp-lv.min)/(lv.max-lv.min)*100),100);
+  document.getElementById('h-xp').textContent=G.xp;
+  document.getElementById('h-streak').textContent=G.streak;
+  document.getElementById('h-level-name').textContent=`Nivel ${lv.level} — ${lv.name}`;
+  document.getElementById('h-level-xp').textContent=`${G.xp} / ${lv.max=== Infinity?'∞':lv.max} XP`;
+  document.getElementById('h-level-bar').style.width=lv.max===Infinity?'100%':prog+'%';
+  document.getElementById('hs-lessons').textContent=countMastered();
+  document.getElementById('hs-phases').textContent=countPhasesDone();
+  document.getElementById('hs-ach').textContent=countAch();
+}
+function updateMapStats(){
+  const lv=getLevelInfo(G.xp);
+  document.getElementById('m-xp').textContent=G.xp;
+  document.getElementById('m-streak').textContent=G.streak;
+  document.getElementById('m-level').textContent=`Nv.${lv.level}`;
+  document.getElementById('a-xp').textContent=G.xp;
 }
 
-// ==================== LESSON START ====================
-function startLesson(id) {
-  sfxClick();
-  const lesson = lessons[id];
-  lState = {
-    lessonId: id,
-    questions: [...lesson.questions],
-    qIdx: 0,
-    hearts: state.hearts,
-    wrongInLesson: 0,
-    correctInLesson: 0,
-    answered: false,
-    dragData: {}, matchSel: {leftIdx:null, rightIdx:null},
-    orderItems: [], fillAnswers: [], fillBlankIdx: 0
+// ══════════════════════════════════════
+// MAP RENDER
+// ══════════════════════════════════════
+const OFFSETS=[0,80,-80,80,0];
+function renderMap(){
+  const body=document.getElementById('map-body');
+  body.innerHTML=`<div class="unit-badge"><span class="unit-icon">⚗️</span><div class="unit-info"><div class="unit-title">Unidad 1: Química de Soluciones</div><div class="unit-sub">Domina 5 lecciones con 3 fases cada una</div></div></div>`;
+  const path=document.createElement('div');
+  path.className='path-container';
+
+  LESSONS.forEach((lesson,i)=>{
+    const ld=G.lessons[lesson.id];
+    const phases=ld.phases;
+    const mastered=phases.every(p=>p===2);
+    const anyDone=phases.some(p=>p>=1);
+    const prevMastered=i===0||G.lessons[i-1].phases.every(p=>p===2);
+    const isActive=!mastered&&prevMastered;
+    const locked=!mastered&&!prevMastered&&!anyDone;
+
+    if(i>0){
+      const c=document.createElement('div');
+      const prevMast=G.lessons[i-1].phases.every(p=>p===2);
+      c.className='node-connector'+(prevMast?' done':'');
+      c.style.marginLeft=OFFSETS[i]+'px';
+      path.appendChild(c);
+    }
+
+    const wrap=document.createElement('div');
+    wrap.className='path-node-wrap';
+    wrap.style.marginLeft=OFFSETS[i]+'px';
+
+    const circleClass=mastered?'mastered':isActive?'active':locked?'locked':'';
+    const clickable=!locked;
+    const nextPhase=phases.indexOf(0);
+    const phaseToStart=nextPhase===-1?2:nextPhase;
+
+    wrap.innerHTML=`
+      <div class="lesson-node" ${clickable?`onclick="startLesson(${lesson.id})"`:'style="cursor:not-allowed"'}>
+        <div class="lesson-circle ${circleClass}">
+          <span style="font-size:28px">${mastered?'⭐':lesson.icon}</span>
+          ${mastered?'<div class="star-overlay">⭐</div>':''}
+          ${locked?'<div class="lock-overlay">🔒</div>':''}
+        </div>
+        <div class="lesson-label ${mastered?'mastered':isActive?'active':''}">${lesson.name}</div>
+        <div class="phase-dots">
+          ${phases.map(p=>`<div class="phase-dot ${p===2?(mastered?'mastered':'done'):''}" title="${p===2?'Completada':p===1?'En progreso':'Pendiente'}"></div>`).join('')}
+        </div>
+      </div>`;
+    path.appendChild(wrap);
+  });
+  body.appendChild(path);
+}
+
+// ══════════════════════════════════════
+// LESSON ENGINE
+// ══════════════════════════════════════
+function startLesson(lessonId){
+  sfx.click();
+  const ld=G.lessons[lessonId];
+  const phaseIdx=ld.phases.indexOf(0);
+  if(phaseIdx===-1){ // All done — replay last phase for fun
+    startPhase(lessonId,2);
+    return;
+  }
+  startPhase(lessonId,phaseIdx);
+}
+
+function startPhase(lessonId,phaseIdx){
+  const lesson=LESSONS[lessonId];
+  const phase=lesson.phases[phaseIdx];
+  S={
+    lessonId, phaseIdx,
+    questions:[...phase.questions],
+    qIdx:0, hearts:5,
+    correct:0, wrong:0, answered:false,
+    totalCorrectLesson: S.totalCorrectLesson||0,
+    totalWrongLesson: S.totalWrongLesson||0,
+    xpEarned:0,
+    sel:null, dragState:{}, matchState:{}, fillState:[], orderState:[],
   };
+  document.getElementById('les-back').onclick=()=>{sfx.click();showMap();};
   showScreen('lesson');
   renderQuestion();
 }
 
-// ==================== QUESTION RENDERING ====================
-function renderQuestion() {
-  const q = lState.questions[lState.qIdx];
-  const total = lState.questions.length;
-  const pct = (lState.qIdx / total) * 100;
-
-  document.getElementById('prog-fill').style.width = pct + '%';
+function renderQuestion(){
+  const q=S.questions[S.qIdx];
+  const pct=(S.qIdx/S.questions.length)*100;
+  document.getElementById('les-prog').style.width=pct+'%';
+  const lesson=LESSONS[S.lessonId];
+  document.getElementById('les-phase-tag').textContent=`${lesson.phases[S.phaseIdx].name} · Fase ${S.phaseIdx+1}/3`;
   renderHearts();
   hideFeedback();
-  enableConfirm(false);
+  setConfirm(false);
+  S.answered=false; S.sel=null;
 
-  const content = document.getElementById('lesson-content');
-  content.innerHTML = '';
-  lState.answered = false;
-  lState.matchSel = {leftIdx:null, rightIdx:null, matched:[]};
+  const content=document.getElementById('les-content');
+  content.innerHTML='';
+  content.appendChild(mk('div','q-badge',q.badge||'Pregunta'));
 
-  const badge = el('div', {className:'q-type-badge'}, q.badge || 'Pregunta');
-  content.appendChild(badge);
+  const qtext=mk('div','q-text',q.q);
+  content.appendChild(qtext);
 
-  const qText = el('div', {className:'q-question'}, q.question);
-  content.appendChild(qText);
-
-  switch(q.type) {
-    case 'mcq': renderMCQ(q, content); break;
-    case 'drag': renderDrag(q, content); break;
-    case 'order': renderOrder(q, content); break;
-    case 'fill': renderFill(q, content); break;
-    case 'match': renderMatch(q, content); break;
-  }
+  if(q.type==='mcq') renderMCQ(q,content);
+  else if(q.type==='image_mcq') renderImageMCQ(q,content);
+  else if(q.type==='fill') renderFill(q,content);
+  else if(q.type==='match') renderMatch(q,content);
+  else if(q.type==='drag') renderDrag(q,content);
+  else if(q.type==='order') renderOrder(q,content);
 }
 
-function renderMCQ(q, content) {
-  const opts = el('div', {className:'mcq-options'});
-  const letters = ['A','B','C','D'];
-  q.options.forEach((opt, i) => {
-    const btn = el('button', {className:'mcq-btn'}, 
-      `<div class="mcq-letter">${letters[i]}</div><span>${opt}</span>`
-    );
-    btn.addEventListener('click', () => {
-      if(lState.answered) return;
-      sfxSelect();
-      content.querySelectorAll('.mcq-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      lState.selectedMCQ = i;
-      enableConfirm(true);
-    });
-    opts.appendChild(btn);
+// ── MCQ ──
+function renderMCQ(q,el){
+  const list=mk('div','mcq-list');
+  const LETS=['A','B','C','D'];
+  q.opts.forEach((opt,i)=>{
+    const btn=mk('button','mcq-opt',`<div class="mcq-letter">${LETS[i]}</div><span>${opt}</span>`);
+    btn.onclick=()=>{
+      if(S.answered)return; sfx.select();
+      list.querySelectorAll('.mcq-opt').forEach(b=>b.classList.remove('sel'));
+      btn.classList.add('sel'); S.sel=i; setConfirm(true);
+    };
+    list.appendChild(btn);
   });
-  content.appendChild(opts);
-
-  document.getElementById('confirm-btn').onclick = () => {
-    if(!enabledConfirm) return;
-    lState.answered = true;
-    const correct = lState.selectedMCQ === q.correct;
-    content.querySelectorAll('.mcq-btn').forEach((b, i) => {
-      if(i === q.correct) b.classList.add('correct');
-      else if(i === lState.selectedMCQ) b.classList.add('wrong');
-      b.disabled = true;
+  el.appendChild(list);
+  document.getElementById('confirm-btn').onclick=()=>{
+    if(!confirmReady||S.answered)return; S.answered=true;
+    const ok=S.sel===q.correct;
+    list.querySelectorAll('.mcq-opt').forEach((b,i)=>{
+      if(i===q.correct)b.classList.add('ok');
+      else if(i===S.sel)b.classList.add('bad');
+      b.disabled=true;
     });
-    handleAnswer(correct, q.explanation);
+    handleAnswer(ok,q.exp);
   };
 }
 
-function renderDrag(q, content) {
-  lState.dragData = { zones: q.zones.map(() => []), placed: {} };
+// ── IMAGE MCQ ──
+function renderImageMCQ(q,el){
+  const wrap=mk('div','img-q-wrap');
+  const label=mk('div','img-q-label','📊 Diagrama de referencia (del cuaderno)');
+  const svgWrap=mk('div','img-q-svg'); svgWrap.innerHTML=q.svg;
+  wrap.appendChild(label); wrap.appendChild(svgWrap);
+  el.appendChild(wrap);
+  renderMCQ(q,el);
+}
 
-  const instr = el('div', {className:'q-instruction'}, 'Arrastra cada elemento a la categoría correcta:');
-  content.appendChild(instr);
+// ── FILL ──
+function renderFill(q,el){
+  S.fillState=new Array(q.blanks.length).fill(null);
+  const sentence=mk('div','fill-sentence');
+  q.template.forEach(part=>{
+    if(part.startsWith('[')){
+      const idx=parseInt(part.slice(1));
+      const span=mk('span','fill-blank','_____');
+      span.id=`blank-${idx}`;
+      sentence.appendChild(span);
+    } else sentence.appendChild(document.createTextNode(part));
+  });
+  el.appendChild(sentence);
 
-  const zonesRow = el('div', {className:'drag-zones'});
-  q.zones.forEach((zone, zi) => {
-    const dz = el('div', {className:'drop-zone', 'data-zone':zi});
-    dz.innerHTML = `<div class="drop-label">${zone}</div>`;
-    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
-    dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
-    dz.addEventListener('drop', e => {
-      e.preventDefault(); dz.classList.remove('dragover');
-      const idx = e.dataTransfer.getData('text/plain');
-      if(idx === '') return;
-      placeChip(parseInt(idx), zi, q);
-      sfxSelect();
+  const bank=mk('div','fill-word-bank');
+  q.opts.forEach(opt=>{
+    const btn=mk('button','fill-word',opt);
+    btn.onclick=()=>{
+      if(S.answered)return; sfx.select();
+      const empty=S.fillState.indexOf(null);
+      if(empty===-1)return;
+      S.fillState[empty]=opt;
+      const span=document.getElementById(`blank-${empty}`);
+      if(span){span.textContent=opt;span.classList.add('filled');}
+      btn.classList.add('used'); btn.disabled=true;
+      if(S.fillState.every(v=>v!==null)) setConfirm(true);
+    };
+    bank.appendChild(btn);
+  });
+  el.appendChild(bank);
+
+  document.getElementById('confirm-btn').onclick=()=>{
+    if(!confirmReady||S.answered)return; S.answered=true;
+    const ok=S.fillState.every((v,i)=>v===q.blanks[i]);
+    q.blanks.forEach((b,i)=>{
+      const sp=document.getElementById(`blank-${i}`);
+      if(sp) sp.classList.add(S.fillState[i]===b?'filled':'wrong-b');
+    });
+    handleAnswer(ok,q.exp);
+  };
+}
+
+// ── MATCH ──
+function renderMatch(q,el){
+  S.matchState={left:null,right:null,paired:[],wrongPairs:0};
+  const shuffR=[...q.pairs.map((p,i)=>({...p,oi:i}))].sort(()=>Math.random()-.5);
+
+  const cols=mk('div','match-cols');
+  const lc=mk('div','match-col'); lc.innerHTML='<div class="match-col-hdr">Término</div>';
+  const rc=mk('div','match-col'); rc.innerHTML='<div class="match-col-hdr">Descripción</div>';
+
+  q.pairs.forEach((p,i)=>{
+    const item=mk('div','match-item',p.L); item.dataset.li=i;
+    item.onclick=()=>matchSelectL(i);
+    lc.appendChild(item);
+  });
+  shuffR.forEach((p,i)=>{
+    const item=mk('div','match-item',p.R); item.dataset.ri=i; item.dataset.oi=p.oi;
+    item.onclick=()=>matchSelectR(i,p.oi);
+    rc.appendChild(item);
+  });
+  cols.appendChild(lc); cols.appendChild(rc); el.appendChild(cols);
+
+  document.getElementById('confirm-btn').onclick=()=>{
+    if(!confirmReady||S.answered)return; S.answered=true;
+    handleAnswer(S.matchState.wrongPairs===0&&S.matchState.paired.length===q.pairs.length,q.exp);
+  };
+}
+function matchSelectL(i){
+  if(S.matchState.paired.includes(i))return; sfx.select();
+  document.querySelectorAll('[data-li]').forEach(e=>{
+    if(!S.matchState.paired.includes(+e.dataset.li))e.classList.remove('sel');
+  });
+  S.matchState.left=i;
+  document.querySelector(`[data-li="${i}"]`).classList.add('sel');
+  tryMatch();
+}
+function matchSelectR(i,oi){
+  const el=document.querySelector(`[data-ri="${i}"]`);
+  if(el&&el.classList.contains('paired'))return; sfx.select();
+  document.querySelectorAll('[data-ri]').forEach(e=>{if(!e.classList.contains('paired'))e.classList.remove('sel');});
+  S.matchState.right=i; S.matchState.rightOi=oi;
+  el.classList.add('sel');
+  tryMatch();
+}
+function tryMatch(){
+  const {left,right,rightOi}=S.matchState;
+  if(left===null||right===null)return;
+  const lEl=document.querySelector(`[data-li="${left}"]`);
+  const rEl=document.querySelector(`[data-ri="${right}"]`);
+  if(left===rightOi){
+    sfx.correct();
+    lEl.classList.remove('sel');lEl.classList.add('paired');
+    rEl.classList.remove('sel');rEl.classList.add('paired');
+    S.matchState.paired.push(left);
+    showXPFloat('+3');
+  } else {
+    sfx.wrong();
+    S.matchState.wrongPairs++;
+    lEl.classList.add('bad-pair');rEl.classList.add('bad-pair');
+    setTimeout(()=>{lEl.classList.remove('bad-pair','sel');rEl.classList.remove('bad-pair','sel');},600);
+  }
+  S.matchState.left=null;S.matchState.right=null;S.matchState.rightOi=null;
+  const q=S.questions[S.qIdx];
+  if(S.matchState.paired.length===q.pairs.length) setConfirm(true);
+}
+
+// ── DRAG ──
+function renderDrag(q,el){
+  S.dragState={zones:q.zones.map(()=>[]),items:q.items.map((it,i)=>({...it,i}))};
+  const scene=mk('div','drag-scene');
+  const zonesRow=mk('div','drag-zones-row');
+  q.zones.forEach((zone,zi)=>{
+    const dz=mk('div','drop-zone');
+    dz.innerHTML=`<div class="dz-label">${zone}</div>`;
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over');});
+    dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+    dz.addEventListener('drop',e=>{
+      e.preventDefault();dz.classList.remove('over');
+      const idx=+e.dataTransfer.getData('text/plain');
+      placeItem(idx,zi,q);sfx.select();
     });
     zonesRow.appendChild(dz);
   });
-  content.appendChild(zonesRow);
-
-  const bank = el('div', {className:'drag-bank'});
-  bank.innerHTML = '<div class="drag-bank-label">Elementos disponibles</div>';
-
-  const shuffled = q.items.map((item, i) => ({...item, originalIdx: i}))
-    .sort(() => Math.random() - .5);
-  lState.dragData.shuffled = shuffled;
-
-  shuffled.forEach(item => {
-    const chip = el('div', {
-      className: 'drag-chip in-bank',
-      draggable: true,
-      id: `chip-${item.originalIdx}`
-    }, item.text);
-    chip.addEventListener('dragstart', e => {
-      e.dataTransfer.setData('text/plain', item.originalIdx.toString());
-      chip.style.opacity = '.5';
-    });
-    chip.addEventListener('dragend', () => chip.style.opacity = '1');
+  scene.appendChild(zonesRow);
+  const bank=mk('div','drag-bank'); bank.innerHTML='<div class="db-label">Arrastra aquí ↑</div>';
+  S.dragState.items.sort(()=>Math.random()-.5).forEach(item=>{
+    const chip=mk('div','drag-chip bank-chip',item.t);
+    chip.draggable=true; chip.id=`chip-${item.i}`;
+    chip.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',item.i);chip.style.opacity='.5';});
+    chip.addEventListener('dragend',()=>chip.style.opacity='1');
     bank.appendChild(chip);
   });
-  content.appendChild(bank);
+  scene.appendChild(bank); el.appendChild(scene);
 
-  document.getElementById('confirm-btn').onclick = () => {
-    if(!enabledConfirm) return;
-    lState.answered = true;
-    let allCorrect = true;
-    q.zones.forEach((_, zi) => {
-      const dz = content.querySelectorAll('.drop-zone')[zi];
-      const placed = lState.dragData.zones[zi];
-      const correctHere = placed.every(idx => q.items[idx].correct === zi);
-      const hasAll = q.items.filter(it => it.correct === zi).every(it => placed.includes(it.originalIdx !== undefined ? it.originalIdx : q.items.indexOf(it)));
-      if(!correctHere || !hasAll) { allCorrect = false; dz.classList.add('wrong'); }
-      else dz.classList.add('correct');
+  document.getElementById('confirm-btn').onclick=()=>{
+    if(!confirmReady||S.answered)return; S.answered=true;
+    let allOk=true;
+    q.zones.forEach((_,zi)=>{
+      const dz=document.querySelectorAll('.drop-zone')[zi];
+      const placed=S.dragState.zones[zi];
+      const correctHere=placed.every(i=>q.items[i].c===zi);
+      const allPlaced=q.items.filter(it=>it.c===zi).every(it=>placed.includes(it.i));
+      if(!correctHere||!allPlaced){allOk=false;if(dz)dz.classList.add('bad');}
+      else if(dz) dz.classList.add('ok');
     });
-    handleAnswer(allCorrect, q.explanation);
+    handleAnswer(allOk,q.exp);
   };
-
-  checkDragComplete(q);
+}
+function placeItem(idx,zi,q){
+  const chip=document.getElementById(`chip-${idx}`);
+  if(!chip)return;
+  S.dragState.zones.forEach(z=>{const p=z.indexOf(idx);if(p>-1)z.splice(p,1);});
+  S.dragState.zones[zi].push(idx);
+  const dz=document.querySelectorAll('.drop-zone')[zi];
+  chip.classList.remove('bank-chip');
+  if(dz) dz.appendChild(chip);
+  const total=S.dragState.zones.reduce((a,z)=>a+z.length,0);
+  setConfirm(total===q.items.length);
 }
 
-function placeChip(idx, zoneIdx, q) {
-  const chip = document.getElementById(`chip-${idx}`);
-  if(!chip) return;
-  const zones = document.querySelectorAll('.drop-zone');
-  const targetZone = zones[zoneIdx];
-  if(!targetZone) return;
-
-  // Remove from old zone
-  lState.dragData.zones.forEach(z => {
-    const pos = z.indexOf(idx);
-    if(pos > -1) z.splice(pos, 1);
-  });
-
-  lState.dragData.zones[zoneIdx].push(idx);
-  chip.classList.remove('in-bank');
-  targetZone.appendChild(chip);
-  checkDragComplete(q);
-}
-
-function checkDragComplete(q) {
-  const totalPlaced = lState.dragData.zones.reduce((a,z) => a + z.length, 0);
-  enableConfirm(totalPlaced === q.items.length);
-}
-
-function renderOrder(q, content) {
-  const shuffled = [...q.steps.map((s,i) => ({text:s, original:i}))]
-    .sort(() => Math.random() - .5);
-  lState.orderItems = shuffled;
-
-  const instr = el('div', {className:'q-instruction'}, 'Arrastra para reordenar:');
-  content.appendChild(instr);
-
-  const list = el('div', {className:'order-list', id:'order-list'});
-  shuffled.forEach((item, i) => {
-    const div = el('div', {
-      className:'order-item', draggable:true,
-      'data-idx':i
-    }, `<span class="order-handle">⠿</span><div class="order-num">${i+1}</div><span>${item.text}</span>`);
-    div.addEventListener('dragstart', e => {
-      e.dataTransfer.setData('text/plain', i.toString());
-      div.style.opacity = '.5';
-    });
-    div.addEventListener('dragend', () => { div.style.opacity='1'; updateOrderNums(); });
-    div.addEventListener('dragover', e => { e.preventDefault(); });
-    div.addEventListener('drop', e => {
-      e.preventDefault();
-      const from = parseInt(e.dataTransfer.getData('text/plain'));
-      const to = parseInt(div.getAttribute('data-idx'));
-      if(from !== to) {
-        const items = [...list.children];
-        const fromEl = items[from]; const toEl = items[to];
-        if(from < to) list.insertBefore(fromEl, toEl.nextSibling);
-        else list.insertBefore(fromEl, toEl);
-        [...list.children].forEach((el, i) => el.setAttribute('data-idx', i));
-        updateOrderNums();
-        sfxSelect();
+// ── ORDER ──
+function renderOrder(q,el){
+  const shuffled=[...q.steps.map((s,i)=>({text:s,orig:i}))].sort(()=>Math.random()-.5);
+  S.orderState=shuffled;
+  const list=mk('div','order-list'); list.id='order-list';
+  shuffled.forEach((item,i)=>{
+    const div=mk('div','order-item',`<span class="order-handle">⠿</span><div class="order-badge">${i+1}</div><span>${item.text}</span>`);
+    div.draggable=true; div.dataset.idx=i;
+    div.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',i);div.style.opacity='.5';});
+    div.addEventListener('dragend',()=>{div.style.opacity='1';refreshOrderNums();});
+    div.addEventListener('dragover',e=>{e.preventDefault();div.classList.add('drag-over');});
+    div.addEventListener('dragleave',()=>div.classList.remove('drag-over'));
+    div.addEventListener('drop',e=>{
+      e.preventDefault();div.classList.remove('drag-over');
+      const from=+e.dataTransfer.getData('text/plain');
+      const to=+div.dataset.idx;
+      if(from!==to){
+        const kids=[...list.children];
+        const fEl=kids[from],tEl=kids[to];
+        if(from<to) list.insertBefore(fEl,tEl.nextSibling);
+        else list.insertBefore(fEl,tEl);
+        [...list.children].forEach((e,i)=>e.dataset.idx=i);
+        refreshOrderNums(); sfx.select();
       }
     });
     list.appendChild(div);
   });
-  content.appendChild(list);
-  enableConfirm(true);
-
-  document.getElementById('confirm-btn').onclick = () => {
-    if(!enabledConfirm || lState.answered) return;
-    lState.answered = true;
-    const items = [...list.children];
-    const currentOrder = items.map(el => lState.orderItems[parseInt(el.getAttribute('data-idx'))].original);
-    const correct = JSON.stringify(currentOrder) === JSON.stringify(q.correctOrder);
-    items.forEach((el, i) => {
-      el.style.borderColor = currentOrder[i] === q.correctOrder[i] ? 'var(--primary)' : 'var(--red)';
+  el.appendChild(list);
+  setConfirm(true);
+  document.getElementById('confirm-btn').onclick=()=>{
+    if(!confirmReady||S.answered)return; S.answered=true;
+    const kids=[...list.children];
+    const current=kids.map(e=>shuffled[+e.dataset.idx].orig);
+    const ok=JSON.stringify(current)===JSON.stringify(q.order);
+    kids.forEach((e,i)=>{
+      const badge=e.querySelector('.order-badge');
+      const correct=current[i]===q.order[i];
+      if(badge) badge.style.background=correct?'var(--green2)':'var(--red)';
     });
-    handleAnswer(correct, q.explanation);
+    handleAnswer(ok,q.exp);
   };
 }
-
-function updateOrderNums() {
-  const list = document.getElementById('order-list');
-  if(!list) return;
-  [...list.children].forEach((el, i) => {
-    const numEl = el.querySelector('.order-num');
-    if(numEl) numEl.textContent = i + 1;
-  });
+function refreshOrderNums(){
+  const list=document.getElementById('order-list');
+  if(!list)return;
+  [...list.children].forEach((e,i)=>{const b=e.querySelector('.order-badge');if(b)b.textContent=i+1;});
 }
 
-function renderFill(q, content) {
-  lState.fillAnswers = new Array(q.blanks.length).fill(null);
-  lState.fillBlankIdx = 0;
-
-  const eqDiv = el('div', {className:'fill-equation'});
-  q.template.forEach(part => {
-    if(part.startsWith('[BLANK')) {
-      const blankNum = parseInt(part.match(/\d+/)[0]) - 1;
-      const span = el('span', {
-        className:'fill-blank', id:`blank-${blankNum}`
-      }, '_____');
-      eqDiv.appendChild(span);
-    } else {
-      eqDiv.appendChild(document.createTextNode(part));
-    }
-  });
-  content.appendChild(eqDiv);
-
-  const optsDiv = el('div', {className:'fill-options'});
-  q.options.forEach(opt => {
-    const btn = el('button', {className:'fill-opt'}, opt);
-    btn.addEventListener('click', () => {
-      if(lState.answered) return;
-      sfxSelect();
-      const blankIdx = lState.fillAnswers.indexOf(null);
-      if(blankIdx === -1) return;
-      lState.fillAnswers[blankIdx] = opt;
-      document.getElementById(`blank-${blankIdx}`).textContent = opt;
-      btn.classList.add('selected');
-      btn.disabled = true;
-      if(lState.fillAnswers.every(a => a !== null)) enableConfirm(true);
-    });
-    optsDiv.appendChild(btn);
-  });
-  content.appendChild(optsDiv);
-
-  document.getElementById('confirm-btn').onclick = () => {
-    if(!enabledConfirm || lState.answered) return;
-    lState.answered = true;
-    const correct = lState.fillAnswers.every((ans, i) => ans === q.blanks[i]);
-    q.blanks.forEach((blank, i) => {
-      const span = document.getElementById(`blank-${i}`);
-      if(span) span.style.color = lState.fillAnswers[i] === blank ? 'var(--primary)' : 'var(--red)';
-    });
-    handleAnswer(correct, q.explanation);
-  };
+// ══════════════════════════════════════
+// ANSWER HANDLING
+// ══════════════════════════════════════
+let confirmReady=false;
+function setConfirm(yes){
+  confirmReady=yes;
+  const btn=document.getElementById('confirm-btn');
+  btn.classList.toggle('ready',yes);
 }
 
-function renderMatch(q, content) {
-  lState.matchSel = {leftIdx:null, rightIdx:null, matched:[]};
-
-  const instr = el('div', {className:'q-instruction'}, 'Toca un elemento de cada columna para emparejar:');
-  content.appendChild(instr);
-
-  const shuffledRight = [...q.pairs.map((p,i) => ({...p, originalIdx:i}))]
-    .sort(() => Math.random() - .5);
-
-  const area = el('div', {className:'match-area'});
-  const leftCol = el('div', {className:'match-col'});
-  leftCol.innerHTML = '<div class="match-col-label">Término</div>';
-  const rightCol = el('div', {className:'match-col'});
-  rightCol.innerHTML = '<div class="match-col-label">Definición</div>';
-
-  q.pairs.forEach((pair, i) => {
-    const item = el('div', {className:'match-item', 'data-lidx':i}, pair.left);
-    item.addEventListener('click', () => selectLeft(i));
-    leftCol.appendChild(item);
-  });
-
-  shuffledRight.forEach((pair, i) => {
-    const item = el('div', {className:'match-item', 'data-ridx':i, 'data-original':pair.originalIdx}, pair.right);
-    item.addEventListener('click', () => selectRight(i, pair.originalIdx));
-    rightCol.appendChild(item);
-  });
-
-  area.appendChild(leftCol); area.appendChild(rightCol);
-  content.appendChild(area);
-  lState.matchShuffled = shuffledRight;
-
-  document.getElementById('confirm-btn').onclick = () => {
-    if(!enabledConfirm || lState.answered) return;
-    lState.answered = true;
-    const correct = lState.matchSel.matched.length === q.pairs.length;
-    handleAnswer(correct, q.explanation);
-  };
-}
-
-function selectLeft(idx) {
-  if(lState.matchSel.matched.includes(idx)) return;
-  sfxSelect();
-  document.querySelectorAll('[data-lidx]').forEach(el => {
-    if(!lState.matchSel.matched.includes(parseInt(el.getAttribute('data-lidx')))) el.classList.remove('selected');
-  });
-  lState.matchSel.leftIdx = idx;
-  document.querySelector(`[data-lidx="${idx}"]`).classList.add('selected');
-  tryMatch();
-}
-
-function selectRight(idx, originalIdx) {
-  const alreadyMatched = lState.matchSel.matched.some(m => {
-    const el = document.querySelector(`[data-ridx="${idx}"]`);
-    return el && el.classList.contains('matched');
-  });
-  if(alreadyMatched) return;
-  sfxSelect();
-  document.querySelectorAll('[data-ridx]').forEach(el => {
-    if(!el.classList.contains('matched')) el.classList.remove('selected');
-  });
-  lState.matchSel.rightIdx = idx;
-  lState.matchSel.rightOriginal = originalIdx;
-  document.querySelector(`[data-ridx="${idx}"]`).classList.add('selected');
-  tryMatch();
-}
-
-function tryMatch() {
-  const {leftIdx, rightIdx, rightOriginal} = lState.matchSel;
-  if(leftIdx === null || rightIdx === null) return;
-  
-  const leftEl = document.querySelector(`[data-lidx="${leftIdx}"]`);
-  const rightEl = document.querySelector(`[data-ridx="${rightIdx}"]`);
-  
-  if(leftIdx === rightOriginal) {
-    sfxCorrect();
-    leftEl.classList.remove('selected'); leftEl.classList.add('matched');
-    rightEl.classList.remove('selected'); rightEl.classList.add('matched');
-    lState.matchSel.matched.push(leftIdx);
-    showXPPopup('+2');
+function handleAnswer(ok,exp){
+  if(ok){
+    sfx.correct(); S.correct++;
+    G.totalCorrect++; G.consecutiveCorrect++;
+    if(G.consecutiveCorrect>G.maxStreak) G.maxStreak=G.consecutiveCorrect;
+    G.xp+=4; showXPFloat('+4');
+    checkStreakAchievement();
+    showFeedback(true,exp);
   } else {
-    sfxWrong();
-    leftEl.classList.add('wrong-match'); rightEl.classList.add('wrong-match');
-    setTimeout(() => {
-      leftEl.classList.remove('wrong-match','selected');
-      rightEl.classList.remove('wrong-match','selected');
-    }, 600);
-  }
-  lState.matchSel.leftIdx = null;
-  lState.matchSel.rightIdx = null;
-  lState.matchSel.rightOriginal = null;
-
-  if(lState.matchSel.matched.length === lState.matchShuffled.length) enableConfirm(true);
-}
-
-// ==================== ANSWER HANDLING ====================
-let enabledConfirm = false;
-function enableConfirm(yes) {
-  enabledConfirm = yes;
-  const btn = document.getElementById('confirm-btn');
-  if(yes) btn.classList.add('ready');
-  else btn.classList.remove('ready');
-}
-
-function handleAnswer(correct, explanation) {
-  if(correct) {
-    sfxCorrect();
-    lState.correctInLesson++;
-    state.xp += 5;
-    showXPPopup('+5 XP');
-    showFeedback(true, explanation);
-  } else {
-    sfxWrong();
-    lState.wrongInLesson++;
-    lState.hearts--;
-    renderHearts();
+    sfx.wrong(); S.wrong++;
+    S.hearts--;G.consecutiveCorrect=0;
     shakeContent();
-    showFeedback(false, explanation);
+    showFeedback(false,exp);
+    renderHearts();
   }
 }
 
-function renderHearts() {
-  const row = document.getElementById('hearts-row');
-  row.innerHTML = '';
-  for(let i=0;i<5;i++) {
-    row.innerHTML += `<span class="heart-icon">${i < lState.hearts ? '❤️' : '🖤'}</span>`;
-  }
+function renderHearts(){
+  const r=document.getElementById('les-hearts');
+  r.innerHTML=[...Array(5)].map((_,i)=>`<span>${i<S.hearts?'❤️':'🖤'}</span>`).join('');
 }
 
-function shakeContent() {
-  const c = document.getElementById('lesson-content');
+function shakeContent(){
+  const c=document.getElementById('les-content');
   c.classList.add('shake');
-  setTimeout(() => c.classList.remove('shake'), 400);
+  setTimeout(()=>c.classList.remove('shake'),350);
 }
 
-function showFeedback(correct, explanation) {
-  const panel = document.getElementById('feedback');
-  const title = document.getElementById('fb-title');
-  const exp = document.getElementById('fb-exp');
-  const btn = document.getElementById('fb-btn');
-
-  panel.className = 'feedback-panel show ' + (correct ? 'correct-fb' : 'wrong-fb');
-  title.textContent = correct ? '¡Correcto! 🎉' : '¡Incorrecto! 😅';
-  title.style.color = correct ? 'var(--primary)' : 'var(--red)';
-  exp.textContent = explanation;
-  btn.className = 'fb-btn' + (correct ? '' : ' wrong-btn');
-  btn.textContent = 'CONTINUAR';
-  btn.onclick = nextQuestion;
+function showFeedback(ok,exp){
+  const panel=document.getElementById('feedback');
+  panel.className='feedback-panel show '+(ok?'fp-ok':'fp-bad');
+  document.getElementById('fp-title').textContent=ok?'¡Correcto! 🎉':'¡Incorrecto! 😅';
+  document.getElementById('fp-exp').textContent=exp;
+  const btn=document.getElementById('fp-btn');
+  btn.textContent='CONTINUAR';
+  btn.onclick=()=>{sfx.click();nextQuestion();};
+}
+function hideFeedback(){
+  document.getElementById('feedback').className='feedback-panel';
 }
 
-function hideFeedback() {
-  document.getElementById('feedback').className = 'feedback-panel';
+function nextQuestion(){
+  hideFeedback();
+  S.qIdx++;
+  if(S.qIdx>=S.questions.length||S.hearts<=0) completePhase();
+  else renderQuestion();
 }
 
-function nextQuestion() {
-  sfxClick();
-  lState.qIdx++;
-  if(lState.qIdx >= lState.questions.length || lState.hearts <= 0) {
-    finishLesson();
+// ══════════════════════════════════════
+// PHASE & LESSON COMPLETION
+// ══════════════════════════════════════
+function completePhase(){
+  const lesson=LESSONS[S.lessonId];
+  const phase=lesson.phases[S.phaseIdx];
+  const xpGained=S.hearts<=0?Math.floor(phase.xp*.5):phase.xp;
+  G.xp+=xpGained; S.xpEarned+=xpGained;
+  S.totalCorrectLesson=(S.totalCorrectLesson||0)+S.correct;
+  S.totalWrongLesson=(S.totalWrongLesson||0)+S.wrong;
+
+  // Mark phase done
+  G.lessons[S.lessonId].phases[S.phaseIdx]=2;
+
+  const allPhasesDone=G.lessons[S.lessonId].phases.every(p=>p===2);
+  const nextPhase=S.phaseIdx+1;
+  const hasNextPhase=nextPhase<3&&!allPhasesDone;
+
+  // Achievements
+  checkFirstPhase();
+  if(S.wrong===0) checkPerfectPhase();
+  if(allPhasesDone) checkLessonMastered(S.lessonId);
+  checkHalfway();
+
+  if(allPhasesDone){
+    sfx.master();
+    showLessonDone();
   } else {
-    renderQuestion();
+    sfx.complete();
+    showPhaseDone(hasNextPhase);
   }
 }
 
-function finishLesson() {
-  sfxComplete();
-  const lesson = lessons[lState.lessonId];
-  if(!state.lessonsCompleted.includes(lState.lessonId)) {
-    state.lessonsCompleted.push(lState.lessonId);
-    state.xp += lesson.xp;
-    if(state.lessonsCompleted.length >= 2) state.level = 2;
-    if(state.lessonsCompleted.length >= 4) state.level = 3;
+function showPhaseDone(hasNext){
+  const lesson=LESSONS[S.lessonId];
+  const phases=G.lessons[S.lessonId].phases;
+  const phaseXP=lesson.phases[S.phaseIdx].xp;
+  const tot=S.correct+S.wrong;
+  const acc=tot>0?Math.round(S.correct/tot*100):100;
+
+  document.getElementById('pd-icon').textContent=S.wrong===0?'💎':'⭐';
+  document.getElementById('pd-title').textContent=`¡Fase ${S.phaseIdx+1} Completada!`;
+  document.getElementById('pd-sub').textContent=S.wrong===0?'¡Sin errores! ¡Perfecto!':'Buen trabajo, sigue practicando';
+  document.getElementById('pd-xp').textContent='+'+phaseXP;
+  document.getElementById('pd-correct').textContent=S.correct;
+  document.getElementById('pd-wrong').textContent=S.wrong;
+  document.getElementById('pd-acc').textContent=acc+'%';
+
+  const phDots=document.getElementById('pd-phases');
+  phDots.innerHTML=phases.map((p,i)=>`<div class="pi-dot ${p===2?'done':''}" title="Fase ${i+1}"></div>`).join('');
+
+  const nextBtn=document.getElementById('pd-next-btn');
+  if(hasNext){
+    nextBtn.textContent=`FASE ${S.phaseIdx+2} →`;
+    nextBtn.onclick=()=>{sfx.click();startPhase(S.lessonId,S.phaseIdx+1);};
+    nextBtn.style.display='';
+  } else {
+    nextBtn.style.display='none';
   }
-
-  const total = lState.correctInLesson + lState.wrongInLesson;
-  const acc = total > 0 ? Math.round((lState.correctInLesson / total) * 100) : 100;
-  document.getElementById('xp-gained-num').textContent = lesson.xp;
-  document.getElementById('cs-correct').textContent = lState.correctInLesson;
-  document.getElementById('cs-wrong').textContent = lState.wrongInLesson;
-  document.getElementById('cs-acc').textContent = acc + '%';
-
-  let sub = '¡Sigue así!';
-  if(acc === 100) sub = '¡Perfección absoluta! 🌟';
-  else if(acc >= 80) sub = '¡Gran trabajo! Casi perfecto 🔥';
-  else if(acc >= 60) sub = '¡Buen intento! Sigue practicando 💪';
-  else sub = '¡No te rindas! Repasa el tema 📖';
-  document.getElementById('complete-sub').textContent = sub;
-
-  showScreen('complete');
-  launchConfetti();
+  confetti();
+  showScreen('phase-done');
 }
 
-// ==================== CONFETTI ====================
-function launchConfetti() {
-  const colors = ['#58CC02','#1CB0F6','#CE82FF','#FF9600','#FFC800','#FF4B4B'];
-  for(let i=0;i<40;i++) {
-    setTimeout(() => {
-      const c = document.createElement('div');
-      c.className = 'confetti-piece';
-      c.style.cssText = `
-        left:${Math.random()*100}vw; top:${Math.random()*30}vh;
-        background:${colors[Math.floor(Math.random()*colors.length)]};
-        border-radius:${Math.random()>.5?'50%':'2px'};
-        width:${6+Math.random()*10}px; height:${6+Math.random()*10}px;
-        animation-duration:${.8+Math.random()*.8}s;
-        animation-delay:${Math.random()*.4}s;
+function showLessonDone(){
+  const allC=S.totalCorrectLesson; const allW=S.totalWrongLesson;
+  const tot=allC+allW; const acc=tot>0?Math.round(allC/tot*100):100;
+  const lesson=LESSONS[S.lessonId];
+  const totalXP=lesson.phases.reduce((s,p)=>s+p.xp,0);
+
+  document.getElementById('ld-title').textContent=`¡${lesson.name} Dominada!`;
+  document.getElementById('ld-xp').textContent='+'+totalXP;
+  document.getElementById('ld-correct').textContent=allC;
+  document.getElementById('ld-wrong').textContent=allW;
+  document.getElementById('ld-acc').textContent=acc+'%';
+  confetti(true);
+  showScreen('lesson-done');
+}
+
+// ══════════════════════════════════════
+// ACHIEVEMENTS
+// ══════════════════════════════════════
+function unlockAchievement(id){
+  if(G.unlocked.has(id))return;
+  G.unlocked.add(id);
+  const a=ACHIEVEMENTS.find(x=>x.id===id);
+  if(!a)return;
+  G.xp+=a.xp;
+  showAchievementPopup(a);
+}
+function showAchievementPopup(a){
+  const popup=document.getElementById('ach-popup');
+  document.getElementById('ap-icon').textContent=a.icon;
+  document.getElementById('ap-name').textContent=a.name;
+  document.getElementById('ap-bonus').textContent=`+${a.xp} XP`;
+  popup.classList.add('show');
+  sfx.complete();
+  setTimeout(()=>popup.classList.remove('show'),3500);
+}
+
+function checkFirstPhase(){ unlockAchievement('first_phase'); }
+function checkPerfectPhase(){ unlockAchievement('perfect_phase'); }
+function checkStreakAchievement(){
+  if(G.consecutiveCorrect>=5) unlockAchievement('streak_5');
+  if(G.consecutiveCorrect>=10) unlockAchievement('streak_10');
+}
+function checkLessonMastered(id){
+  const map={0:'lesson_0_done',1:'lesson_1_done',2:'lesson_2_done',3:'lesson_3_done',4:'lesson_4_done'};
+  if(map[id]) unlockAchievement(map[id]);
+  const allDone=LESSONS.every(l=>G.lessons[l.id].phases.every(p=>p===2));
+  if(allDone) setTimeout(()=>unlockAchievement('quimico_maestro'),1500);
+}
+function checkHalfway(){
+  if(countMastered()>=3) unlockAchievement('halfway');
+}
+
+// ══════════════════════════════════════
+// ACHIEVEMENTS SCREEN
+// ══════════════════════════════════════
+function renderAchievements(){
+  const grid=document.getElementById('ach-grid');
+  grid.innerHTML='';
+  ACHIEVEMENTS.forEach(a=>{
+    const done=G.unlocked.has(a.id);
+    const card=mk('div','ach-card '+(done?'unlocked':'locked'),
+      `<div class="ach-icon">${a.icon}</div>
+       <div class="ach-info">
+         <div class="ach-name">${a.name}</div>
+         <div class="ach-desc">${a.desc}</div>
+         <div class="${done?'ach-bonus':'ach-lock-label'}">${done?`+${a.xp} XP ganados`:'🔒 Bloqueado'}</div>
+       </div>`);
+    grid.appendChild(card);
+  });
+}
+
+// ══════════════════════════════════════
+// VISUAL EFFECTS
+// ══════════════════════════════════════
+function confetti(big=false){
+  const colors=['#4ADE80','#38BDF8','#C084FC','#FB923C','#FBBF24','#F87171'];
+  const count=big?60:30;
+  for(let i=0;i<count;i++){
+    setTimeout(()=>{
+      const c=document.createElement('div');
+      c.className='confetti';
+      const tx=(Math.random()-.5)*400;
+      const r=Math.random()*720-360;
+      const dur=.7+Math.random()*.7;
+      c.style.cssText=`
+        left:${Math.random()*100}vw;top:${10+Math.random()*30}vh;
+        background:${colors[~~(Math.random()*colors.length)]};
+        width:${7+Math.random()*9}px;height:${7+Math.random()*9}px;
+        border-radius:${Math.random()>.5?'50%':'3px'};
+        --dur:${dur}s;--tx:${tx}px;--r:${r}deg;
+        animation-delay:${Math.random()*.3}s;
       `;
       document.body.appendChild(c);
-      setTimeout(() => c.remove(), 1500);
-    }, i * 30);
+      setTimeout(()=>c.remove(),dur*1000+500);
+    },i*30);
   }
 }
 
-// ==================== XP POPUP ====================
-function showXPPopup(text) {
-  const popup = document.createElement('div');
-  popup.className = 'xp-popup';
-  popup.textContent = text;
-  document.body.appendChild(popup);
-  setTimeout(() => popup.remove(), 700);
+function showXPFloat(text){
+  const f=document.createElement('div');
+  f.className='xp-float'; f.textContent=text;
+  f.style.cssText=`top:100px;right:${60+Math.random()*60}px`;
+  document.body.appendChild(f);
+  setTimeout(()=>f.remove(),900);
 }
 
-// ==================== SCREEN NAV ====================
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-}
-
-// ==================== UTILS ====================
-function el(tag, attrs={}, html='') {
-  const e = document.createElement(tag);
-  Object.entries(attrs).forEach(([k,v]) => {
-    if(k === 'className') e.className = v;
-    else e.setAttribute(k, v);
-  });
-  e.innerHTML = html;
+// ══════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════
+function mk(tag,cls='',html=''){
+  const e=document.createElement(tag);
+  if(cls) e.className=cls;
+  if(html) e.innerHTML=html;
   return e;
 }
 
-// ==================== INIT ====================
-document.getElementById('lesson-back').onclick = () => {
-  sfxClick();
-  showMap();
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+// Achievements screen needs update before show
+const origShow=showScreen;
+window.showScreen=function(id){
+  if(id==='achievements'){
+    renderAchievements();
+    document.getElementById('a-xp').textContent=G.xp;
+  }
+  origShow(id);
 };
 
-showHome();
+updateHomeStats();
+showScreen('home');
 </script>
 </body>
 </html>
