@@ -25,6 +25,12 @@
         .animate-pop { animation: pop 0.4s ease-out forwards; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         .animate-shake { animation: shake 0.3s ease-in-out; }
+        /* Estilos del Mapa de Niveles Estilo Duolingo/Candy Crush */
+        .map-node { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.25rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
+        .map-node:hover:not(.locked) { transform: scale(1.1); }
+        .map-node.unlocked { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: 4px solid #818cf8; }
+        .map-node.completed { background: linear-gradient(135deg, #10b981, #059669); color: white; border: 4px solid #34d399; }
+        .map-node.locked { background: #334155; color: #64748b; border: 4px solid #475569; cursor: not-allowed; }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-darkbg text-gray-800 dark:text-gray-100 min-h-screen flex flex-col overflow-x-hidden">
@@ -38,6 +44,38 @@
             enciso: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Enciso&backgroundColor=ffdfbf',
             giovani: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Giovani&style=circle&backgroundColor=ffb6c1'
         };
+
+        // --- SISTEMA DE SONIDOS MODIFICABLES (Web Audio API) ---
+        let soundEnabled = true;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            if (!soundEnabled) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            
+            if (type === 'click') {
+                osc.frequency.setValueAtTime(450, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+            } else if (type === 'success') {
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'error') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(90, audioCtx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            }
+        }
     </script>
 
     <div id="app" class="flex-grow flex flex-col relative">
@@ -50,7 +88,8 @@
             <div id="user-stats" class="hidden flex items-center gap-4 text-sm font-semibold">
                 <span class="text-yellow-400"><i class="fa-solid fa-coins"></i> <span id="nav-coins">0</span></span>
                 <span class="text-blue-400"><i class="fa-solid fa-star"></i> Nvl <span id="nav-level">1</span></span>
-                <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"><i class="fa-solid fa-moon"></i></button>
+                <button onclick="toggleSound(); playSound('click');" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition" title="Sonido"><i class="fa-solid fa-volume-high" id="sound-icon"></i></button>
+                <button onclick="toggleTheme(); playSound('click');" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition" title="Tema"><i class="fa-solid fa-moon"></i></button>
             </div>
         </nav>
 
@@ -60,7 +99,7 @@
                 <h1 class="text-3xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Verb Quest</h1>
                 <p class="mb-6 text-sm opacity-80">Aprende verbos irregulares.</p>
                 <input type="text" id="nickname-input" placeholder="Ingresa tu Nickname" class="w-full p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border dark:border-gray-600 mb-4 focus:ring-2 focus:ring-primary outline-none dark:text-white">
-                <button onclick="login()" class="w-full bg-gradient-to-r from-primary to-secondary text-white font-bold py-3 px-4 rounded-lg hover:scale-105 transition shadow-lg">Comenzar</button>
+                <button onclick="login(); playSound('click');" class="w-full bg-gradient-to-r from-primary to-secondary text-white font-bold py-3 px-4 rounded-lg hover:scale-105 transition shadow-lg">Comenzar</button>
             </div>
         </div>
 
@@ -76,28 +115,26 @@
                     </div>
                     <p class="text-xs opacity-70 mb-4">XP: <span id="menu-xp">0</span> / <span id="menu-xp-max">100</span></p>
                     
-                    <!-- Opción Multijugador -->
-                    <div class="w-full p-3 bg-gray-200 dark:bg-gray-800 rounded-lg flex items-center justify-between mb-2">
-                        <span class="text-sm font-bold"><i class="fa-solid fa-users"></i> Multijugador Local</span>
-                        <input type="checkbox" id="multiplayer-toggle" class="w-5 h-5 accent-primary cursor-pointer">
-                    </div>
-                    <p class="text-[10px] text-center opacity-60 mb-4">Actívalo para jugar 1vs1 por turnos en cualquier modo.</p>
+                    <button onclick="showAchievementsModal(); playSound('click');" class="w-full bg-yellow-500/20 border border-yellow-500 text-yellow-500 py-2 rounded-lg hover:bg-yellow-500 hover:text-black transition text-sm font-bold flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-trophy"></i> Logros (<span id="achievements-count">0</span>/4)
+                    </button>
                 </div>
 
                 <div class="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <button onclick="startStoryMode()" class="glass-panel p-6 rounded-2xl text-left hover:border-primary transition group relative animate-pop">
-                        <i class="fa-solid fa-book-open text-3xl text-primary mb-3 block group-hover:scale-110 transition"></i>
+                    <button onclick="openStoryMap(); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-primary transition group relative animate-pop">
+                        <i class="fa-solid fa-map text-3xl text-primary mb-3 block group-hover:scale-110 transition"></i>
                         <h3 class="text-xl font-bold">Modo Historia</h3>
+                        <p class="text-xs opacity-70 mt-1">Mapa de niveles de la hamburguesa.</p>
                     </button>
-                    <button onclick="showDifficultySelect('ruleta')" class="glass-panel p-6 rounded-2xl text-left hover:border-secondary transition group relative animate-pop">
+                    <button onclick="showDifficultySelect('ruleta'); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-secondary transition group relative animate-pop">
                         <i class="fa-solid fa-life-ring text-3xl text-secondary mb-3 block group-hover:rotate-180 transition"></i>
                         <h3 class="text-xl font-bold">Ruleta Verbal</h3>
                     </button>
-                    <button onclick="showDifficultySelect('tabla')" class="glass-panel p-6 rounded-2xl text-left hover:border-green-500 transition group relative animate-pop">
+                    <button onclick="showDifficultySelect('tabla'); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-green-500 transition group relative animate-pop">
                         <i class="fa-solid fa-table text-3xl text-green-500 mb-3 block group-hover:-translate-y-1 transition"></i>
                         <h3 class="text-xl font-bold">Completa la Tabla</h3>
                     </button>
-                    <button onclick="showDifficultySelect('oracion')" class="glass-panel p-6 rounded-2xl text-left hover:border-yellow-500 transition group relative animate-pop">
+                    <button onclick="showDifficultySelect('oracion'); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-yellow-500 transition group relative animate-pop">
                         <i class="fa-solid fa-pen-to-square text-3xl text-yellow-500 mb-3 block group-hover:scale-110 transition"></i>
                         <h3 class="text-xl font-bold">Completar Oración</h3>
                     </button>
@@ -110,39 +147,36 @@
             <div class="glass-panel p-8 rounded-2xl max-w-2xl w-full animate-pop text-center">
                 <h2 class="text-3xl font-bold mb-6">Selecciona la Dificultad</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    <button onclick="startGame(currentMode, 'facil')" class="p-4 rounded-xl border-2 border-green-400 bg-green-400/10 hover:bg-green-400/20 transition">
+                    <button onclick="startGame(currentMode, 'facil'); playSound('click');" class="p-4 rounded-xl border-2 border-green-400 bg-green-400/10 hover:bg-green-400/20 transition">
                         <img id="img-dif-jero" class="w-16 h-16 mx-auto rounded-full mb-2 bg-white object-cover">
                         <span class="block font-bold text-green-500">Fácil</span><span class="text-xs opacity-75">5 Preguntas | 5 Vidas</span>
                     </button>
-                    <button onclick="startGame(currentMode, 'medio')" class="p-4 rounded-xl border-2 border-blue-400 bg-blue-400/10 hover:bg-blue-400/20 transition">
+                    <button onclick="startGame(currentMode, 'medio'); playSound('click');" class="p-4 rounded-xl border-2 border-blue-400 bg-blue-400/10 hover:bg-blue-400/20 transition">
                         <img id="img-dif-dilan" class="w-16 h-16 mx-auto rounded-full mb-2 bg-white object-cover">
                         <span class="block font-bold text-blue-500">Medio</span><span class="text-xs opacity-75">15 Preguntas | 3 Vidas</span>
                     </button>
-                    <button onclick="startGame(currentMode, 'dificil')" class="p-4 rounded-xl border-2 border-red-500 bg-red-500/10 hover:bg-red-500/20 transition">
+                    <button onclick="startGame(currentMode, 'dificil'); playSound('click');" class="p-4 rounded-xl border-2 border-red-500 bg-red-500/10 hover:bg-red-500/20 transition">
                         <img id="img-dif-enciso" class="w-16 h-16 mx-auto rounded-full mb-2 bg-white object-cover">
                         <span class="block font-bold text-red-500">Difícil</span><span class="text-xs opacity-75">30 Preguntas | 1 Vida</span>
                     </button>
-                    <button onclick="startGame(currentMode, 'reloj')" class="p-4 rounded-xl border-2 border-purple-500 bg-purple-500/10 hover:bg-purple-500/20 transition">
+                    <button onclick="startGame(currentMode, 'reloj'); playSound('click');" class="p-4 rounded-xl border-2 border-purple-500 bg-purple-500/10 hover:bg-purple-500/20 transition">
                         <img id="img-dif-gio" class="w-16 h-16 mx-auto rounded-full mb-2 bg-white object-cover">
                         <span class="block font-bold text-purple-500">Contrarreloj</span><span class="text-xs opacity-75">Infinito | 1 Vida | 60s</span>
                     </button>
                 </div>
-                <button onclick="showScreen('screen-menu')" class="mt-8 text-sm underline opacity-70 hover:opacity-100">Volver al Menú</button>
+                <button onclick="showScreen('screen-menu'); playSound('click');" class="mt-8 text-sm underline opacity-70 hover:opacity-100">Volver al Menú</button>
             </div>
         </div>
 
         <!-- Contenedor del Juego Activo -->
         <div id="screen-game" class="hidden flex-grow flex flex-col items-center p-4">
             <div class="w-full max-w-3xl glass-panel p-6 rounded-2xl animate-pop relative">
-                <button onclick="quitGame()" class="absolute top-4 right-4 text-red-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="quitGame(); playSound('click');" class="absolute top-4 right-4 text-red-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
                 
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
                     <h2 id="game-title" class="text-xl font-bold uppercase tracking-wider text-primary mb-2 sm:mb-0"></h2>
                     
                     <div class="flex gap-4 font-mono text-sm items-center">
-                        <!-- MultiPlayer turn indicator -->
-                        <span id="turn-indicator" class="hidden bg-yellow-500 text-black px-3 py-1 rounded-full font-bold animate-pulse">Turno J1</span>
-                        
                         <span id="q-counter-display" class="text-blue-400"><i class="fa-solid fa-list-ol"></i> <span id="q-val">0/5</span></span>
                         <span id="lives-display" class="text-red-500 tracking-widest">❤️❤️❤️</span>
                         <span id="game-score-display" class="text-green-500"><i class="fa-solid fa-star"></i> <span id="score-val">0</span></span>
@@ -154,14 +188,58 @@
                 
                 <div class="mt-6 flex justify-between w-full items-center">
                     <p id="game-feedback" class="font-bold text-lg h-6"></p>
-                    <button id="btn-next" onclick="nextRound()" class="hidden bg-primary text-white px-6 py-2 rounded-lg font-bold shadow-md hover:bg-indigo-600 transition">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
+                    <button id="btn-next" onclick="nextRound(); playSound('click');" class="hidden bg-primary text-white px-6 py-2 rounded-lg font-bold shadow-md hover:bg-indigo-600 transition">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
         </div>
 
-        <!-- Modo Historia Container -->
-        <!-- FONDO DEL MODO HISTORIA AQUÍ -->
-        <div id="screen-story" class="hidden flex-grow flex flex-col items-center justify-end p-4 pb-10 bg-cover bg-center transition-all duration-1000 relative" style="background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80');">
+        <!-- MODO HISTORIA: MAPA ESTILO DUOLINGO / CANDY CRUSH -->
+        <div id="screen-story-map" class="hidden flex-grow flex flex-col items-center justify-center p-4 bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80');">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm z-0"></div>
+            
+            <div class="z-10 w-full max-w-xl glass-panel p-8 rounded-3xl text-center relative border-2 border-primary/50 shadow-2xl">
+                <button onclick="showScreen('screen-menu'); playSound('click');" class="absolute top-4 left-4 text-white opacity-70 hover:opacity-100"><i class="fa-solid fa-arrow-left"></i> Menú</button>
+                
+                <h2 class="text-3xl font-extrabold text-white mb-2">Mapa del English Day</h2>
+                <p class="text-sm text-gray-300 mb-8">Completa los 3 niveles para ganar la hamburguesa de la apuesta.</p>
+                
+                <!-- Nodos del Mapa (Camino Vertical escalonado) -->
+                <div class="flex flex-col items-center gap-8 relative my-4">
+                    <!-- Línea de conexión visual -->
+                    <div class="absolute w-2 h-full bg-gray-600/50 z-0"></div>
+
+                    <!-- Nivel 1 -->
+                    <div class="flex items-center gap-4 z-10">
+                        <div id="node-1" onclick="selectStoryLevel(1)" class="map-node unlocked">1</div>
+                        <div class="text-left bg-black/60 p-3 rounded-xl border border-white/10 w-52">
+                            <span class="text-xs text-yellow-400 font-bold block">Nivel 1</span>
+                            <span class="text-sm font-semibold text-white">La Apuesta del Muro</span>
+                        </div>
+                    </div>
+
+                    <!-- Nivel 2 -->
+                    <div class="flex items-center gap-4 z-10 translate-x-6">
+                        <div id="node-2" onclick="selectStoryLevel(2)" class="map-node locked">2</div>
+                        <div class="text-left bg-black/60 p-3 rounded-xl border border-white/10 w-52">
+                            <span class="text-xs text-yellow-400 font-bold block">Nivel 2</span>
+                            <span class="text-sm font-semibold text-white">Pruebas y Excusas</span>
+                        </div>
+                    </div>
+
+                    <!-- Nivel 3 -->
+                    <div class="flex items-center gap-4 z-10 -translate-x-4">
+                        <div id="node-3" onclick="selectStoryLevel(3)" class="map-node locked">3</div>
+                        <div class="text-left bg-black/60 p-3 rounded-xl border border-white/10 w-52">
+                            <span class="text-xs text-yellow-400 font-bold block">Nivel 3</span>
+                            <span class="text-sm font-semibold text-white">La Hamburguesa Final</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla de Diálogo del Modo Historia -->
+        <div id="screen-story-dialogue" class="hidden flex-grow flex flex-col items-center justify-end p-4 pb-10 bg-cover bg-center transition-all duration-1000 relative" style="background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80');">
             <div class="absolute inset-0 bg-black/60 z-0"></div>
             
             <div class="z-10 w-full max-w-4xl flex items-end gap-4 mb-4">
@@ -169,17 +247,32 @@
                 <div class="glass-panel bg-black/80 p-6 rounded-2xl w-full relative border-t-4 border-primary">
                     <h3 id="story-character-name" class="text-xl font-extrabold text-primary mb-2"></h3>
                     <p id="story-dialogue" class="text-lg text-white font-medium min-h-[3rem]"></p>
-                    <button onclick="advanceStory()" class="absolute bottom-4 right-4 text-white opacity-70 hover:opacity-100 flex items-center gap-1 animate-pulse">Continuar <i class="fa-solid fa-caret-right"></i></button>
+                    <button onclick="advanceStoryDialogue(); playSound('click');" class="absolute bottom-4 right-4 text-white opacity-70 hover:opacity-100 flex items-center gap-1 animate-pulse">Continuar <i class="fa-solid fa-caret-right"></i></button>
                 </div>
             </div>
             
-            <div id="story-reward-scene" class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/90 backdrop-blur-md text-center p-4">
-                <h1 class="text-5xl font-extrabold text-yellow-400 mb-6 animate-pop">¡APUESTA GANADA!</h1>
+            <!-- Pantalla final de premio (Hamburguesa) -->
+            <div id="story-reward-scene" class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95 backdrop-blur-md text-center p-4">
+                <h1 class="text-5xl font-extrabold text-yellow-400 mb-4 animate-pop">¡APUESTA GANADA!</h1>
+                <p class="text-white text-lg mb-6 max-w-xl">El muro de globos fue un éxito rotundo y Giovani tuvo que pagar la hamburguesa.</p>
                 <div class="relative animate-pop" style="animation-delay: 0.5s;">
                     <div class="absolute inset-0 bg-yellow-400 blur-3xl opacity-30 rounded-full animate-pulse"></div>
                     <img id="final-burger-img" class="w-64 h-64 object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.8)] relative z-10 transition hover:scale-110">
                 </div>
-                <button onclick="finishStoryMode()" class="mt-8 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition">Volver al Menú</button>
+                <button onclick="completeStoryChapter(); playSound('success');" class="mt-8 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition">Volver al Mapa</button>
+            </div>
+        </div>
+
+        <!-- MODAL DE LOGROS -->
+        <div id="modal-achievements" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+            <div class="glass-panel bg-gray-900/90 p-6 rounded-2xl max-w-md w-full animate-pop border border-yellow-500/30">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
+                    <h3 class="text-xl font-bold text-yellow-400"><i class="fa-solid fa-trophy"></i> Logros del Estudiante</h3>
+                    <button onclick="closeAchievementsModal(); playSound('click');" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+                <div id="achievements-list" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
+                    <!-- Inyectado por JS -->
+                </div>
             </div>
         </div>
 
@@ -229,26 +322,54 @@
             { inf: 'learn', past: 'learnt/learned', part: 'learnt/learned', esp: 'aprender' }
         ];
 
-        let user = { nickname: '', xp: 0, level: 1, coins: 0 };
+        // --- SISTEMA DE LOGROS DEFINIDOS ---
+        const achievementsData = [
+            { id: 'first_correct', title: 'Primer Paso', desc: 'Responde correctamente tu primer verbo.', reward: '+10 XP', unlocked: false },
+            { id: 'story_complete', title: 'Maestro de Globos', desc: 'Completa los 3 niveles del Modo Historia.', reward: '+200 XP, 100 Monedas', unlocked: false },
+            { id: 'survive_hard', title: 'Reto de Acero', desc: 'Supera una partida en dificultad Difícil.', reward: '+100 XP', unlocked: false },
+            { id: 'rich_student', title: 'Ahorrador', desc: 'Acumula un total de 50 monedas.', reward: '+50 XP', unlocked: false }
+        ];
+
+        let user = { nickname: '', xp: 0, level: 1, coins: 0, storyProgress: 1, achievements: [] };
         
-        // Variables de Partida
         let currentMode = '';
         let currentDifficulty = '';
-        let isMultiplayer = false;
-        let p1Score = 0, p2Score = 0;
-        let currentPlayer = 1; // 1 o 2
-
+        let score = 0;
         let maxQuestions = 5;
         let currentQCount = 1;
         let lives = 3;
-        
         let gameTimer = null;
         let timeLeft = 0;
         let currentVerb = null;
         
-        // Variables Modo Historia
-        let storyStep = 0;
-        let isStoryMinigame = false;
+        // Modo Historia por Niveles
+        let activeStoryLevel = 1;
+        let storyDialogueIndex = 0;
+        let isStoryGameMode = false;
+
+        const storyChapters = {
+            1: [
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡El English Day está cerca! ¿Y si construimos una pared de globos gigante para la entrada del colegio?" },
+                { char: 'Enciso', img: ASSETS.enciso, text: "Suena increíble, pero requerirá mucho trabajo y repasar bien los verbos." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Jajaja, imposible. Ustedes jamás terminarán a tiempo." },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¿Apostamos, profe? Si la pared queda perfecta, usted nos compra una hamburguesa a todos." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Trato hecho. Demuestren que saben dominar los verbos básicos para empezar." },
+                { type: 'minigame', diff: 'facil' }
+            ],
+            2: [
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡Ya levantamos la mitad de la estructura! Pero el profe Giovani anda buscando excusas para no pagar." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "No se preocupen, yo estoy vigilando cada movimiento estratégico del profesor." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Hmm, veo que avanzan... pero dudo que conozcan los tiempos más complejos de los verbos." },
+                { type: 'minigame', diff: 'medio' }
+            ],
+            3: [
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡La pared de globos está terminada y es un éxito total!" },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Ehh... bueno, te juro que no recuerdo haber hecho ninguna apuesta de hamburguesas..." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "Un momento, profe. Yo soy el testigo principal. ¡Usted dijo 'Trato hecho' frente a todos!" },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Rayos... me atrapó. Una apuesta es una apuesta." },
+                { type: 'reward' }
+            ]
+        };
 
         document.getElementById('img-dif-jero').src = ASSETS.jeronimo;
         document.getElementById('img-dif-dilan').src = ASSETS.dilan;
@@ -257,18 +378,42 @@
         document.getElementById('final-burger-img').src = ASSETS.burgerImage;
 
         window.onload = () => {
-            const savedUser = localStorage.getItem('verbQuestUser');
-            if (savedUser) { user = JSON.parse(savedUser); updateNavStats(); showScreen('screen-menu'); } 
-            else { showScreen('screen-login'); }
+            const saved = localStorage.getItem('verbQuestUser');
+            if (saved) { 
+                user = JSON.parse(saved); 
+                updateNavStats(); 
+                showScreen('screen-menu'); 
+            } else { 
+                showScreen('screen-login'); 
+            }
             if (localStorage.theme === 'light') document.documentElement.classList.remove('dark');
         };
 
-        function saveGame() { localStorage.setItem('verbQuestUser', JSON.stringify(user)); updateNavStats(); }
-        function login() { const n = document.getElementById('nickname-input').value.trim(); if(n.length<3)return; user.nickname = n; saveGame(); showScreen('screen-menu'); }
-        function toggleTheme() { document.documentElement.classList.toggle('dark'); localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'; }
+        function saveGame() { 
+            localStorage.setItem('verbQuestUser', JSON.stringify(user)); 
+            updateNavStats(); 
+        }
+
+        function login() { 
+            const n = document.getElementById('nickname-input').value.trim(); 
+            if(n.length < 3) return alert('Ingresa un nickname válido de más de 3 letras.'); 
+            user.nickname = n; 
+            saveGame(); 
+            showScreen('screen-menu'); 
+        }
+
+        function toggleTheme() { 
+            document.documentElement.classList.toggle('dark'); 
+            localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'; 
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('sound-icon').className = soundEnabled ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark";
+        }
         
         function showScreen(id) {
-            ['screen-login', 'screen-menu', 'screen-difficulty', 'screen-game', 'screen-story'].forEach(s => document.getElementById(s).classList.add('hidden'));
+            ['screen-login', 'screen-menu', 'screen-difficulty', 'screen-game', 'screen-story-map', 'screen-story-dialogue'].forEach(s => document.getElementById(s).classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
             if (id === 'screen-menu') updateMenuUI();
         }
@@ -277,6 +422,10 @@
             document.getElementById('user-stats').classList.remove('hidden');
             document.getElementById('nav-coins').innerText = user.coins;
             document.getElementById('nav-level').innerText = user.level;
+            
+            // Contar logros desbloqueados
+            let unlockedCount = user.achievements ? user.achievements.length : 0;
+            document.getElementById('achievements-count').innerText = unlockedCount;
         }
 
         function updateMenuUI() {
@@ -285,9 +434,128 @@
             let reqXp = user.level * 100;
             document.getElementById('menu-xp-max').innerText = reqXp;
             document.getElementById('xp-bar').style.width = Math.min((user.xp / reqXp) * 100, 100) + '%';
+            updateNavStats();
         }
 
-        function showDifficultySelect(mode) { currentMode = mode; showScreen('screen-difficulty'); }
+        function checkAchievement(id) {
+            if (!user.achievements) user.achievements = [];
+            if (!user.achievements.includes(id)) {
+                user.achievements.push(id);
+                playSound('success');
+                alert(`🏆 ¡LOGRO DESBLOQUEADO!\n${achievementsData.find(a => a.id === id).title}`);
+                saveGame();
+            }
+        }
+
+        function showAchievementsModal() {
+            const listEl = document.getElementById('achievements-list');
+            listEl.innerHTML = '';
+            achievementsData.forEach(ach => {
+                let unlocked = user.achievements && user.achievements.includes(ach.id);
+                listEl.innerHTML += `
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-gray-800/60 border ${unlocked ? 'border-yellow-500/50 text-white' : 'border-gray-700 text-gray-500'}">
+                        <div>
+                            <h4 class="font-bold text-sm ${unlocked ? 'text-yellow-400' : 'text-gray-400'}"><i class="fa-solid fa-trophy mr-2"></i>${ach.title}</h4>
+                            <p class="text-xs opacity-75">${ach.desc}</p>
+                        </div>
+                        <span class="text-xs font-mono px-2 py-1 rounded bg-black/40">${unlocked ? 'Completado' : 'Bloqueado'}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('modal-achievements').classList.remove('hidden');
+        }
+
+        function closeAchievementsModal() {
+            document.getElementById('modal-achievements').classList.add('hidden');
+        }
+
+        // --- MAPA DE NIVELES MODO HISTORIA ---
+        function openStoryMap() {
+            if(!user.storyProgress) user.storyProgress = 1;
+            
+            // Actualizar nodos visualmente según progreso
+            for(let i=1; i<=3; i++) {
+                const node = document.getElementById(`node-${i}`);
+                node.className = "map-node";
+                if(i < user.storyProgress) {
+                    node.classList.add('completed');
+                    node.innerHTML = '<i class="fa-solid fa-check"></i>';
+                } else if(i === user.storyProgress) {
+                    node.classList.add('unlocked');
+                    node.innerHTML = i;
+                } else {
+                    node.classList.add('locked');
+                    node.innerHTML = '<i class="fa-solid fa-lock"></i>';
+                }
+            }
+            showScreen('screen-story-map');
+        }
+
+        function selectStoryLevel(level) {
+            if(level > user.storyProgress) {
+                alert("¡Completa el nivel anterior para desbloquear este reto!");
+                playSound('error');
+                return;
+            }
+            activeStoryLevel = level;
+            storyDialogueIndex = 0;
+            showScreen('screen-story-dialogue');
+            document.getElementById('story-reward-scene').classList.add('hidden');
+            renderStoryDialogue();
+        }
+
+        function renderStoryDialogue() {
+            const chapter = storyChapters[activeStoryLevel];
+            if(storyDialogueIndex >= chapter.length) return;
+            
+            const step = chapter[storyDialogueIndex];
+
+            if(step.type === 'minigame') {
+                isStoryGameMode = true;
+                startGame('ruleta', step.diff);
+                return;
+            }
+
+            if(step.type === 'reward') {
+                document.getElementById('story-reward-scene').classList.remove('hidden');
+                user.xp += 300; user.coins += 100;
+                if(user.storyProgress <= 3) user.storyProgress = 3;
+                checkAchievement('story_complete');
+                saveGame();
+                return;
+            }
+
+            const imgEl = document.getElementById('story-character-img');
+            imgEl.classList.remove('animate-pop'); void imgEl.offsetWidth; imgEl.classList.add('animate-pop');
+            imgEl.src = step.img;
+            document.getElementById('story-character-name').innerText = step.char;
+            
+            const textEl = document.getElementById('story-dialogue');
+            textEl.innerHTML = ''; let i = 0;
+            const typeWriter = setInterval(() => {
+                if (i < step.text.length) { textEl.innerHTML += step.text.charAt(i); i++; } 
+                else clearInterval(typeWriter);
+            }, 25);
+        }
+
+        function advanceStoryDialogue() {
+            storyDialogueIndex++;
+            renderStoryDialogue();
+        }
+
+        function completeStoryChapter() {
+            if(activeStoryLevel < 3) {
+                user.storyProgress = Math.max(user.storyProgress, activeStoryLevel + 1);
+            }
+            saveGame();
+            openStoryMap();
+        }
+
+        // --- SELECCIÓN Y CONFIGURACIÓN DE JUEGO ---
+        function showDifficultySelect(mode) { 
+            currentMode = mode; 
+            showScreen('screen-difficulty'); 
+        }
 
         function updateHearts() {
             let h = ''; for(let i=0; i<lives; i++) h += '❤️';
@@ -297,23 +565,17 @@
         function startGame(mode, difficulty) {
             currentMode = mode;
             currentDifficulty = difficulty;
-            isMultiplayer = document.getElementById('multiplayer-toggle').checked && !isStoryMinigame;
-            
-            p1Score = 0; p2Score = 0; currentPlayer = 1;
+            score = 0;
             currentQCount = 1;
             
-            // Configurar Vidas y Preguntas por dificultad
+            // REGLAS ESTRICTAS DE PREGUNTAS Y VIDAS SOLICITADAS
             if (difficulty === 'facil') { maxQuestions = 5; lives = 5; }
             else if (difficulty === 'medio') { maxQuestions = 15; lives = 3; }
             else if (difficulty === 'dificil') { maxQuestions = 30; lives = 1; }
-            else if (difficulty === 'reloj') { maxQuestions = 999; lives = 1; } // Reloj es infinito hasta perder
+            else if (difficulty === 'reloj') { maxQuestions = 999; lives = 1; }
             
             updateHearts();
-            document.getElementById('score-val').innerText = isMultiplayer ? "J1:0 | J2:0" : "0";
-            
-            const turnInd = document.getElementById('turn-indicator');
-            if(isMultiplayer) { turnInd.classList.remove('hidden'); turnInd.innerText = "Turno J1"; } 
-            else { turnInd.classList.add('hidden'); }
+            document.getElementById('score-val').innerText = "0";
             
             showScreen('screen-game');
             let t = mode === 'ruleta' ? 'Ruleta Verbal' : mode === 'tabla' ? 'Completa la Tabla' : 'Completar Oración';
@@ -337,7 +599,6 @@
             document.getElementById('game-feedback').innerText = '';
             document.getElementById('game-workspace').innerHTML = '';
             
-            // Actualizar UI Contador
             let qStr = currentDifficulty === 'reloj' ? `${currentQCount}/∞` : `${currentQCount}/${maxQuestions}`;
             document.getElementById('q-val').innerText = qStr;
 
@@ -357,7 +618,7 @@
                     </div>
                     <div class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[25px] border-t-yellow-400 drop-shadow-md z-10"></div>
                 </div>
-                <button id="btn-spin" onclick="spinRoulette()" class="bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition mb-6">Girar Ruleta</button>
+                <button id="btn-spin" onclick="spinRoulette(); playSound('click');" class="bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition mb-6">Girar Ruleta</button>
                 <div id="ruleta-inputs" class="w-full max-w-md hidden grid gap-4">
                     <input type="text" id="in-past" placeholder="Pasado Simple" class="w-full p-3 rounded bg-gray-100 dark:bg-gray-800 border outline-none focus:ring-2 focus:ring-primary dark:text-white">
                     <input type="text" id="in-part" placeholder="Participio Pasado" class="w-full p-3 rounded bg-gray-100 dark:bg-gray-800 border outline-none focus:ring-2 focus:ring-primary dark:text-white">
@@ -437,27 +698,28 @@
             const ws = document.getElementById('game-workspace');
             
             if (isCorrect) {
+                playSound('success');
                 feedback.innerHTML = `<span class="text-green-500"><i class="fa-solid fa-check"></i> ¡Correcto! +10 Puntos</span>`;
-                if(currentPlayer === 1) p1Score += 10; else p2Score += 10;
-                user.coins += 2; user.xp += 5;
+                score += 10;
+                user.coins += 2; user.xp += 10;
+                checkAchievement('first_correct');
+                if(user.coins >= 50) checkAchievement('rich_student');
+                if(currentDifficulty === 'dificil') checkAchievement('survive_hard');
             } else {
+                playSound('error');
                 ws.classList.add('animate-shake'); setTimeout(() => ws.classList.remove('animate-shake'), 300);
                 feedback.innerHTML = `<span class="text-red-500"><i class="fa-solid fa-xmark"></i> Incorrecto. ${msgError}</span>`;
                 lives--;
                 updateHearts();
             }
 
-            // Update scores
-            if(isMultiplayer) document.getElementById('score-val').innerText = `J1:${p1Score} | J2:${p2Score}`;
-            else document.getElementById('score-val').innerText = p1Score;
-
+            document.getElementById('score-val').innerText = score;
             ws.querySelectorAll('button').forEach(b => b.classList.add('hidden'));
             
-            // Check Game Over Conditions
             if (lives <= 0) {
                 setTimeout(() => endGame("¡Te quedaste sin vidas!"), 1500);
             } else if (currentQCount >= maxQuestions && currentDifficulty !== 'reloj') {
-                setTimeout(() => endGame("¡Completaste todas las preguntas!"), 1500);
+                setTimeout(() => endGame("¡Completaste todas las preguntas del nivel!"), 1500);
             } else {
                 document.getElementById('btn-next').classList.remove('hidden');
             }
@@ -465,97 +727,42 @@
 
         function nextRound() {
             currentQCount++;
-            if(isMultiplayer) {
-                currentPlayer = currentPlayer === 1 ? 2 : 1;
-                const turnInd = document.getElementById('turn-indicator');
-                turnInd.innerText = `Turno J${currentPlayer}`;
-                turnInd.className = currentPlayer === 1 ? "bg-yellow-500 text-black px-3 py-1 rounded-full font-bold animate-pulse" : "bg-blue-500 text-white px-3 py-1 rounded-full font-bold animate-pulse";
-            }
             renderRound();
         }
 
-        function quitGame() { clearInterval(gameTimer); isStoryMinigame = false; showScreen('screen-menu'); }
+        function quitGame() { 
+            clearInterval(gameTimer); 
+            isStoryGameMode = false; 
+            showScreen('screen-menu'); 
+        }
 
         function endGame(reason) {
             clearInterval(gameTimer);
             
-            // Lógica si perdemos en el minijuego del modo historia
-            if (isStoryMinigame) {
+            // Retorno al modo historia si venía de un nivel del mapa
+            if (isStoryGameMode) {
                 if (lives <= 0) {
-                    alert(`Has fallado. Debes repasar y volver a intentarlo para continuar la historia.`);
-                    storyStep--; // Retroceder un diálogo
-                    showScreen('screen-story');
-                    renderStoryScene();
+                    alert(`Has fallado el reto en el Modo Historia. Vuelve a intentarlo.`);
+                    isStoryGameMode = false;
+                    openStoryMap();
                 } else {
-                    alert(`¡Reto superado! Continuamos con la construcción.`);
-                    showScreen('screen-story');
-                    advanceStory();
+                    alert(`¡Reto del Nivel ${activeStoryLevel} superado con éxito!`);
+                    isStoryGameMode = false;
+                    if(activeStoryLevel < 3) {
+                        user.storyProgress = Math.max(user.storyProgress, activeStoryLevel + 1);
+                    }
+                    saveGame();
+                    showScreen('screen-story-dialogue');
+                    storyDialogueIndex++;
+                    renderStoryDialogue();
                 }
-                isStoryMinigame = false;
                 return;
             }
 
-            // Final normal
-            let msg = `${reason}\n\n`;
-            if (isMultiplayer) {
-                msg += `Puntuación J1: ${p1Score}\nPuntuación J2: ${p2Score}\n`;
-                msg += p1Score > p2Score ? "¡Gana el Jugador 1!" : p2Score > p1Score ? "¡Gana el Jugador 2!" : "¡Empate!";
-            } else {
-                msg += `Puntuación final: ${p1Score}\n¡Ganaste ${Math.floor(p1Score/5)} Monedas!`;
-                user.coins += Math.floor(p1Score/5);
-            }
-            alert(msg);
+            alert(`${reason}\nPuntuación final: ${score}\n¡Ganaste Monedas y XP!`);
             saveGame();
             quitGame();
         }
-
-        // --- MODO HISTORIA ---
-        const storySequence = [
-            { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡El English Day es la próxima semana! ¿Y si construimos una pared de globos gigante?" },
-            { char: 'Enciso', img: ASSETS.enciso, text: "Suena increíble, pero tomará mucho trabajo y saber las instrucciones en inglés." },
-            { char: 'Giovani', img: ASSETS.giovani, text: "Escuché su plan. Imposible. Nunca terminarán a tiempo." },
-            { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¿Apostamos? Si queda increíble, usted nos invita una hamburguesa a todos." },
-            { char: 'Giovani', img: ASSETS.giovani, text: "Trato hecho. Pero primero, pasen esta prueba para demostrar que saben leer los manuales." },
-            { type: 'minigame' },
-            { char: 'Giovani', img: ASSETS.giovani, text: "(Días después) La pared se ve... decente. Pero yo no recuerdo haber hecho ninguna apuesta..." },
-            { char: 'Dilan', img: ASSETS.dilan, text: "Un momento, profe. Yo estaba aquí. Usted dijo claramente 'Trato hecho'." },
-            { char: 'Giovani', img: ASSETS.giovani, text: "Rayos. Me descubrieron. Una promesa es una promesa." },
-            { type: 'reward' }
-        ];
-
-        function startStoryMode() { storyStep = 0; showScreen('screen-story'); document.getElementById('story-reward-scene').classList.add('hidden'); renderStoryScene(); }
-
-        function renderStoryScene() {
-            if (storyStep >= storySequence.length) { finishStoryMode(); return; }
-            const scene = storySequence[storyStep];
-
-            if (scene.type === 'minigame') {
-                isStoryMinigame = true;
-                storyStep++; // Avanzar internamente para cuando volvamos
-                startGame('ruleta', 'medio'); // Reto de la historia
-                return;
-            }
-
-            if (scene.type === 'reward') {
-                document.getElementById('story-reward-scene').classList.remove('hidden');
-                user.xp += 500; user.coins += 200; saveGame(); return;
-            }
-
-            const imgEl = document.getElementById('story-character-img');
-            imgEl.classList.remove('animate-pop'); void imgEl.offsetWidth; imgEl.classList.add('animate-pop');
-            imgEl.src = scene.img;
-            document.getElementById('story-character-name').innerText = scene.char;
-            
-            const textEl = document.getElementById('story-dialogue');
-            textEl.innerHTML = ''; let i = 0;
-            const typeWriter = setInterval(() => {
-                if (i < scene.text.length) { textEl.innerHTML += scene.text.charAt(i); i++; } 
-                else clearInterval(typeWriter);
-            }, 30);
-        }
-
-        function advanceStory() { storyStep++; renderStoryScene(); }
-        function finishStoryMode() { isStoryMinigame = false; saveGame(); showScreen('screen-menu'); }
 
     </script>
 </body>
