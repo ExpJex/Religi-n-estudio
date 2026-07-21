@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verb Quest: The Balloon Wall Bet</title>
+    <title>Verb Quest: Ultimate Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
@@ -11,33 +11,67 @@
         tailwind.config = {
             darkMode: 'class',
             theme: {
-                extend: { fontFamily: { sans: ['Poppins', 'sans-serif'] }, colors: { primary: '#6366f1', secondary: '#ec4899', darkbg: '#0f172a' } }
+                extend: { 
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] }, 
+                    colors: { primary: '#6366f1', secondary: '#ec4899', darkbg: '#0f172a', accent: '#f59e0b' },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 1, filter: 'drop-shadow(0 0 10px #6366f1)' },
+                            '50%': { opacity: .7, filter: 'drop-shadow(0 0 20px #6366f1)' },
+                        }
+                    }
+                }
             }
         }
     </script>
     <style>
         body { font-family: 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; }
-        .glass-panel { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
-        .dark .glass-panel { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-panel { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+        .dark .glass-panel { background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.1); }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(3600deg); } }
         .spinning { animation: spin 3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-        @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .animate-pop { animation: pop 0.4s ease-out forwards; }
-        @keyframes glow { 0%, 100% { filter: drop-shadow(0 0 5px #fbbf24); } 50% { filter: drop-shadow(0 0 20px #fbbf24); } }
+        @keyframes pop { 0% { transform: scale(0.8) translateY(20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
+        .animate-pop { animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes glow { 0%, 100% { filter: drop-shadow(0 0 5px #fbbf24); } 50% { filter: drop-shadow(0 0 25px #fbbf24); } }
         .glow-effect { animation: glow 2s infinite; }
-        .map-node { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.25rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
-        .map-node:hover:not(.locked) { transform: scale(1.1); }
-        .map-node.unlocked { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: 4px solid #818cf8; }
-        .map-node.completed { background: linear-gradient(135deg, #10b981, #059669); color: white; border: 4px solid #34d399; }
+        .map-node { width: 75px; height: 75px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.5); z-index: 10; position: relative; }
+        .map-node:hover:not(.locked) { transform: scale(1.15) translateY(-5px); }
+        .map-node.unlocked { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: 4px solid #c7d2fe; box-shadow: 0 0 20px rgba(99, 102, 241, 0.6); }
+        .map-node.completed { background: linear-gradient(135deg, #10b981, #059669); color: white; border: 4px solid #a7f3d0; }
         .map-node.locked { background: #334155; color: #64748b; border: 4px solid #475569; cursor: not-allowed; }
-        .light-boost { filter: drop-shadow(0 0 10px #38bdf8); }
-        @keyframes spin-slow { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
-        .animate-spin-slow { animation: spin-slow 3s linear infinite; }
-        @keyframes flash-red { 0%, 100% { background-color: rgba(15, 23, 42, 0.8); } 50% { background-color: rgba(185, 28, 28, 0.4); } }
+        .light-boost { filter: drop-shadow(0 0 15px #38bdf8); }
+        @keyframes spin-slow { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.1); } 100% { transform: rotate(360deg) scale(1); } }
+        .animate-spin-slow { animation: spin-slow 4s linear infinite; }
+        @keyframes flash-red { 0%, 100% { background-color: rgba(15, 23, 42, 0.8); } 50% { background-color: rgba(185, 28, 28, 0.5); } }
         .flash-red-bg { animation: flash-red 1s infinite; }
+        
+        .memory-card { perspective: 1000px; cursor: pointer; height: 100px; }
+        .memory-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .memory-card.flipped .memory-card-inner { transform: rotateY(180deg); }
+        .memory-card-front, .memory-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 0.75rem; font-weight: bold; padding: 0.5rem; text-align: center; }
+        .memory-card-front { background: linear-gradient(135deg, #ec4899, #be185d); color: white; font-size: 2rem; border: 2px solid #fbcfe8; }
+        .memory-card-back { background: #1e293b; color: white; transform: rotateY(180deg); border: 2px solid #6366f1; font-size: 1.1rem; word-break: break-word; }
+        .memory-card.matched .memory-card-inner { transform: rotateY(180deg) scale(0.95); opacity: 0.8; }
+        .memory-card.matched .memory-card-back { background: #064e3b; border-color: #10b981; }
+
+        .path-line { position: absolute; width: 6px; background: rgba(255,255,255,0.2); z-index: 1; }
+        .path-line.active { background: #6366f1; box-shadow: 0 0 10px #6366f1; }
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-darkbg text-gray-800 dark:text-gray-100 min-h-screen flex flex-col overflow-x-hidden">
+<body class="bg-gray-100 dark:bg-darkbg text-gray-800 dark:text-gray-100 min-h-screen flex flex-col overflow-x-hidden selection:bg-primary selection:text-white relative">
+
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[100px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-secondary/20 blur-[100px]"></div>
+    </div>
 
     <script>
         const ASSETS = {
@@ -59,25 +93,33 @@
             osc.connect(gain); gain.connect(audioCtx.destination);
             
             if (type === 'click') {
-                osc.frequency.setValueAtTime(450, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
             } else if (type === 'success') {
                 osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
                 osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1);
+                osc.frequency.setValueAtTime(1174.66, audioCtx.currentTime + 0.2);
                 gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
             } else if (type === 'error') {
                 osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(150, audioCtx.currentTime);
                 osc.frequency.setValueAtTime(90, audioCtx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.3);
             } else if (type === 'tiktak') {
-                osc.frequency.setValueAtTime(900, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+            } else if (type === 'flip') {
+                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(400, audioCtx.currentTime + 0.05);
                 gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.05);
@@ -85,323 +127,371 @@
         }
     </script>
 
-    <div id="app" class="flex-grow flex flex-col relative">
+    <div id="app" class="flex-grow flex flex-col relative w-full h-full">
         
-        <nav class="glass-panel p-4 flex justify-between items-center z-10 sticky top-0">
-            <div class="flex items-center gap-2 text-xl font-bold text-primary">
-                <i class="fa-solid fa-gamepad"></i> Verb Quest
+        <nav class="glass-panel p-4 flex justify-between items-center z-40 sticky top-0 border-b-0 rounded-b-2xl mx-2 mt-2">
+            <div class="flex items-center gap-3 text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary drop-shadow-md">
+                <i class="fa-solid fa-gamepad text-primary"></i> VQ
             </div>
-            <div id="user-stats" class="hidden flex items-center gap-4 text-sm font-semibold">
-                <span class="text-yellow-400"><i class="fa-solid fa-coins"></i> <span id="nav-coins">0</span></span>
-                <span class="text-blue-400"><i class="fa-solid fa-star"></i> Nvl <span id="nav-level">1</span></span>
-                <button onclick="openInventoryModal(); playSound('click');" class="bg-primary/20 border border-primary px-3 py-1 rounded-full text-xs text-primary font-bold hover:bg-primary hover:text-white transition flex items-center gap-1">
-                    <i class="fa-solid fa-backpack"></i> Mochila (<span id="inv-count">0</span>)
+            <div id="user-stats" class="hidden flex items-center gap-3 sm:gap-5 text-sm font-bold">
+                <span class="text-yellow-400 bg-black/30 px-3 py-1 rounded-full border border-yellow-500/30 shadow-inner flex items-center gap-2"><i class="fa-solid fa-coins animate-pulse"></i> <span id="nav-coins">0</span></span>
+                <span class="text-blue-400 bg-black/30 px-3 py-1 rounded-full border border-blue-500/30 shadow-inner flex items-center gap-2"><i class="fa-solid fa-star animate-spin-slow"></i> Nvl <span id="nav-level">1</span></span>
+                <button onclick="openInventoryModal(); playSound('click');" class="bg-gradient-to-r from-primary to-indigo-600 px-4 py-1.5 rounded-full text-white hover:scale-105 hover:shadow-[0_0_15px_#6366f1] transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-backpack"></i> <span class="hidden sm:inline">Mochila</span> (<span id="inv-count">0</span>)
                 </button>
-                <button onclick="toggleSound(); playSound('click');" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition" title="Sonido"><i class="fa-solid fa-volume-high" id="sound-icon"></i></button>
-                <button onclick="toggleTheme(); playSound('click');" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition" title="Tema"><i class="fa-solid fa-moon"></i></button>
+                <div class="flex gap-1">
+                    <button onclick="toggleSound(); playSound('click');" class="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-volume-high text-lg" id="sound-icon"></i></button>
+                    <button onclick="toggleTheme(); playSound('click');" class="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-moon text-lg"></i></button>
+                </div>
             </div>
         </nav>
 
-        <div id="screen-login" class="flex-grow flex items-center justify-center p-4">
-            <div class="glass-panel p-8 rounded-2xl max-w-md w-full text-center animate-pop">
-                <h1 class="text-3xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Verb Quest</h1>
-                <p class="mb-6 text-sm opacity-80">Aprende verbos irregulares.</p>
-                <input type="text" id="nickname-input" placeholder="Ingresa tu Nickname" class="w-full p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border dark:border-gray-600 mb-4 focus:ring-2 focus:ring-primary outline-none dark:text-white">
-                <button onclick="login(); playSound('click');" class="w-full bg-gradient-to-r from-primary to-secondary text-white font-bold py-3 px-4 rounded-lg hover:scale-105 transition shadow-lg">Comenzar</button>
-            </div>
-        </div>
-
-        <div id="screen-menu" class="hidden flex-grow flex flex-col items-center p-4">
-            <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+        <div id="screen-login" class="flex-grow flex items-center justify-center p-4 z-10">
+            <div class="glass-panel p-10 rounded-3xl max-w-md w-full text-center animate-pop relative overflow-hidden">
+                <div class="absolute top-[-50px] right-[-50px] w-32 h-32 bg-secondary/30 rounded-full blur-[40px]"></div>
+                <div class="absolute bottom-[-50px] left-[-50px] w-32 h-32 bg-primary/30 rounded-full blur-[40px]"></div>
                 
-                <div class="glass-panel p-6 rounded-2xl flex flex-col items-center col-span-1 animate-pop">
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Player" id="player-avatar" class="w-24 h-24 bg-gray-200 rounded-full mb-4 border-4 border-secondary">
-                    <h2 id="menu-nickname" class="text-2xl font-bold">Jugador</h2>
-                    <div class="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-4 mb-2 mt-4 overflow-hidden relative">
-                        <div id="xp-bar" class="bg-gradient-to-r from-green-400 to-blue-500 h-4 rounded-full transition-all duration-500" style="width: 0%;"></div>
-                    </div>
-                    <p class="text-xs opacity-70 mb-4">XP: <span id="menu-xp">0</span> / <span id="menu-xp-max">100</span></p>
+                <h1 class="text-5xl font-black mb-3 bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-secondary drop-shadow-lg tracking-tight">Verb Quest</h1>
+                <p class="mb-8 text-sm opacity-80 font-medium">Domina los verbos irregulares de manera definitiva.</p>
+                <input type="text" id="nickname-input" placeholder="Ingresa tu Nickname" class="w-full p-4 rounded-xl bg-gray-50 dark:bg-gray-800/80 border-2 dark:border-gray-600 mb-6 focus:border-primary focus:ring-4 focus:ring-primary/20 outline-none dark:text-white transition-all text-center font-bold text-lg">
+                <button onclick="login(); playSound('click');" class="w-full bg-gradient-to-r from-primary to-secondary text-white font-extrabold text-lg py-4 px-4 rounded-xl hover:scale-105 hover:shadow-[0_0_20px_rgba(236,72,153,0.5)] transition-all duration-300">Entrar al Juego</button>
+            </div>
+        </div>
+
+        <div id="screen-menu" class="hidden flex-grow flex flex-col items-center p-4 z-10">
+            <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4">
+                
+                <div class="glass-panel p-8 rounded-3xl flex flex-col items-center col-span-1 animate-pop relative overflow-hidden h-fit">
+                    <div class="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none"></div>
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Player&backgroundColor=6366f1" id="player-avatar" class="w-32 h-32 bg-gray-200 rounded-full mb-4 border-4 border-primary shadow-[0_0_20px_rgba(99,102,241,0.4)] animate-float">
+                    <h2 id="menu-nickname" class="text-3xl font-black mb-1">Jugador</h2>
+                    <p class="text-sm text-primary font-bold mb-6">Estudiante VQ</p>
                     
-                    <button onclick="showAchievementsModal(); playSound('click');" class="w-full bg-yellow-500/20 border border-yellow-500 text-yellow-500 py-2 rounded-lg hover:bg-yellow-500 hover:text-black transition text-sm font-bold flex items-center justify-center gap-2 mb-2">
-                        <i class="fa-solid fa-trophy"></i> Logros (<span id="achievements-count">0</span>/8)
+                    <div class="w-full bg-gray-800/50 rounded-full h-5 mb-2 overflow-hidden relative border border-gray-700 p-0.5">
+                        <div id="xp-bar" class="bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 h-full rounded-full transition-all duration-1000 relative">
+                            <div class="absolute inset-0 bg-white/20 w-full h-full animate-pulse-glow"></div>
+                        </div>
+                    </div>
+                    <p class="text-xs opacity-70 mb-6 font-bold tracking-widest">XP: <span id="menu-xp" class="text-white">0</span> / <span id="menu-xp-max" class="text-white">100</span></p>
+                    
+                    <button onclick="showAchievementsModal(); playSound('click');" class="w-full bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-2 border-yellow-500 text-yellow-400 py-3 rounded-xl hover:bg-yellow-500 hover:text-black transition-all duration-300 text-sm font-extrabold flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(234,179,8,0.2)] hover:shadow-[0_0_25px_rgba(234,179,8,0.6)]">
+                        <i class="fa-solid fa-trophy text-lg"></i> Galería de Logros (<span id="achievements-count">0</span>/8)
                     </button>
                 </div>
 
-                <div class="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <button onclick="openStoryMap(); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-primary transition group relative animate-pop sm:col-span-2">
-                        <i class="fa-solid fa-map text-3xl text-primary mb-3 block group-hover:scale-110 transition"></i>
-                        <h3 class="text-xl font-bold">Modo Historia</h3>
-                        <p class="text-xs opacity-70 mt-1">Mapa de niveles de la hamburguesa y la historia extra del English Day.</p>
+                <div class="col-span-1 lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <button onclick="openStoryMap(); playSound('click');" class="glass-panel p-6 rounded-3xl text-left hover:-translate-y-2 hover:shadow-[0_15px_30px_rgba(99,102,241,0.3)] transition-all duration-300 group relative animate-pop sm:col-span-2 border-l-4 border-l-primary overflow-hidden">
+                        <div class="absolute right-[-20px] top-[-20px] text-8xl opacity-5 group-hover:scale-110 transition-transform duration-500"><i class="fa-solid fa-map"></i></div>
+                        <i class="fa-solid fa-map text-4xl text-primary mb-4 block drop-shadow-md"></i>
+                        <h3 class="text-2xl font-black mb-1">Campaña Principal</h3>
+                        <p class="text-sm opacity-80 mt-1 leading-relaxed">Vive la historia completa: Desde la tensión de "Giovani se enoja" hasta "La Apuesta del Muro".</p>
                     </button>
-                    <button onclick="openTrainingMode(); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-blue-400 transition group relative animate-pop">
-                        <i class="fa-solid fa-book text-3xl text-blue-400 mb-3 block group-hover:scale-110 transition"></i>
-                        <h3 class="text-xl font-bold">Modo Entrenamiento</h3>
-                        <p class="text-xs opacity-70 mt-1">Lista completa de verbos irregulares.</p>
+                    
+                    <button onclick="openTrainingMode(); playSound('click');" class="glass-panel p-6 rounded-3xl text-left hover:-translate-y-2 hover:shadow-[0_15px_30px_rgba(56,189,248,0.3)] transition-all duration-300 group relative animate-pop border-l-4 border-l-blue-400 overflow-hidden">
+                        <div class="absolute right-[-20px] top-[-20px] text-8xl opacity-5 group-hover:scale-110 transition-transform duration-500"><i class="fa-solid fa-book"></i></div>
+                        <i class="fa-solid fa-book text-4xl text-blue-400 mb-4 block drop-shadow-md"></i>
+                        <h3 class="text-xl font-bold mb-1">Entrenamiento</h3>
+                        <p class="text-xs opacity-70 mt-1">Estudia la lista completa de verbos irregulares.</p>
                     </button>
-                    <button onclick="openLevelSelectModal('roulette'); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-secondary transition group relative animate-pop">
-                        <i class="fa-solid fa-dharmachakra text-3xl text-secondary mb-3 block group-hover:rotate-180 transition"></i>
-                        <h3 class="text-xl font-bold">Ruleta Verbal</h3>
-                        <p class="text-xs opacity-70 mt-1">Gira la ruleta y juega por niveles.</p>
+                    
+                    <button onclick="openLevelSelectModal('memory'); playSound('click');" class="glass-panel p-6 rounded-3xl text-left hover:-translate-y-2 hover:shadow-[0_15px_30px_rgba(236,72,153,0.3)] transition-all duration-300 group relative animate-pop border-l-4 border-l-secondary overflow-hidden">
+                        <div class="absolute right-[-20px] top-[-20px] text-8xl opacity-5 group-hover:scale-110 transition-transform duration-500"><i class="fa-solid fa-clone"></i></div>
+                        <i class="fa-solid fa-clone text-4xl text-secondary mb-4 block drop-shadow-md"></i>
+                        <h3 class="text-xl font-bold mb-1">Memoria Verbal</h3>
+                        <p class="text-xs opacity-70 mt-1">Encuentra las parejas de cartas correctas.</p>
                     </button>
-                    <button onclick="openLevelSelectModal('table'); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-green-500 transition group relative animate-pop">
-                        <i class="fa-solid fa-table text-3xl text-green-500 mb-3 block group-hover:-translate-y-1 transition"></i>
-                        <h3 class="text-xl font-bold">Completa la Tabla</h3>
-                        <p class="text-xs opacity-70 mt-1">Tabla de 4 columnas única por niveles.</p>
+                    
+                    <button onclick="openLevelSelectModal('roulette'); playSound('click');" class="glass-panel p-6 rounded-3xl text-left hover:-translate-y-2 hover:shadow-[0_15px_30px_rgba(245,158,11,0.3)] transition-all duration-300 group relative animate-pop border-l-4 border-l-accent overflow-hidden">
+                        <div class="absolute right-[-20px] top-[-20px] text-8xl opacity-5 group-hover:rotate-180 transition-transform duration-700"><i class="fa-solid fa-dharmachakra"></i></div>
+                        <i class="fa-solid fa-dharmachakra text-4xl text-accent mb-4 block drop-shadow-md"></i>
+                        <h3 class="text-xl font-bold mb-1">Ruleta Rápida</h3>
+                        <p class="text-xs opacity-70 mt-1">La suerte y el conocimiento deciden tu destino.</p>
                     </button>
-                    <button onclick="openLevelSelectModal('sentence'); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-yellow-500 transition group relative animate-pop">
-                        <i class="fa-solid fa-pen-to-square text-3xl text-yellow-500 mb-3 block group-hover:scale-110 transition"></i>
-                        <h3 class="text-xl font-bold">Completar Oración</h3>
-                        <p class="text-xs opacity-70 mt-1">Completa los espacios en las oraciones por niveles.</p>
+                    
+                    <button onclick="openLevelSelectModal('table'); playSound('click');" class="glass-panel p-6 rounded-3xl text-left hover:-translate-y-2 hover:shadow-[0_15px_30px_rgba(16,185,129,0.3)] transition-all duration-300 group relative animate-pop border-l-4 border-l-green-500 overflow-hidden">
+                        <div class="absolute right-[-20px] top-[-20px] text-8xl opacity-5 group-hover:scale-110 transition-transform duration-500"><i class="fa-solid fa-table"></i></div>
+                        <i class="fa-solid fa-table text-4xl text-green-500 mb-4 block drop-shadow-md"></i>
+                        <h3 class="text-xl font-bold mb-1">Reto de Tablas</h3>
+                        <p class="text-xs opacity-70 mt-1">Llena los campos vacíos bajo presión.</p>
+                    </button>
+                    
+                    <button onclick="openLevelSelectModal('sentence'); playSound('click');" class="glass-panel p-6 rounded-3xl text-left hover:-translate-y-2 hover:shadow-[0_15px_30px_rgba(168,85,247,0.3)] transition-all duration-300 group relative animate-pop border-l-4 border-l-purple-500 overflow-hidden sm:col-span-2">
+                        <div class="absolute right-[-20px] top-[-20px] text-8xl opacity-5 group-hover:scale-110 transition-transform duration-500"><i class="fa-solid fa-pen-to-square"></i></div>
+                        <i class="fa-solid fa-pen-to-square text-4xl text-purple-500 mb-4 block drop-shadow-md"></i>
+                        <h3 class="text-xl font-bold mb-1">Constructor de Oraciones</h3>
+                        <p class="text-xs opacity-70 mt-1">Usa el contexto correcto para completar frases de la vida real con el tiempo verbal exacto.</p>
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="screen-training" class="hidden flex-grow flex flex-col p-4">
-            <div class="w-full max-w-4xl mx-auto glass-panel p-6 rounded-2xl animate-pop flex flex-col flex-grow my-4">
-                <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-3">
-                    <h2 class="text-2xl font-bold text-primary"><i class="fa-solid fa-book"></i> Modo Entrenamiento</h2>
-                    <button onclick="quitToMenu(); playSound('click');" class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-indigo-600 transition">Volver</button>
+        <div id="screen-training" class="hidden flex-grow flex flex-col p-4 z-10">
+            <div class="w-full max-w-5xl mx-auto glass-panel p-8 rounded-3xl animate-pop flex flex-col flex-grow my-4 shadow-2xl relative overflow-hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 border-b border-gray-700/50 pb-6 gap-4">
+                    <h2 class="text-3xl font-black text-blue-400 drop-shadow-md flex items-center gap-3"><i class="fa-solid fa-book"></i> Arsenal Verbal</h2>
+                    <button onclick="quitToMenu(); playSound('click');" class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-2.5 rounded-xl font-bold transition-all border border-gray-600 w-full sm:w-auto">Volver al Cuartel</button>
                 </div>
-                <div class="overflow-y-auto flex-grow max-h-[70vh] pr-2">
+                <div class="overflow-y-auto flex-grow max-h-[65vh] pr-4 custom-scrollbar rounded-xl">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-gray-700 text-primary">
-                                <th class="p-3">Infinitivo</th>
-                                <th class="p-3">Pasado</th>
-                                <th class="p-3">Participio</th>
-                                <th class="p-3">Español</th>
+                            <tr class="sticky top-0 bg-gray-900/90 backdrop-blur-md text-blue-400 z-10 shadow-md">
+                                <th class="p-4 font-black rounded-tl-xl">Infinitivo</th>
+                                <th class="p-4 font-black">Pasado</th>
+                                <th class="p-4 font-black">Participio</th>
+                                <th class="p-4 font-black rounded-tr-xl">Español</th>
                             </tr>
                         </thead>
-                        <tbody id="training-table-body">
+                        <tbody id="training-table-body" class="divide-y divide-gray-800/50">
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <div id="screen-roulette" class="hidden flex-grow flex flex-col items-center justify-center p-4">
-            <div id="roulette-wrapper" class="glass-panel p-8 rounded-2xl max-w-lg w-full text-center animate-pop relative transition-colors duration-500">
-                <button onclick="quitToMenu(); playSound('click');" class="absolute top-4 left-4 text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left"></i></button>
+        <div id="screen-roulette" class="hidden flex-grow flex flex-col items-center justify-center p-4 z-10">
+            <div id="roulette-wrapper" class="glass-panel p-10 rounded-3xl max-w-lg w-full text-center animate-pop relative transition-colors duration-500 shadow-2xl">
+                <button onclick="quitToMenu(); playSound('click');" class="absolute top-6 left-6 text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
                 
-                <div class="flex justify-between items-center mb-2 px-2 mt-4">
-                    <div class="flex items-center gap-2">
-                        <img id="roulette-char-img" src="" class="w-12 h-12 rounded-full border-2 border-secondary object-cover">
-                        <span id="roulette-lives" class="text-red-500 font-bold tracking-widest text-lg">❤️❤️❤️</span>
+                <div class="flex justify-between items-center mb-6 px-2 mt-8">
+                    <div class="flex items-center gap-3 bg-black/40 p-2 rounded-full border border-gray-700 shadow-inner">
+                        <img id="roulette-char-img" src="" class="w-12 h-12 rounded-full border-2 border-accent object-cover">
+                        <span id="roulette-lives" class="text-red-500 font-bold tracking-widest text-lg pr-3 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span id="roulette-timer" class="text-yellow-400 font-bold text-lg hidden"><i class="fa-solid fa-clock"></i> <span id="r-time-left">30</span>s</span>
-                        <button onclick="openInventoryModal(); playSound('click');" class="bg-primary/20 text-primary border border-primary px-3 py-1 rounded-lg text-sm font-bold hover:bg-primary hover:text-white transition"><i class="fa-solid fa-backpack"></i></button>
+                        <span id="roulette-timer" class="text-yellow-400 font-black text-xl hidden bg-black/40 px-4 py-2 rounded-full border border-yellow-500/30"><i class="fa-solid fa-clock animate-pulse"></i> <span id="r-time-left">30</span></span>
+                        <button onclick="openInventoryModal(); playSound('click');" class="bg-primary hover:bg-indigo-500 text-white p-3 rounded-full font-bold transition-all shadow-lg hover:shadow-[0_0_15px_#6366f1]"><i class="fa-solid fa-backpack"></i></button>
                     </div>
-                </div>
-                <h2 class="text-2xl font-bold mb-1 text-secondary">Ruleta Verbal</h2>
-                <div class="mb-4">
-                    <span id="roulette-diff-label" class="bg-gray-800 border border-gray-700 rounded px-3 py-1 text-sm text-white font-bold inline-block"></span>
                 </div>
                 
-                <div class="my-4 relative flex justify-center items-center">
-                    <div id="roulette-wheel" class="w-48 h-48 rounded-full border-8 border-secondary flex items-center justify-center text-xl font-extrabold bg-gradient-to-tr from-primary to-secondary shadow-2xl transition-all duration-1000 text-white">
-                        <span id="roulette-center-text">GIRAR</span>
+                <h2 class="text-3xl font-black mb-2 text-accent drop-shadow-md">Ruleta Rápida</h2>
+                <div class="mb-8">
+                    <span id="roulette-diff-label" class="bg-black/50 border border-gray-700 rounded-full px-4 py-1.5 text-sm text-white font-bold inline-block backdrop-blur-sm"></span>
+                </div>
+                
+                <div class="my-8 relative flex justify-center items-center">
+                    <div class="absolute inset-0 bg-accent/20 blur-[50px] rounded-full"></div>
+                    <div id="roulette-wheel" class="w-56 h-56 rounded-full border-[12px] border-gray-900 flex items-center justify-center text-3xl font-black bg-gradient-to-tr from-accent to-orange-500 shadow-[0_0_40px_rgba(245,158,11,0.5)] transition-transform duration-[3000ms] text-white z-10 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
+                        <span id="roulette-center-text" class="relative z-20 drop-shadow-lg">GIRAR</span>
                     </div>
+                    <div class="absolute top-[-10px] text-white text-3xl z-20 drop-shadow-lg"><i class="fa-solid fa-caret-down"></i></div>
                 </div>
 
-                <div id="roulette-question-box" class="hidden mb-6">
-                    <p class="text-sm opacity-70 mb-2">Verbo seleccionado: <strong id="r-verb-inf" class="text-primary text-lg"></strong></p>
-                    <div id="roulette-inputs-container" class="grid grid-cols-3 gap-2 mb-4">
+                <div id="roulette-question-box" class="hidden mb-6 bg-black/40 p-6 rounded-2xl border border-gray-700/50 backdrop-blur-md">
+                    <p class="text-sm opacity-80 mb-4 font-semibold uppercase tracking-wider">Verbo Objetivo</p>
+                    <p id="r-verb-inf" class="text-4xl font-black text-white mb-6 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"></p>
+                    <div id="roulette-inputs-container" class="grid gap-3 mb-6">
                     </div>
-                    <button onclick="checkRouletteResult(); playSound('click');" class="bg-green-500 text-white font-bold px-6 py-2 rounded-lg hover:bg-green-600 transition">Verificar</button>
+                    <button onclick="checkRouletteResult(); playSound('click');" class="w-full bg-green-500 text-white font-black text-lg py-4 rounded-xl hover:bg-green-400 hover:shadow-[0_0_20px_rgba(34,197,94,0.6)] transition-all">Verificar Resumen</button>
                 </div>
 
-                <button id="btn-spin" onclick="spinRoulette(); playSound('click');" class="bg-secondary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition">Girar Ruleta</button>
-                <p id="roulette-feedback" class="mt-4 font-bold"></p>
+                <button id="btn-spin" onclick="spinRoulette(); playSound('click');" class="w-full bg-gradient-to-r from-accent to-orange-500 text-white font-black text-xl py-4 rounded-2xl shadow-[0_10px_20px_rgba(245,158,11,0.3)] hover:scale-[1.02] transition-transform">¡Girar la Ruleta!</button>
+                <p id="roulette-feedback" class="mt-6 font-bold text-lg min-h-[1.75rem]"></p>
             </div>
         </div>
 
-        <div id="screen-table" class="hidden flex-grow flex flex-col items-center p-4">
-            <div id="table-wrapper" class="w-full max-w-4xl glass-panel p-6 rounded-2xl animate-pop flex flex-col flex-grow my-4 relative transition-colors duration-500">
-                <button onclick="quitToMenu(); playSound('click');" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
-                <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-3 mt-4">
-                    <div class="flex items-center gap-3">
-                        <img id="table-char-img" src="" class="w-12 h-12 rounded-full border border-green-500 object-cover">
+        <div id="screen-table" class="hidden flex-grow flex flex-col items-center p-4 z-10">
+            <div id="table-wrapper" class="w-full max-w-5xl glass-panel p-8 rounded-3xl animate-pop flex flex-col flex-grow my-4 relative transition-colors duration-500 shadow-2xl">
+                <button onclick="quitToMenu(); playSound('click');" class="absolute top-6 right-6 text-gray-400 hover:text-white text-2xl transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-700/50 pb-6 gap-6 mt-4">
+                    <div class="flex items-center gap-4 bg-black/40 p-3 rounded-2xl border border-gray-700 shadow-inner w-full md:w-auto">
+                        <img id="table-char-img" src="" class="w-16 h-16 rounded-xl border-2 border-green-500 object-cover shadow-[0_0_15px_rgba(34,197,94,0.4)]">
                         <div>
-                            <h2 class="text-2xl font-bold text-green-500"><i class="fa-solid fa-table"></i> Completa la Tabla</h2>
-                            <span id="table-diff-label" class="bg-gray-800 border border-gray-700 rounded px-2 py-0.5 text-xs text-white font-bold inline-block mt-1"></span>
+                            <h2 class="text-3xl font-black text-green-400 drop-shadow-md">Reto de Tablas</h2>
+                            <span id="table-diff-label" class="bg-gray-800 border border-gray-600 rounded-md px-3 py-1 text-xs text-white font-bold inline-block mt-2"></span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <button onclick="openInventoryModal(); playSound('click');" class="bg-primary/20 text-primary border border-primary px-3 py-1 rounded-lg text-sm font-bold hover:bg-primary hover:text-white transition"><i class="fa-solid fa-backpack"></i></button>
-                        <span id="table-timer" class="text-yellow-400 font-bold hidden"><i class="fa-solid fa-clock"></i> <span id="t-time-left">60</span>s</span>
-                        <span id="table-lives" class="text-red-500 font-bold tracking-widest text-lg">❤️❤️❤️</span>
+                    <div class="flex items-center gap-4 w-full md:w-auto justify-end">
+                        <span id="table-lives" class="text-red-500 font-bold tracking-widest text-xl bg-black/40 px-4 py-2 rounded-xl border border-gray-700 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span>
+                        <span id="table-timer" class="text-yellow-400 font-black text-xl hidden bg-black/40 px-4 py-2 rounded-xl border border-yellow-500/30"><i class="fa-solid fa-clock animate-pulse"></i> <span id="t-time-left">60</span></span>
+                        <button onclick="openInventoryModal(); playSound('click');" class="bg-primary hover:bg-indigo-500 text-white p-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-[0_0_15px_#6366f1]"><i class="fa-solid fa-backpack"></i></button>
                     </div>
                 </div>
-                <div class="overflow-y-auto flex-grow max-h-[60vh] pr-2">
+                <div class="overflow-y-auto flex-grow max-h-[60vh] pr-4 custom-scrollbar bg-black/20 rounded-2xl p-4 border border-gray-800/50">
                     <table class="w-full text-left border-collapse" id="dynamic-game-table">
                         <thead>
-                            <tr class="border-b border-gray-700 text-green-400">
-                                <th class="p-3">Verbo</th>
-                                <th class="p-3">Pasado</th>
-                                <th class="p-3">Participio</th>
-                                <th class="p-3">Significado</th>
+                            <tr class="border-b-2 border-green-500/50 text-green-400">
+                                <th class="p-4 font-black">Infinitivo</th>
+                                <th class="p-4 font-black">Pasado</th>
+                                <th class="p-4 font-black">Participio</th>
+                                <th class="p-4 font-black">Significado</th>
                             </tr>
                         </thead>
-                        <tbody id="table-game-body">
+                        <tbody id="table-game-body" class="divide-y divide-gray-800">
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-4 flex justify-between items-center">
-                    <p id="table-feedback" class="font-bold"></p>
-                    <button onclick="verifyTableGame(); playSound('click');" class="bg-green-500 text-white font-bold px-6 py-2 rounded-lg shadow-lg hover:bg-green-600 transition">Comprobar Tabla</button>
+                <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 bg-black/40 p-4 rounded-2xl border border-gray-700">
+                    <p id="table-feedback" class="font-bold text-lg text-center sm:text-left w-full"></p>
+                    <button onclick="verifyTableGame(); playSound('click');" class="bg-green-500 text-white font-black text-lg px-10 py-4 rounded-xl shadow-[0_10px_20px_rgba(34,197,94,0.3)] hover:scale-[1.02] hover:bg-green-400 transition-all w-full sm:w-auto shrink-0">Comprobar Todo</button>
                 </div>
             </div>
         </div>
 
-        <div id="screen-sentence" class="hidden flex-grow flex flex-col items-center justify-center p-4">
-            <div id="sentence-wrapper" class="glass-panel p-8 rounded-2xl max-w-xl w-full text-center animate-pop relative transition-colors duration-500">
-                <button onclick="quitToMenu(); playSound('click');" class="absolute top-4 left-4 text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left"></i></button>
-                <div class="flex justify-between items-center mb-2 px-2 mt-4">
-                    <div class="flex items-center gap-2">
-                        <img id="sentence-char-img" src="" class="w-12 h-12 rounded-full border-2 border-yellow-500 object-cover">
-                        <span id="sentence-lives" class="text-red-500 font-bold tracking-widest text-lg">❤️❤️❤️</span>
+        <div id="screen-sentence" class="hidden flex-grow flex flex-col items-center justify-center p-4 z-10">
+            <div id="sentence-wrapper" class="glass-panel p-10 rounded-3xl max-w-2xl w-full text-center animate-pop relative transition-colors duration-500 shadow-2xl">
+                <button onclick="quitToMenu(); playSound('click');" class="absolute top-6 left-6 text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                
+                <div class="flex justify-between items-center mb-6 px-2 mt-8">
+                    <div class="flex items-center gap-3 bg-black/40 p-2 rounded-full border border-gray-700 shadow-inner">
+                        <img id="sentence-char-img" src="" class="w-12 h-12 rounded-full border-2 border-purple-500 object-cover">
+                        <span id="sentence-lives" class="text-red-500 font-bold tracking-widest text-lg pr-3 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span id="sentence-timer" class="text-yellow-400 font-bold text-lg hidden"><i class="fa-solid fa-clock"></i> <span id="s-time-left">20</span>s</span>
-                        <button onclick="openInventoryModal(); playSound('click');" class="bg-primary/20 text-primary border border-primary px-3 py-1 rounded-lg text-sm font-bold hover:bg-primary hover:text-white transition"><i class="fa-solid fa-backpack"></i></button>
+                        <span id="sentence-timer" class="text-yellow-400 font-black text-xl hidden bg-black/40 px-4 py-2 rounded-full border border-yellow-500/30"><i class="fa-solid fa-clock animate-pulse"></i> <span id="s-time-left">20</span></span>
+                        <button onclick="openInventoryModal(); playSound('click');" class="bg-primary hover:bg-indigo-500 text-white p-3 rounded-full font-bold transition-all shadow-lg hover:shadow-[0_0_15px_#6366f1]"><i class="fa-solid fa-backpack"></i></button>
                     </div>
                 </div>
-                <h2 class="text-2xl font-bold mb-1 text-yellow-400"><i class="fa-solid fa-pen-to-square"></i> Completar Oración</h2>
-                <div class="mb-4">
-                    <span id="sentence-diff-label" class="bg-gray-800 border border-gray-700 rounded px-3 py-1 text-sm text-white font-bold inline-block"></span>
-                </div>
-                <div id="sentence-container" class="my-4">
-                    <p id="sentence-text" class="text-xl mb-4 font-semibold text-white"></p>
-                    <input type="text" id="sentence-input" class="w-full max-w-xs p-3 rounded-lg bg-gray-800 border border-gray-700 text-center mb-4 text-white" placeholder="Escribe el verbo correcto">
-                    <br>
-                    <button onclick="checkSentenceResult(); playSound('click');" class="bg-yellow-500 text-black font-bold px-6 py-2 rounded-lg hover:bg-yellow-400 transition">Comprobar</button>
-                </div>
-                <p id="sentence-feedback" class="font-bold mt-2"></p>
-            </div>
-        </div>
-
-        <div id="screen-story-map" class="hidden flex-grow flex flex-col items-center justify-center p-4 bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80');">
-            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm z-0"></div>
-            
-            <div class="z-10 w-full max-w-xl glass-panel p-8 rounded-3xl text-center relative border-2 border-primary/50 shadow-2xl">
-                <button onclick="quitToMenu(); playSound('click');" class="absolute top-4 left-4 text-white opacity-70 hover:opacity-100"><i class="fa-solid fa-arrow-left"></i> Menú</button>
                 
-                <div class="flex justify-center gap-2 mb-4 mt-6">
-                    <button onclick="switchStoryTab('main'); playSound('click');" id="btn-tab-main" class="px-4 py-2 rounded-lg font-bold text-xs bg-primary text-white transition">Historia Principal</button>
-                    <button onclick="switchStoryTab('extra'); playSound('click');" id="btn-tab-extra" class="px-4 py-2 rounded-lg font-bold text-xs bg-gray-800 text-gray-400 transition">Historia Extra (English Day)</button>
+                <h2 class="text-3xl font-black mb-2 text-purple-400 drop-shadow-md">Constructor de Oraciones</h2>
+                <div class="mb-8">
+                    <span id="sentence-diff-label" class="bg-black/50 border border-gray-700 rounded-full px-4 py-1.5 text-sm text-white font-bold inline-block backdrop-blur-sm"></span>
                 </div>
-
-                <h2 id="story-map-title" class="text-3xl font-extrabold text-white mb-2">Mapa del English Day</h2>
-                <p id="story-map-desc" class="text-sm text-gray-300 mb-8">Completa los 3 niveles para ganar la hamburguesa de la apuesta.</p>
                 
-                <div class="flex flex-col items-center gap-6 relative my-4">
-                    <div class="absolute w-2 h-full bg-gray-600/50 z-0"></div>
-
-                    <div class="flex items-center gap-4 z-10">
-                        <div id="node-1" onclick="selectStoryLevel(1)" class="map-node unlocked">1</div>
-                        <div class="text-left bg-black/60 p-3 rounded-xl border border-white/10 w-52">
-                            <span class="text-xs text-yellow-400 font-bold block" id="node-label-1">Nivel 1</span>
-                            <span class="text-sm font-semibold text-white" id="node-name-1">La Apuesta del Muro</span>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-4 z-10 translate-x-6">
-                        <div id="node-2" onclick="selectStoryLevel(2)" class="map-node locked">2</div>
-                        <div class="text-left bg-black/60 p-3 rounded-xl border border-white/10 w-52">
-                            <span class="text-xs text-yellow-400 font-bold block" id="node-label-2">Nivel 2</span>
-                            <span class="text-sm font-semibold text-white" id="node-name-2">Pruebas y Excusas</span>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-4 z-10 -translate-x-4">
-                        <div id="node-3" onclick="selectStoryLevel(3)" class="map-node locked">3</div>
-                        <div class="text-left bg-black/60 p-3 rounded-xl border border-white/10 w-52">
-                            <span class="text-xs text-yellow-400 font-bold block" id="node-label-3">Nivel 3</span>
-                            <span class="text-sm font-semibold text-white" id="node-name-3">La Hamburguesa Final</span>
-                        </div>
+                <div id="sentence-container" class="my-8 bg-gray-900/60 p-8 rounded-2xl border border-gray-700 shadow-inner relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
+                    <p class="text-sm opacity-70 mb-6 font-bold uppercase tracking-widest text-purple-300">Completa con la forma correcta de: <span id="s-verb-hint" class="text-white bg-purple-900/50 px-2 py-1 rounded"></span></p>
+                    <p id="sentence-text" class="text-2xl mb-8 font-semibold text-white leading-relaxed"></p>
+                    <div class="flex justify-center">
+                        <input type="text" id="sentence-input" class="w-full max-w-md p-4 rounded-xl bg-gray-800 border-2 border-gray-600 text-center text-xl font-bold text-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 outline-none transition-all shadow-lg placeholder-gray-500" placeholder="Escribe tu respuesta aquí...">
                     </div>
                 </div>
+                
+                <button onclick="checkSentenceResult(); playSound('click');" class="w-full bg-purple-600 text-white font-black text-xl py-4 rounded-xl shadow-[0_10px_20px_rgba(147,51,234,0.3)] hover:scale-[1.02] hover:bg-purple-500 transition-all">Verificar Oración</button>
+                <p id="sentence-feedback" class="font-bold mt-6 text-lg min-h-[1.75rem]"></p>
             </div>
         </div>
 
-        <div id="screen-story-dialogue" class="hidden flex-grow flex flex-col items-center justify-end p-4 pb-10 bg-cover bg-center transition-all duration-1000 relative" style="background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80');">
-            <div class="absolute inset-0 bg-black/60 z-0"></div>
+        <div id="screen-memory" class="hidden flex-grow flex flex-col items-center p-4 z-10">
+            <div id="memory-wrapper" class="w-full max-w-4xl glass-panel p-8 rounded-3xl animate-pop flex flex-col my-4 relative transition-colors duration-500 shadow-2xl">
+                <button onclick="quitToMenu(); playSound('click');" class="absolute top-6 right-6 text-gray-400 hover:text-white text-2xl transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-8 border-b border-gray-700/50 pb-6 gap-4 mt-2">
+                    <div class="flex items-center gap-4 bg-black/40 p-3 rounded-2xl border border-gray-700 shadow-inner w-full sm:w-auto">
+                        <img id="memory-char-img" src="" class="w-14 h-14 rounded-xl border-2 border-secondary object-cover shadow-[0_0_15px_rgba(236,72,153,0.4)]">
+                        <div>
+                            <h2 class="text-3xl font-black text-secondary drop-shadow-md">Memoria Verbal</h2>
+                            <span id="memory-diff-label" class="bg-gray-800 border border-gray-600 rounded-md px-3 py-1 text-xs text-white font-bold inline-block mt-2"></span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 w-full sm:w-auto justify-end">
+                        <span id="memory-lives" class="text-red-500 font-bold tracking-widest text-xl bg-black/40 px-4 py-2 rounded-xl border border-gray-700 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span>
+                        <span id="memory-timer" class="text-yellow-400 font-black text-xl hidden bg-black/40 px-4 py-2 rounded-xl border border-yellow-500/30"><i class="fa-solid fa-clock animate-pulse"></i> <span id="m-time-left">60</span></span>
+                        <button onclick="openInventoryModal(); playSound('click');" class="bg-primary hover:bg-indigo-500 text-white p-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-[0_0_15px_#6366f1]"><i class="fa-solid fa-backpack"></i></button>
+                    </div>
+                </div>
+
+                <div id="memory-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-4 w-full mb-6">
+                </div>
+
+                <p id="memory-feedback" class="font-bold text-center text-lg min-h-[1.75rem] mt-2"></p>
+            </div>
+        </div>
+
+        <div id="screen-story-map" class="hidden flex-grow flex flex-col items-center p-4 bg-cover bg-center relative z-10" style="background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80');">
+            <div class="absolute inset-0 bg-gray-900/80 backdrop-blur-sm z-0"></div>
             
-            <div class="z-10 w-full max-w-4xl flex items-end gap-4 mb-4">
-                <img id="story-character-img" class="w-32 h-32 md:w-48 md:h-48 object-cover -mb-4 animate-pop drop-shadow-2xl">
-                <div class="glass-panel bg-black/80 p-6 rounded-2xl w-full relative border-t-4 border-primary">
-                    <h3 id="story-character-name" class="text-xl font-extrabold text-primary mb-2"></h3>
-                    <p id="story-dialogue" class="text-lg text-white font-medium min-h-[3rem]"></p>
-                    <button onclick="advanceStoryDialogue(); playSound('click');" class="absolute bottom-4 right-4 text-white opacity-70 hover:opacity-100 flex items-center gap-1 animate-pulse">Continuar <i class="fa-solid fa-caret-right"></i></button>
+            <div class="z-10 w-full max-w-3xl glass-panel p-10 rounded-3xl text-center relative border-2 border-primary/40 shadow-[0_20px_50px_rgba(0,0,0,0.5)] my-auto overflow-hidden">
+                <button onclick="quitToMenu(); playSound('click');" class="absolute top-6 left-6 text-white/60 hover:text-white transition-colors bg-black/30 p-2 rounded-lg border border-white/10 flex items-center gap-2 font-bold"><i class="fa-solid fa-arrow-left"></i> Cuartel</button>
+                
+                <h2 class="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400 mb-3 drop-shadow-lg mt-8 sm:mt-0">La Gran Apuesta</h2>
+                <p class="text-base text-gray-300 mb-10 font-medium max-w-xl mx-auto bg-black/40 p-4 rounded-xl border border-gray-700 shadow-inner">Sobrevive a la ira de Giovani en el English Day y gana la legendaria hamburguesa en esta campaña de 6 actos.</p>
+                
+                <div class="relative w-full max-w-lg mx-auto py-8">
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none z-0 hidden sm:block" preserveAspectRatio="none">
+                        <path id="map-path-svg" d="M 50 40 C 150 40, 350 40, 450 40 C 450 140, 50 140, 50 240 C 50 340, 450 340, 450 340" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path id="map-path-active-svg" d="" fill="none" stroke="#6366f1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 10px #6366f1);"/>
+                    </svg>
+
+                    <div class="flex flex-col gap-10 sm:gap-0 sm:block relative z-10 w-full" id="story-nodes-container">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-story-dialogue" class="hidden flex-grow flex flex-col items-center justify-end p-4 pb-12 bg-cover bg-center transition-all duration-1000 relative z-10" style="background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80');">
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-900/90 to-gray-900/60 z-0"></div>
+            
+            <div class="z-10 w-full max-w-5xl flex flex-col md:flex-row items-center md:items-end gap-6 md:gap-8 mb-4">
+                <div class="relative group">
+                    <div class="absolute inset-0 bg-primary/20 blur-[30px] rounded-full group-hover:bg-primary/40 transition-all duration-500"></div>
+                    <img id="story-character-img" class="w-40 h-40 md:w-56 md:h-56 object-cover md:-mb-8 animate-pop drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)] rounded-2xl md:rounded-b-none border-4 border-gray-800 z-20 relative">
+                </div>
+                <div class="glass-panel bg-gray-950/90 p-8 rounded-3xl w-full relative border-t-8 border-t-primary shadow-[0_0_40px_rgba(0,0,0,0.6)] animate-pop cursor-pointer hover:bg-gray-900 transition-colors" onclick="advanceStoryDialogue(); playSound('click');">
+                    <h3 id="story-character-name" class="text-2xl font-black text-primary mb-4 tracking-wide uppercase drop-shadow-sm"></h3>
+                    <p id="story-dialogue" class="text-xl text-gray-200 font-medium min-h-[4rem] leading-relaxed"></p>
+                    <div class="absolute bottom-6 right-6 text-primary/70 flex items-center gap-2 font-bold animate-pulse">Click para continuar <i class="fa-solid fa-angles-right"></i></div>
                 </div>
             </div>
             
-            <div id="story-reward-scene" class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95 backdrop-blur-md text-center p-4">
-                <h1 class="text-5xl font-extrabold text-yellow-400 mb-4 animate-pop" id="reward-title">¡APUESTA GANADA!</h1>
-                <p class="text-white text-lg mb-6 max-w-xl" id="reward-desc">El muro de globos fue un éxito rotundo y Giovani tuvo que pagar la hamburguesa.</p>
-                <div class="relative animate-pop glow-effect mb-4" style="animation-delay: 0.5s;">
-                    <img id="final-reward-img" class="w-48 h-48 object-contain relative z-10 transition hover:scale-110">
+            <div id="story-reward-scene" class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-gray-950/95 backdrop-blur-xl text-center p-6">
+                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-yellow-500/20 via-gray-900 to-black z-0"></div>
+                <h1 class="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 mb-6 animate-pop drop-shadow-[0_0_30px_rgba(253,224,71,0.5)] z-10" id="reward-title"></h1>
+                <p class="text-gray-200 text-2xl mb-12 max-w-2xl font-medium leading-relaxed z-10" id="reward-desc"></p>
+                <div class="relative animate-pop glow-effect mb-10 z-10 group" style="animation-delay: 0.2s;">
+                    <div class="absolute inset-0 bg-yellow-500/40 blur-[50px] rounded-full group-hover:bg-yellow-400/60 transition-all duration-500"></div>
+                    <img id="final-reward-img" class="w-64 h-64 object-contain relative z-10 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 drop-shadow-2xl">
                 </div>
-                <p id="reward-extra-text" class="text-yellow-300 font-bold mb-4"></p>
-                <button onclick="completeStoryChapter(); playSound('success');" class="mt-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition">Continuar</button>
+                <p id="reward-extra-text" class="text-yellow-400 font-black text-xl mb-10 z-10 bg-black/50 px-6 py-3 rounded-full border border-yellow-500/30"></p>
+                <button onclick="completeStoryChapter(); playSound('success');" class="z-10 bg-gradient-to-r from-yellow-500 to-orange-600 text-white font-black text-2xl py-5 px-12 rounded-2xl shadow-[0_15px_30px_rgba(245,158,11,0.4)] hover:scale-110 hover:shadow-[0_20px_40px_rgba(245,158,11,0.6)] transition-all duration-300 ring-4 ring-yellow-400/50">Continuar Aventura</button>
             </div>
         </div>
 
-        <div id="modal-level-select" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div class="glass-panel bg-gray-900/90 p-6 rounded-2xl max-w-md w-full animate-pop border border-primary/30 text-center">
-                <h3 class="text-2xl font-bold text-white mb-2" id="modal-level-title">Seleccionar Nivel</h3>
-                <p class="text-sm opacity-70 mb-6">Elige la dificultad. No podrás cambiarla dentro de la partida.</p>
-                <div class="grid grid-cols-1 gap-3">
-                    <button onclick="selectLevel('facil'); playSound('click');" class="bg-gray-800 hover:bg-green-600 border border-green-500 text-white font-bold py-3 px-4 rounded-xl transition flex justify-between items-center">
-                        <span>Fácil</span> <span class="text-xs opacity-70">Jerónimo</span>
+        <div id="modal-level-select" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-950/80 backdrop-blur-md p-4">
+            <div class="glass-panel bg-gray-900 p-8 rounded-3xl max-w-md w-full animate-pop border-2 border-primary/50 text-center shadow-[0_0_50px_rgba(99,102,241,0.3)]">
+                <h3 class="text-3xl font-black text-white mb-2 drop-shadow-md" id="modal-level-title">Seleccionar</h3>
+                <p class="text-sm text-gray-400 mb-8 font-medium">Elige la dificultad del reto. No hay vuelta atrás.</p>
+                <div class="grid grid-cols-1 gap-4">
+                    <button onclick="selectLevel('facil'); playSound('click');" class="group bg-gray-800 hover:bg-green-600 border-2 border-green-500/50 hover:border-green-400 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 flex justify-between items-center shadow-lg">
+                        <span class="text-lg flex items-center gap-3"><i class="fa-solid fa-leaf text-green-400 group-hover:text-white"></i> Fácil</span> <span class="text-xs bg-black/40 px-3 py-1 rounded-full text-green-300 group-hover:text-white border border-green-500/30">Jerónimo</span>
                     </button>
-                    <button onclick="selectLevel('medio'); playSound('click');" class="bg-gray-800 hover:bg-yellow-500 border border-yellow-500 text-white font-bold py-3 px-4 rounded-xl transition flex justify-between items-center">
-                        <span>Medio</span> <span class="text-xs opacity-70">Dilan</span>
+                    <button onclick="selectLevel('medio'); playSound('click');" class="group bg-gray-800 hover:bg-yellow-500 border-2 border-yellow-500/50 hover:border-yellow-400 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 flex justify-between items-center shadow-lg">
+                        <span class="text-lg flex items-center gap-3"><i class="fa-solid fa-fire text-yellow-400 group-hover:text-white"></i> Medio</span> <span class="text-xs bg-black/40 px-3 py-1 rounded-full text-yellow-300 group-hover:text-white border border-yellow-500/30">Dilan</span>
                     </button>
-                    <button onclick="selectLevel('dificil'); playSound('click');" class="bg-gray-800 hover:bg-red-500 border border-red-500 text-white font-bold py-3 px-4 rounded-xl transition flex justify-between items-center">
-                        <span>Difícil</span> <span class="text-xs opacity-70">Enciso</span>
+                    <button onclick="selectLevel('dificil'); playSound('click');" class="group bg-gray-800 hover:bg-red-600 border-2 border-red-500/50 hover:border-red-400 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 flex justify-between items-center shadow-lg">
+                        <span class="text-lg flex items-center gap-3"><i class="fa-solid fa-skull text-red-400 group-hover:text-white"></i> Difícil</span> <span class="text-xs bg-black/40 px-3 py-1 rounded-full text-red-300 group-hover:text-white border border-red-500/30">Enciso</span>
                     </button>
-                    <button onclick="selectLevel('contrarreloj'); playSound('click');" class="bg-gray-800 hover:bg-purple-600 border border-purple-500 text-white font-bold py-3 px-4 rounded-xl transition flex justify-between items-center">
-                        <span>Contrarreloj</span> <span class="text-xs opacity-70">Giovani</span>
+                    <button onclick="selectLevel('contrarreloj'); playSound('click');" class="group bg-gray-800 hover:bg-purple-600 border-2 border-purple-500/50 hover:border-purple-400 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 flex justify-between items-center shadow-lg">
+                        <span class="text-lg flex items-center gap-3"><i class="fa-solid fa-stopwatch text-purple-400 group-hover:text-white"></i> Contrarreloj</span> <span class="text-xs bg-black/40 px-3 py-1 rounded-full text-purple-300 group-hover:text-white border border-purple-500/30">Giovani</span>
                     </button>
                 </div>
-                <button onclick="closeLevelSelectModal(); playSound('click');" class="mt-6 text-gray-400 hover:text-white underline">Cancelar</button>
+                <button onclick="closeLevelSelectModal(); playSound('click');" class="mt-8 text-gray-400 hover:text-white font-bold transition-colors">Cancelar Misión</button>
             </div>
         </div>
 
-        <div id="modal-achievements" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-            <div class="glass-panel bg-gray-900/90 p-6 rounded-2xl max-w-md w-full animate-pop border border-yellow-500/30">
-                <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
-                    <h3 class="text-xl font-bold text-yellow-400"><i class="fa-solid fa-trophy"></i> Logros del Estudiante</h3>
-                    <button onclick="closeAchievementsModal(); playSound('click');" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+        <div id="modal-achievements" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-950/80 backdrop-blur-md p-4">
+            <div class="glass-panel bg-gray-900 p-8 rounded-3xl max-w-lg w-full animate-pop border-2 border-yellow-500/40 shadow-[0_0_50px_rgba(234,179,8,0.2)]">
+                <div class="flex justify-between items-center mb-6 border-b border-gray-700/50 pb-4">
+                    <h3 class="text-2xl font-black text-yellow-400 flex items-center gap-3"><i class="fa-solid fa-trophy"></i> Vitrina de Honor</h3>
+                    <button onclick="closeAchievementsModal(); playSound('click');" class="text-gray-400 hover:text-white transition-colors bg-gray-800 p-2 rounded-full"><i class="fa-solid fa-xmark text-xl"></i></button>
                 </div>
-                <div id="achievements-list" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2"></div>
+                <div id="achievements-list" class="space-y-4 max-h-[60vh] overflow-y-auto pr-3 custom-scrollbar"></div>
             </div>
         </div>
 
-        <div id="modal-inventory" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-            <div class="glass-panel bg-gray-900/90 p-6 rounded-2xl max-w-lg w-full animate-pop border border-primary/30">
-                <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
-                    <h3 class="text-xl font-bold text-primary"><i class="fa-solid fa-backpack"></i> Inventario de Partida</h3>
-                    <button onclick="closeInventoryModal(); playSound('click');" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+        <div id="modal-inventory" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-950/80 backdrop-blur-md p-4">
+            <div class="glass-panel bg-gray-900 p-8 rounded-3xl max-w-xl w-full animate-pop border-2 border-primary/40 shadow-[0_0_50px_rgba(99,102,241,0.2)]">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-700/50 pb-4">
+                    <h3 class="text-2xl font-black text-primary flex items-center gap-3"><i class="fa-solid fa-backpack"></i> Mochila Táctica</h3>
+                    <button onclick="closeInventoryModal(); playSound('click');" class="text-gray-400 hover:text-white transition-colors bg-gray-800 p-2 rounded-full"><i class="fa-solid fa-xmark text-xl"></i></button>
                 </div>
-                <p class="text-sm opacity-80 mb-4 text-center">Puedes consumir objetos durante un nivel. Solo uno por partida.</p>
-                <div class="grid grid-cols-2 gap-4 my-4" id="inventory-items-container">
+                <p class="text-sm text-gray-400 mb-6 text-center font-medium bg-black/30 p-3 rounded-xl border border-gray-800">Puedes usar múltiples consumibles durante tus misiones si los posees.</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 my-4 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar" id="inventory-items-container">
                 </div>
             </div>
         </div>
 
-        <div id="anim-burger" class="hidden fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/90 backdrop-blur-md">
-            <img id="anim-burger-img" src="burger.jpeg" class="w-64 h-64 object-contain animate-spin-slow glow-effect rounded-full border-4 border-yellow-500">
-            <h1 class="text-4xl md:text-6xl text-yellow-400 font-extrabold mt-8 animate-bounce drop-shadow-[0_0_15px_rgba(250,204,21,0.8)]">ñam ñam, vidas extra 🔥🔥</h1>
+        <div id="anim-burger" class="hidden fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gray-950/95 backdrop-blur-xl">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yellow-500/30 to-transparent z-0"></div>
+            <img id="anim-burger-img" src="burger.jpeg" class="w-64 h-64 object-contain animate-spin-slow glow-effect rounded-full border-8 border-yellow-500 shadow-[0_0_60px_rgba(234,179,8,0.8)] z-10 relative">
+            <h1 class="text-5xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 font-black mt-12 animate-bounce drop-shadow-[0_10px_20px_rgba(250,204,21,0.6)] z-10 text-center px-4">+1 VIDA EXTRA 🔥</h1>
         </div>
 
-        <div id="anim-enciso" class="hidden fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/90 backdrop-blur-md">
-            <img src="enciso.jpeg" class="w-64 h-64 object-cover animate-pop rounded-full border-4 border-primary shadow-[0_0_30px_#6366f1]">
-            <div class="mt-8 bg-white/10 p-6 rounded-2xl border border-primary animate-pulse">
-                <h1 class="text-3xl md:text-5xl text-white font-extrabold text-center">"Eso está breve, venga le doy una pista"</h1>
+        <div id="anim-enciso" class="hidden fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gray-950/95 backdrop-blur-xl">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/30 to-transparent z-0"></div>
+            <img src="enciso.jpeg" class="w-72 h-72 object-cover animate-pop rounded-full border-8 border-primary shadow-[0_0_80px_rgba(99,102,241,0.8)] z-10 relative">
+            <div class="mt-12 bg-black/60 p-8 rounded-3xl border-2 border-primary animate-pulse z-10 relative backdrop-blur-md shadow-2xl">
+                <h1 class="text-4xl md:text-6xl text-white font-black text-center italic drop-shadow-md">"Breve, yo se la resuelvo."</h1>
             </div>
         </div>
 
@@ -409,57 +499,57 @@
 
     <script>
         const verbData = [
-            { inf: 'be', past: 'was/were', part: 'been', esp: 'ser/estar' },
-            { inf: 'become', past: 'became', part: 'become', esp: 'convertirse' },
-            { inf: 'begin', past: 'began', part: 'begun', esp: 'empezar' },
-            { inf: 'bite', past: 'bit', part: 'bitten', esp: 'morder' },
-            { inf: 'break', past: 'broke', part: 'broken', esp: 'romper' },
-            { inf: 'bring', past: 'brought', part: 'brought', esp: 'traer' },
-            { inf: 'build', past: 'built', part: 'built', esp: 'construir' },
-            { inf: 'buy', past: 'bought', part: 'bought', esp: 'comprar' },
-            { inf: 'can', past: 'could', part: '-', esp: 'poder' },
-            { inf: 'catch', past: 'caught', part: 'caught', esp: 'atrapar' },
-            { inf: 'choose', past: 'chose', part: 'chosen', esp: 'elegir' },
-            { inf: 'come', past: 'came', part: 'come', esp: 'venir' },
-            { inf: 'cost', past: 'cost', part: 'cost', esp: 'costar' },
-            { inf: 'cut', past: 'cut', part: 'cut', esp: 'cortar' },
-            { inf: 'do', past: 'did', part: 'done', esp: 'hacer' },
-            { inf: 'draw', past: 'drew', part: 'drawn', esp: 'dibujar' },
-            { inf: 'dream', past: 'dreamt/dreamed', part: 'dreamt/dreamed', esp: 'soñar' },
-            { inf: 'drink', past: 'drank', part: 'drunk', esp: 'beber' },
-            { inf: 'drive', past: 'drove', part: 'driven', esp: 'conducir' },
-            { inf: 'eat', past: 'ate', part: 'eaten', esp: 'comer' },
-            { inf: 'fall', past: 'fell', part: 'fallen', esp: 'caer' },
-            { inf: 'feel', past: 'felt', part: 'felt', esp: 'sentir' },
-            { inf: 'fight', past: 'fought', part: 'fought', esp: 'pelear' },
-            { inf: 'find', past: 'found', part: 'found', esp: 'encontrar' },
-            { inf: 'fly', past: 'flew', part: 'flown', esp: 'volar' },
-            { inf: 'forget', past: 'forgot', part: 'forgotten', esp: 'olvidar' },
-            { inf: 'get', past: 'got', part: 'got', esp: 'obtener' },
-            { inf: 'give', past: 'gave', part: 'given', esp: 'dar' },
-            { inf: 'go', past: 'went', part: 'gone', esp: 'ir' },
-            { inf: 'grow', past: 'grew', part: 'grown', esp: 'crecer' },
-            { inf: 'have', past: 'had', part: 'had', esp: 'tener' },
-            { inf: 'hear', past: 'heard', part: 'heard', esp: 'escuchar' },
-            { inf: 'hide', past: 'hid', part: 'hidden', esp: 'esconder' },
-            { inf: 'hit', past: 'hit', part: 'hit', esp: 'golpear' },
-            { inf: 'hold', past: 'held', part: 'held', esp: 'sostener' },
-            { inf: 'hurt', past: 'hurt', part: 'hurt', esp: 'herir' },
-            { inf: 'keep', past: 'kept', part: 'kept', esp: 'mantener' },
-            { inf: 'know', past: 'knew', part: 'known', esp: 'saber' },
-            { inf: 'lay', past: 'laid', part: 'laid', esp: 'poner/colocar' },
-            { inf: 'learn', past: 'learnt/learned', part: 'learnt/learned', esp: 'aprender' }
+            { inf: 'be', past: 'was/were', part: 'been', esp: 'ser/estar', s: 'Yesterday, the weather ___ very cold.', t: 'past' },
+            { inf: 'become', past: 'became', part: 'become', esp: 'convertirse', s: 'He has ___ a successful developer.', t: 'part' },
+            { inf: 'begin', past: 'began', part: 'begun', esp: 'empezar', s: 'The concert ___ at 8 PM sharp.', t: 'past' },
+            { inf: 'bite', past: 'bit', part: 'bitten', esp: 'morder', s: 'The dog has ___ the postman twice.', t: 'part' },
+            { inf: 'break', past: 'broke', part: 'broken', esp: 'romper', s: 'Who ___ the expensive vase?', t: 'past' },
+            { inf: 'bring', past: 'brought', part: 'brought', esp: 'traer', s: 'She ___ some snacks for the party.', t: 'past' },
+            { inf: 'build', past: 'built', part: 'built', esp: 'construir', s: 'They have ___ a huge balloon wall.', t: 'part' },
+            { inf: 'buy', past: 'bought', part: 'bought', esp: 'comprar', s: 'I ___ a new mechanical keyboard.', t: 'past' },
+            { inf: 'can', past: 'could', part: '-', esp: 'poder', s: 'I wish I ___ solve this bug easily.', t: 'past' },
+            { inf: 'catch', past: 'caught', part: 'caught', esp: 'atrapar', s: 'He ___ the ball with one hand.', t: 'past' },
+            { inf: 'choose', past: 'chose', part: 'chosen', esp: 'elegir', s: 'She has ___ the hardest path.', t: 'part' },
+            { inf: 'come', past: 'came', part: 'come', esp: 'venir', s: 'They ___ to the school very early.', t: 'past' },
+            { inf: 'cost', past: 'cost', part: 'cost', esp: 'costar', s: 'The new hardware ___ a fortune.', t: 'past' },
+            { inf: 'cut', past: 'cut', part: 'cut', esp: 'cortar', s: 'He has ___ his finger by accident.', t: 'part' },
+            { inf: 'do', past: 'did', part: 'done', esp: 'hacer', s: 'She ___ her complex homework yesterday.', t: 'past' },
+            { inf: 'draw', past: 'drew', part: 'drawn', esp: 'dibujar', s: 'The artist ___ a beautiful landscape.', t: 'past' },
+            { inf: 'dream', past: 'dreamt/dreamed', part: 'dreamt/dreamed', esp: 'soñar', s: 'I ___ about writing perfect code.', t: 'past' },
+            { inf: 'drink', past: 'drank', part: 'drunk', esp: 'beber', s: 'He has ___ three cups of coffee.', t: 'part' },
+            { inf: 'drive', past: 'drove', part: 'driven', esp: 'conducir', s: 'She ___ all the way to Bogotá.', t: 'past' },
+            { inf: 'eat', past: 'ate', part: 'eaten', esp: 'comer', s: 'We ___ a delicious golden burger.', t: 'past' },
+            { inf: 'fall', past: 'fell', part: 'fallen', esp: 'caer', s: 'The system has ___ offline again.', t: 'part' },
+            { inf: 'feel', past: 'felt', part: 'felt', esp: 'sentir', s: 'I ___ very tired after the exam.', t: 'past' },
+            { inf: 'fight', past: 'fought', part: 'fought', esp: 'pelear', s: 'They ___ bravely for their grade.', t: 'past' },
+            { inf: 'find', past: 'found', part: 'found', esp: 'encontrar', s: 'I have finally ___ the missing logic.', t: 'part' },
+            { inf: 'fly', past: 'flew', part: 'flown', esp: 'volar', s: 'The bird ___ away from the tree.', t: 'past' },
+            { inf: 'forget', past: 'forgot', part: 'forgotten', esp: 'olvidar', s: 'I completely ___ to save the file.', t: 'past' },
+            { inf: 'get', past: 'got', part: 'got', esp: 'obtener', s: 'She ___ a perfect score on the test.', t: 'past' },
+            { inf: 'give', past: 'gave', part: 'given', esp: 'dar', s: 'He has ___ me some excellent advice.', t: 'part' },
+            { inf: 'go', past: 'went', part: 'gone', esp: 'ir', s: 'We ___ to the tech convention.', t: 'past' },
+            { inf: 'grow', past: 'grew', part: 'grown', esp: 'crecer', s: 'The project ___ larger than expected.', t: 'past' },
+            { inf: 'have', past: 'had', part: 'had', esp: 'tener', s: 'They have ___ a lot of problems lately.', t: 'part' },
+            { inf: 'hear', past: 'heard', part: 'heard', esp: 'escuchar', s: 'I ___ a strange noise from the server.', t: 'past' },
+            { inf: 'hide', past: 'hid', part: 'hidden', esp: 'esconder', s: 'The cat is ___ under the desk.', t: 'part' },
+            { inf: 'hit', past: 'hit', part: 'hit', esp: 'golpear', s: 'He ___ the table in frustration.', t: 'past' },
+            { inf: 'hold', past: 'held', part: 'held', esp: 'sostener', s: 'She ___ the delicate component carefully.', t: 'past' },
+            { inf: 'hurt', past: 'hurt', part: 'hurt', esp: 'herir', s: 'My head ___ after thinking too much.', t: 'past' },
+            { inf: 'keep', past: 'kept', part: 'kept', esp: 'mantener', s: 'She has ___ her promise to the team.', t: 'part' },
+            { inf: 'know', past: 'knew', part: 'known', esp: 'saber', s: 'I ___ the exact configuration needed.', t: 'past' },
+            { inf: 'lay', past: 'laid', part: 'laid', esp: 'poner/colocar', s: 'He ___ the blueprint on the table.', t: 'past' },
+            { inf: 'learn', past: 'learnt/learned', part: 'learnt/learned', esp: 'aprender', s: 'We have ___ a new programming language.', t: 'part' }
         ];
 
         const achievementsData = [
             { id: 'first_correct', title: 'Primer Paso', desc: 'Responde correctamente tu primer verbo.', reward: '+10 XP', unlocked: false },
-            { id: 'story_complete', title: 'Maestro de Globos', desc: 'Completa los 3 niveles del Modo Historia.', reward: '+200 XP, 100 Monedas', unlocked: false },
-            { id: 'extra_complete', title: 'Tremendo Guapo', desc: 'Completa la historia extra del English Day.', reward: '+300 XP', unlocked: false },
-            { id: 'rich_student', title: 'Ahorrador', desc: 'Acumula un total de 50 monedas.', reward: '+50 XP', unlocked: false },
+            { id: 'story_complete', title: 'Maestro de la Apuesta', desc: 'Completa los 6 nodos de la Campaña Principal.', reward: '+500 XP, 200 Monedas', unlocked: false },
+            { id: 'rich_student', title: 'Ahorrador Compulsivo', desc: 'Acumula un total de 50 monedas.', reward: '+50 XP', unlocked: false },
             { id: 'use_burger', title: 'Energía Dorada', desc: 'Usa una hamburguesa dorada en una partida.', reward: '+20 XP', unlocked: false },
-            { id: 'use_enciso', title: 'Breve y Claro', desc: 'Usa el objeto Enciso para recibir una pista.', reward: '+20 XP', unlocked: false },
+            { id: 'use_enciso', title: 'Tremendo Guapo', desc: 'Usa el objeto Enciso para resolver una duda.', reward: '+20 XP', unlocked: false },
             { id: 'roulette_master', title: 'Giro Perfecto', desc: 'Gana en la Ruleta Verbal en dificultad Difícil.', reward: '+50 XP', unlocked: false },
-            { id: 'table_master', title: 'Tabla Impecable', desc: 'Completa una tabla sin perder vidas.', reward: '+60 XP', unlocked: false }
+            { id: 'table_master', title: 'Tabla Impecable', desc: 'Completa una tabla sin perder vidas.', reward: '+60 XP', unlocked: false },
+            { id: 'memory_master', title: 'Mente Brillante', desc: 'Gana una partida del modo Memoria Verbal.', reward: '+50 XP', unlocked: false }
         ];
 
         let user = { 
@@ -468,7 +558,6 @@
             level: 1, 
             coins: 0, 
             storyProgress: 1, 
-            extraStoryProgress: 1,
             achievements: [], 
             inventory: []
         };
@@ -479,8 +568,6 @@
         let maxLives = 3;
         let activeStoryLevel = 1;
         let storyDialogueIndex = 0;
-        let isExtraStoryTab = false;
-        let currentSentenceData = null;
         let currentSelectedSentence = null;
         let gameTimerInterval = null;
         let timeLeft = 0;
@@ -488,50 +575,52 @@
         let activeGameMode = '';
         let activeDifficulty = '';
         let matchLevel = 1;
-        let consumablesUsedThisMatch = { burger: false, enciso: false };
+
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let totalPairs = 0;
+        let memoryLock = false;
 
         const storyChapters = {
             1: [
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¿Y si construimos la pared de globos?" },
-                { char: 'Enciso', img: ASSETS.enciso, text: "Uy, sí, va a quedar genial." },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Jajaja, ¿cómo va a quedar bien una pared de globos?" },
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "Si la pared queda perfecta, usted nos invita a una hamburguesa." },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Trato hecho. Pero demuestren que dominan los verbos primero." },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "El ambiente en el colegio se siente tenso hoy. Es el English Day y nos jugamos la nota final." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "La decoración del salón principal quedó bien, pero queremos hacer algo que destaque de verdad." },
+                { char: 'Enciso', img: ASSETS.enciso, text: "Tenemos que ser rápidos. Giovani está patrullando los pasillos y no parece estar de buen humor." },
                 { type: 'minigame', diff: 'facil' }
             ],
             2: [
-                { char: 'Enciso', img: ASSETS.enciso, text: "¡Esto está quedando increíble! Pero ese profesor anda buscando excusas para no pagar." },
-                { char: 'Dilan', img: ASSETS.dilan, text: "Pilas, yo sé que él se acuerda perfectamente." },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Hmm, veo que avanzan... pero dudo que conozcan todos los tiempos verbales avanzados." },
+                { char: 'Enciso', img: ASSETS.enciso, text: "¡Buena esa! La estructura base está lista. Pero se acercan los jueces bilingües." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "Pilas, si fallamos una sola conjugación nos bajan puntos de inmediato." },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "Concéntrense, apliquen todo lo que entrenamos en los scripts." },
                 { type: 'minigame', diff: 'medio' }
             ],
             3: [
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡Ya quedó lista la pared, usted nos debe la hamburguesa!" },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Ehh... bueno, te juro que no recuerdo haber hecho ninguna apuesta de hamburguesas..." },
-                { char: 'Dilan', img: ASSETS.dilan, text: "Un momento, profe. Yo me acuerdo. ¡Usted dijo 'Trato hecho' frente a todos!" },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Demuestren su nivel final respondiendo esto sin fallar." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "He estado revisando su stand. Tienen errores conceptuales básicos. Esto es inaceptable para un curso superior." },
+                { char: 'Enciso', img: ASSETS.enciso, text: "Profe, pero si está todo perfecto, usamos estructuras modulares y gramática avanzada." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "No me vengan con excusas. Si no superan esta prueba de estrés ahora mismo, reprueban el English Day." },
                 { type: 'minigame', diff: 'dificil' }
-            ]
-        };
-
-        const extraStoryChapters = {
-            1: [
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "El ambiente en el colegio se siente tenso hoy, ya que es el tan esperado English Day." },
-                { char: 'Dilan', img: ASSETS.dilan, text: "Todos los salones están decorados, pero nuestro grupo quiere hacer algo legendario en el auditorio central." },
-                { char: 'Enciso', img: ASSETS.enciso, text: "Tenemos que montar toda la escenografía bilingüe antes de que llegue el profesor Giovani a inspeccionar." },
-                { type: 'minigame', diff: 'facil', isExtra: true }
             ],
-            2: [
-                { char: 'Enciso', img: ASSETS.enciso, text: "¡Excelente! La primera parte del montaje quedó lista. Pero ahora los jueces evalúan verbos compuestos y expresiones complejas." },
-                { char: 'Dilan', img: ASSETS.dilan, text: "No podemos flaquear aquí, el resto de cursos nos está observando de cerca." },
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "Concentración total, respondamos con precisión quirúrgica." },
-                { type: 'minigame', diff: 'medio', isExtra: true }
+            4: [
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "Uff, casi que no. Bueno profe, ya que superamos eso, ¿qué le parece si armamos la pared de globos gigante atrás?" },
+                { char: 'Enciso', img: ASSETS.enciso, text: "Va a quedar brutal, le dará todo el estilo al stand." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Jajaja, ¿una pared de globos? Ustedes no son capaces de armar eso sin que se caiga." },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "Apostemos. Si la pared queda perfecta y resiste, usted nos invita una hamburguesa a todos." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Trato hecho. Pero demuestren que no se les olvidaron los verbos por el estrés." },
+                { type: 'minigame', diff: 'facil' }
             ],
-            3: [
-                { char: 'Giovani', img: ASSETS.giovani, text: "Muy bien, muchachos, admito que su stand del English Day superó las expectativas de todos." },
-                { char: 'Enciso', img: ASSETS.enciso, text: "¡Lo logramos! Demostramos que dominamos el inglés con categoría y altura." },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Sin embargo, para llevarse la máxima mención honorífica, deberán superar la prueba definitiva de velocidad y dominio verbal." },
-                { type: 'minigame', diff: 'dificil', isExtra: true }
+            5: [
+                { char: 'Enciso', img: ASSETS.enciso, text: "¡El muro quedó sólido como roca! Pero Giovani se está haciendo el loco mirando para otro lado." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "Ese profe siempre busca la forma de zafarse, pero yo sé que se acuerda de la apuesta." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Veo el muro... no está mal. Pero dudo de su capacidad retentiva a largo plazo." },
+                { type: 'minigame', diff: 'medio' }
+            ],
+            6: [
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡Listo! La jornada terminó, el muro sigue intacto. Pague la hamburguesa profe." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Ehh... yo jamás dije la palabra 'hamburguesa', ustedes alucinan por el hambre." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "Profe, todo el auditorio lo escuchó decir 'Trato hecho'. No intente debugear la realidad." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "De acuerdo. Si son tan listos, superen mi prueba final definitiva sin ningún error." },
+                { type: 'minigame', diff: 'dificil' }
             ]
         };
 
@@ -539,12 +628,20 @@
             const saved = localStorage.getItem('verbQuestUser');
             if (saved) { 
                 user = JSON.parse(saved); 
+                if (user.extraStoryProgress) {
+                    if (user.extraStoryProgress > 1 && user.storyProgress === 1) {
+                        user.storyProgress = user.extraStoryProgress;
+                    }
+                    delete user.extraStoryProgress;
+                }
                 updateNavStats(); 
                 showScreen('screen-menu'); 
             } else { 
                 showScreen('screen-login'); 
             }
-            if (localStorage.theme === 'light') document.documentElement.classList.remove('dark');
+            if (localStorage.theme === 'light') {
+                document.documentElement.classList.remove('dark');
+            }
         };
 
         function saveGame() { 
@@ -567,7 +664,7 @@
 
         function toggleSound() {
             soundEnabled = !soundEnabled;
-            document.getElementById('sound-icon').className = soundEnabled ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark";
+            document.getElementById('sound-icon').className = soundEnabled ? "fa-solid fa-volume-high text-lg" : "fa-solid fa-volume-xmark text-lg";
         }
         
         function showScreen(id) {
@@ -575,9 +672,19 @@
             document.getElementById('roulette-wrapper').classList.remove('flash-red-bg');
             document.getElementById('table-wrapper').classList.remove('flash-red-bg');
             document.getElementById('sentence-wrapper').classList.remove('flash-red-bg');
+            document.getElementById('memory-wrapper').classList.remove('flash-red-bg');
 
-            ['screen-login', 'screen-menu', 'screen-training', 'screen-roulette', 'screen-table', 'screen-sentence', 'screen-story-map', 'screen-story-dialogue'].forEach(s => document.getElementById(s).classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
+            ['screen-login', 'screen-menu', 'screen-training', 'screen-roulette', 'screen-table', 'screen-sentence', 'screen-memory', 'screen-story-map', 'screen-story-dialogue'].forEach(s => {
+                document.getElementById(s).classList.add('hidden');
+                document.getElementById(s).classList.remove('flex');
+            });
+            
+            const target = document.getElementById(id);
+            target.classList.remove('hidden');
+            if (id !== 'screen-login' && id !== 'screen-story-map' && id !== 'screen-story-dialogue') {
+                target.classList.add('flex');
+            }
+
             if (id === 'screen-menu') updateMenuUI();
             if (id === 'screen-story-map') updateStoryMapUI();
         }
@@ -586,7 +693,6 @@
             activeGameMode = '';
             activeDifficulty = '';
             matchLevel = 1;
-            consumablesUsedThisMatch = { burger: false, enciso: false };
             showScreen('screen-menu');
         }
 
@@ -595,8 +701,21 @@
             document.getElementById('nav-coins').innerText = user.coins;
             document.getElementById('nav-level').innerText = user.level;
             let unlockedCount = user.achievements ? user.achievements.length : 0;
-            document.getElementById('achievements-count').innerText = unlockedCount;
+            const cntEl = document.getElementById('achievements-count');
+            if(cntEl) cntEl.innerText = unlockedCount;
             document.getElementById('inv-count').innerText = user.inventory ? user.inventory.length : 0;
+            checkLevelUp();
+        }
+
+        function checkLevelUp() {
+            let reqXp = user.level * 100;
+            if (user.xp >= reqXp) {
+                user.xp -= reqXp;
+                user.level++;
+                playSound('success');
+                alert(`¡Nivel Aumentado! Ahora eres nivel ${user.level}.`);
+                saveGame();
+            }
         }
 
         function updateMenuUI() {
@@ -613,7 +732,18 @@
             if (!user.achievements.includes(id)) {
                 user.achievements.push(id);
                 playSound('success');
-                alert(`¡Logro desbloqueado!\n${achievementsData.find(a => a.id === id).title}`);
+                const ach = achievementsData.find(a => a.id === id);
+                alert(`¡Logro desbloqueado!\n${ach.title}\nRecompensa: ${ach.reward}`);
+                
+                if(ach.reward.includes('10 XP')) user.xp += 10;
+                if(ach.reward.includes('20 XP')) user.xp += 20;
+                if(ach.reward.includes('50 XP')) user.xp += 50;
+                if(ach.reward.includes('60 XP')) user.xp += 60;
+                if(ach.reward.includes('200 XP')) user.xp += 200;
+                if(ach.reward.includes('500 XP')) user.xp += 500;
+                if(ach.reward.includes('100 Monedas')) user.coins += 100;
+                if(ach.reward.includes('200 Monedas')) user.coins += 200;
+
                 saveGame();
             }
         }
@@ -624,12 +754,15 @@
             achievementsData.forEach(ach => {
                 let unlocked = user.achievements && user.achievements.includes(ach.id);
                 listEl.innerHTML += `
-                    <div class="flex items-center justify-between p-3 rounded-xl bg-gray-800/60 border ${unlocked ? 'border-yellow-500/50 text-white' : 'border-gray-700 text-gray-500'}">
+                    <div class="flex items-center justify-between p-4 rounded-2xl bg-gray-800/80 border ${unlocked ? 'border-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.2)]' : 'border-gray-700'} transition-all">
                         <div>
-                            <h4 class="font-bold text-sm ${unlocked ? 'text-yellow-400' : 'text-gray-400'}"><i class="fa-solid fa-trophy mr-2"></i>${ach.title}</h4>
-                            <p class="text-xs opacity-75">${ach.desc}</p>
+                            <h4 class="font-black text-lg ${unlocked ? 'text-yellow-400' : 'text-gray-500'} flex items-center gap-2"><i class="fa-solid ${unlocked ? 'fa-trophy' : 'fa-lock'}"></i> ${ach.title}</h4>
+                            <p class="text-sm opacity-80 mt-1 ${unlocked ? 'text-white' : 'text-gray-500'}">${ach.desc}</p>
+                            <p class="text-xs font-bold mt-2 ${unlocked ? 'text-green-400' : 'text-gray-600'}">${ach.reward}</p>
                         </div>
-                        <span class="text-xs font-mono px-2 py-1 rounded bg-black/40">${unlocked ? 'Completado' : 'Bloqueado'}</span>
+                        <div class="flex flex-col items-end gap-2">
+                            <span class="text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full ${unlocked ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50' : 'bg-gray-800 text-gray-600'}">${unlocked ? 'Obtenido' : 'Bloqueado'}</span>
+                        </div>
                     </div>
                 `;
             });
@@ -643,9 +776,10 @@
         function openLevelSelectModal(mode) {
             activeGameMode = mode;
             let title = '';
-            if (mode === 'roulette') title = 'Ruleta Verbal - Niveles';
-            if (mode === 'table') title = 'Tabla - Niveles';
-            if (mode === 'sentence') title = 'Oraciones - Niveles';
+            if (mode === 'roulette') title = 'Ruleta Rápida';
+            if (mode === 'table') title = 'Reto de Tablas';
+            if (mode === 'sentence') title = 'Constructor';
+            if (mode === 'memory') title = 'Memoria Verbal';
             document.getElementById('modal-level-title').innerText = title;
             document.getElementById('modal-level-select').classList.remove('hidden');
         }
@@ -658,33 +792,33 @@
         function selectLevel(diff) {
             activeDifficulty = diff;
             matchLevel = 1;
-            consumablesUsedThisMatch = { burger: false, enciso: false };
             document.getElementById('modal-level-select').classList.add('hidden');
             
             if (activeGameMode === 'roulette') startRouletteLevel();
             if (activeGameMode === 'table') startTableLevel();
             if (activeGameMode === 'sentence') startSentenceLevel();
+            if (activeGameMode === 'memory') startMemoryLevel();
         }
 
         function openInventoryModal() {
             const container = document.getElementById('inventory-items-container');
             container.innerHTML = '';
             if(!user.inventory || user.inventory.length === 0) {
-                container.innerHTML = `<p class="col-span-2 text-center text-sm opacity-60">Tu inventario está vacío. Completa misiones para conseguir objetos.</p>`;
+                container.innerHTML = `<div class="col-span-full text-center py-8"><i class="fa-solid fa-box-open text-4xl text-gray-600 mb-4 block"></i><p class="text-gray-400 font-bold">Tu mochila está vacía.</p><p class="text-sm text-gray-500 mt-2">Juega niveles para encontrar botín.</p></div>`;
             } else {
                 user.inventory.forEach((item, index) => {
                     let actionBtn = '';
                     if (activeGameMode !== '') {
-                        actionBtn = `<button onclick="useInventoryItem(${index})" class="bg-primary text-white text-xs font-bold py-1 px-3 rounded-lg hover:bg-indigo-600 transition mt-2">Usar en Partida</button>`;
+                        actionBtn = `<button onclick="useInventoryItem(${index})" class="w-full bg-primary text-white text-sm font-bold py-2 px-3 rounded-lg hover:bg-indigo-500 transition-colors mt-3">Usar Ahora</button>`;
                     } else {
-                        actionBtn = `<span class="text-xs text-red-400 mt-2">Solo utilizable en partida</span>`;
+                        actionBtn = `<div class="w-full bg-gray-800 text-gray-500 text-xs font-bold py-2 px-3 rounded-lg mt-3">Úsalo en partida</div>`;
                     }
 
                     container.innerHTML += `
-                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col items-center text-center relative">
-                            <img src="${item.img}" class="w-16 h-16 object-contain mb-2 light-boost glow-effect">
-                            <h4 class="font-bold text-sm text-yellow-400">${item.name}</h4>
-                            <p class="text-xs opacity-70">${item.desc}</p>
+                        <div class="bg-gray-800/80 p-5 rounded-2xl border border-gray-700 flex flex-col items-center text-center relative hover:bg-gray-800 transition-colors">
+                            <img src="${item.img}" class="w-20 h-20 object-contain mb-3 light-boost drop-shadow-lg rounded-xl">
+                            <h4 class="font-black text-sm text-yellow-400 mb-1 leading-tight">${item.name}</h4>
+                            <p class="text-xs text-gray-300 opacity-90 flex-grow">${item.desc}</p>
                             ${actionBtn}
                         </div>
                     `;
@@ -705,24 +839,20 @@
 
         function checkLevelConsumableReward() {
             if (matchLevel === 1 || matchLevel % 2 !== 0) {
-                const rewardItem = Math.random() < 0.5 ? { type: 'burger', name: 'Hamburguesa Dorada', desc: 'Suma 1 vida extra en cualquier nivel.', img: ASSETS.burgerImage } : { type: 'enciso', name: 'Tremendo Guapo', desc: 'Resuelve un campo vacío en cualquier nivel.', img: ASSETS.enciso };
+                const rewardItem = Math.random() < 0.5 ? { type: 'burger', name: 'Hamburguesa Dorada', desc: 'Recupera 1 vida en cualquier nivel.', img: ASSETS.burgerImage } : { type: 'enciso', name: 'Tremendo Guapo', desc: 'Resuelve un campo vacío mágicamente.', img: ASSETS.enciso };
                 addToInventory(rewardItem);
-                alert(`¡Nivel ${matchLevel} alcanzado! Has recibido un consumible aleatorio: ${rewardItem.name}`);
+                alert(`¡Nivel ${matchLevel} alcanzado!\nEncontraste botín: ${rewardItem.name}`);
             }
+            if (user.coins >= 50) checkAchievement('rich_student');
         }
 
         function useInventoryItem(index) {
-            if (activeGameMode === '') return alert('Los consumibles solo se pueden usar dentro de un nivel.');
+            if (activeGameMode === '') return alert('Entra a un nivel primero.');
             
             let item = user.inventory[index];
+            user.inventory.splice(index, 1);
             
             if (item.type === 'burger') {
-                if (consumablesUsedThisMatch.burger) {
-                    playSound('error');
-                    return alert('Ya usaste una hamburguesa en este nivel. Debes reiniciar para usar otra.');
-                }
-                user.inventory.splice(index, 1);
-                consumablesUsedThisMatch.burger = true;
                 currentLives++;
                 updateLivesDisplay();
                 closeInventoryModal();
@@ -730,15 +860,9 @@
                 checkAchievement('use_burger');
                 saveGame();
             } else if (item.type === 'enciso') {
-                if (consumablesUsedThisMatch.enciso) {
-                    playSound('error');
-                    return alert('Ya usaste la pista de Enciso en este nivel. Debes reiniciar para usar otra.');
-                }
-                user.inventory.splice(index, 1);
-                consumablesUsedThisMatch.enciso = true;
                 closeInventoryModal();
                 showEncisoAnimation();
-                setTimeout(applyEncisoHint, 3000);
+                setTimeout(applyEncisoHint, 2500);
                 checkAchievement('use_enciso');
                 saveGame();
             }
@@ -750,7 +874,7 @@
             animEl.classList.remove('hidden');
             setTimeout(() => {
                 animEl.classList.add('hidden');
-            }, 3000);
+            }, 2500);
         }
 
         function showEncisoAnimation() {
@@ -759,13 +883,13 @@
             animEl.classList.remove('hidden');
             setTimeout(() => {
                 animEl.classList.add('hidden');
-            }, 3000);
+            }, 2500);
         }
 
         function applyEncisoHint() {
             if (activeGameMode === 'roulette') {
                 let box = document.getElementById('roulette-question-box');
-                if (box.classList.contains('hidden')) return alert('Gira la ruleta primero para aplicar la pista.');
+                if (box.classList.contains('hidden')) return alert('Gira la ruleta primero para aplicar la magia.');
                 let inputs = document.getElementById('roulette-inputs-container').querySelectorAll('input');
                 for(let i=0; i<inputs.length; i++) {
                     if(inputs[i].value === '') {
@@ -784,6 +908,7 @@
                                 inputs[i].value = currentVerb.part.split('/')[0];
                             }
                         }
+                        inputs[i].classList.add('ring-2', 'ring-primary', 'bg-primary/20');
                         playSound('success');
                         break;
                     }
@@ -797,15 +922,32 @@
                         let vObj = tableGameRows[rIdx].verb;
                         inputs[i].value = [vObj.inf, vObj.past, vObj.part, vObj.esp][cIdx].split('/')[0];
                         inputs[i].disabled = true;
-                        inputs[i].classList.add('bg-yellow-900/50', 'text-yellow-400');
+                        inputs[i].classList.add('bg-primary/30', 'text-white', 'font-black', 'border-primary');
                         playSound('success');
                         break;
                     }
                 }
             } else if (activeGameMode === 'sentence') {
                 if(currentSelectedSentence) {
-                    document.getElementById('sentence-input').value = currentSelectedSentence.target.split('/')[0];
+                    let val = '';
+                    if(currentSelectedSentence.t === 'past') val = currentSelectedSentence.verb.past.split('/')[0];
+                    else if(currentSelectedSentence.t === 'part') val = currentSelectedSentence.verb.part.split('/')[0];
+                    else val = currentSelectedSentence.verb.inf.split('/')[0];
+                    
+                    document.getElementById('sentence-input').value = val;
+                    document.getElementById('sentence-input').classList.add('ring-4', 'ring-primary', 'bg-primary/20');
                     playSound('success');
+                }
+            } else if (activeGameMode === 'memory') {
+                let unflipped = Array.from(document.querySelectorAll('.memory-card:not(.flipped)'));
+                if(unflipped.length >= 2) {
+                    let first = unflipped[0];
+                    let matchVerb = first.getAttribute('data-verb');
+                    let second = unflipped.find(c => c !== first && c.getAttribute('data-verb') === matchVerb);
+                    if (second) {
+                        flipCard(first);
+                        flipCard(second);
+                    }
                 }
             }
         }
@@ -815,6 +957,7 @@
             if (activeGameMode === 'roulette') document.getElementById('roulette-lives').innerText = livesStr;
             if (activeGameMode === 'table') document.getElementById('table-lives').innerText = livesStr;
             if (activeGameMode === 'sentence') document.getElementById('sentence-lives').innerText = livesStr;
+            if (activeGameMode === 'memory') document.getElementById('memory-lives').innerText = livesStr;
         }
 
         function openTrainingMode() {
@@ -823,11 +966,11 @@
             tbody.innerHTML = '';
             verbData.forEach(v => {
                 tbody.innerHTML += `
-                    <tr class="border-b border-gray-800 hover:bg-white/5 transition">
-                        <td class="p-3 font-bold text-primary">${v.inf}</td>
-                        <td class="p-3">${v.past}</td>
-                        <td class="p-3">${v.part}</td>
-                        <td class="p-3 opacity-80">${v.esp}</td>
+                    <tr class="hover:bg-gray-800/50 transition-colors group">
+                        <td class="p-4 font-black text-blue-400 group-hover:text-blue-300">${v.inf}</td>
+                        <td class="p-4 text-gray-200">${v.past}</td>
+                        <td class="p-4 text-gray-200">${v.part}</td>
+                        <td class="p-4 opacity-80 text-gray-400 group-hover:text-white transition-colors">${v.esp}</td>
                     </tr>
                 `;
             });
@@ -847,10 +990,10 @@
         }
 
         function getDiffLabelText(diff) {
-            if(diff === 'facil') return 'Nivel: Fácil (Jerónimo)';
-            if(diff === 'medio') return 'Nivel: Medio (Dilan)';
-            if(diff === 'dificil') return 'Nivel: Difícil (Enciso)';
-            if(diff === 'contrarreloj') return 'Nivel: Contrarreloj (Giovani)';
+            if(diff === 'facil') return 'Nivel Fácil';
+            if(diff === 'medio') return 'Nivel Medio';
+            if(diff === 'dificil') return 'Nivel Difícil';
+            if(diff === 'contrarreloj') return 'Contrarreloj';
             return '';
         }
 
@@ -864,16 +1007,18 @@
                 document.getElementById(`${modePrefix}-time-left`).innerText = timeLeft;
                 playSound('tiktak');
                 
-                let wrapperEl = document.getElementById(`${modePrefix}-wrapper`);
-                if(ifModeWrapper(modePrefix)) {
-                    document.getElementById(ifModeWrapper(modePrefix)).classList.add('flash-red-bg');
+                let wrapperId = ifModeWrapper(modePrefix);
+                if(wrapperId) {
+                    if (timeLeft <= 5) {
+                        document.getElementById(wrapperId).classList.add('flash-red-bg');
+                    } else {
+                        document.getElementById(wrapperId).classList.remove('flash-red-bg');
+                    }
                 }
 
                 if(timeLeft <= 0) {
                     clearInterval(gameTimerInterval);
-                    if(ifModeWrapper(modePrefix)) {
-                        document.getElementById(ifModeWrapper(modePrefix)).classList.remove('flash-red-bg');
-                    }
+                    if(wrapperId) document.getElementById(wrapperId).classList.remove('flash-red-bg');
                     callback();
                 }
             }, 1000);
@@ -883,6 +1028,7 @@
             if(prefix === 'r') return 'roulette-wrapper';
             if(prefix === 't') return 'table-wrapper';
             if(prefix === 's') return 'sentence-wrapper';
+            if(prefix === 'm') return 'memory-wrapper';
             return null;
         }
 
@@ -911,24 +1057,24 @@
             setTimeout(() => {
                 wheel.classList.remove('spinning');
                 currentVerb = verbData[Math.floor(Math.random() * verbData.length)];
-                document.getElementById('r-verb-inf').innerText = currentVerb.inf;
-                document.getElementById('roulette-center-text').innerText = currentVerb.inf.toUpperCase();
+                document.getElementById('r-verb-inf').innerText = currentVerb.inf.toUpperCase();
+                document.getElementById('roulette-center-text').innerText = '🔥';
                 
                 const container = document.getElementById('roulette-inputs-container');
                 container.innerHTML = '';
                 
                 if(activeDifficulty === 'facil') {
-                    container.innerHTML = `<input type="text" id="r-input-esp" class="col-span-3 p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Significado (Español)">`;
+                    container.innerHTML = `<input type="text" id="r-input-esp" class="w-full p-4 rounded-xl bg-gray-900/80 text-center border-2 border-gray-600 text-white font-bold text-lg focus:border-accent focus:ring-4 focus:ring-accent/20 outline-none transition-all" placeholder="Escribe el Significado">`;
                 } else if(activeDifficulty === 'medio') {
                     container.innerHTML = `
-                        <input type="text" id="r-input-past" class="col-span-1 p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Pasado">
-                        <input type="text" id="r-input-esp" class="col-span-2 p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Significado">
+                        <input type="text" id="r-input-past" class="w-full p-4 rounded-xl bg-gray-900/80 text-center border-2 border-gray-600 text-white font-bold focus:border-accent outline-none transition-all" placeholder="Pasado">
+                        <input type="text" id="r-input-esp" class="w-full p-4 rounded-xl bg-gray-900/80 text-center border-2 border-gray-600 text-white font-bold focus:border-accent outline-none transition-all" placeholder="Significado">
                     `;
                 } else {
                     container.innerHTML = `
-                        <input type="text" id="r-input-past" class="p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Pasado">
-                        <input type="text" id="r-input-part" class="p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Participio">
-                        <input type="text" id="r-input-esp" class="p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Español">
+                        <input type="text" id="r-input-past" class="w-full p-3 rounded-xl bg-gray-900/80 text-center border-2 border-gray-600 text-white font-bold focus:border-accent outline-none transition-all" placeholder="Pasado">
+                        <input type="text" id="r-input-part" class="w-full p-3 rounded-xl bg-gray-900/80 text-center border-2 border-gray-600 text-white font-bold focus:border-accent outline-none transition-all" placeholder="Participio">
+                        <input type="text" id="r-input-esp" class="w-full p-3 rounded-xl bg-gray-900/80 text-center border-2 border-gray-600 text-white font-bold focus:border-accent outline-none transition-all" placeholder="Significado">
                     `;
                 }
 
@@ -939,7 +1085,7 @@
                 if(activeDifficulty === 'contrarreloj') {
                     document.getElementById('roulette-timer').classList.remove('hidden');
                     startTimer(() => {
-                        handleRouletteFailure("¡Se acabó el tiempo!");
+                        handleRouletteFailure("¡Tiempo agotado!");
                     }, 25, 'r');
                 }
             }, 3000);
@@ -970,8 +1116,8 @@
 
             if(ok) {
                 playSound('success');
-                document.getElementById('roulette-feedback').className = "mt-4 font-bold text-green-500";
-                document.getElementById('roulette-feedback').innerText = "¡Excelente! Has acertado el verbo en la ruleta.";
+                document.getElementById('roulette-feedback').className = "mt-6 font-black text-xl text-green-400 drop-shadow-md";
+                document.getElementById('roulette-feedback').innerText = "¡IMPECABLE!";
                 user.xp += 20;
                 user.coins += 5;
                 checkLevelConsumableReward();
@@ -982,9 +1128,10 @@
                 setTimeout(() => {
                     document.getElementById('roulette-question-box').classList.add('hidden');
                     document.getElementById('btn-spin').classList.remove('hidden');
+                    document.getElementById('roulette-center-text').innerText = 'GIRAR';
                 }, 1500);
             } else {
-                handleRouletteFailure("Respuesta incorrecta.");
+                handleRouletteFailure("Datos incorrectos.");
             }
         }
 
@@ -992,12 +1139,14 @@
             playSound('error');
             currentLives--;
             updateLivesDisplay();
-            document.getElementById('roulette-feedback').className = "mt-4 font-bold text-red-500";
-            document.getElementById('roulette-feedback').innerText = `${msg} Vidas restantes: ${currentLives}`;
+            document.getElementById('roulette-feedback').className = "mt-6 font-black text-xl text-red-500 drop-shadow-md";
+            document.getElementById('roulette-feedback').innerText = `${msg} Error de compilación.`;
 
             if(currentLives <= 0) {
-                alert('Te quedaste sin vidas en la ruleta.');
-                quitToMenu();
+                setTimeout(() => {
+                    alert('Sistemas caídos. Te quedaste sin vidas.');
+                    quitToMenu();
+                }, 500);
             }
         }
 
@@ -1017,7 +1166,7 @@
                 document.getElementById('table-timer').classList.remove('hidden');
                 startTimer(() => {
                     document.getElementById('table-wrapper').classList.remove('flash-red-bg');
-                    alert('¡Se acabó el tiempo en la tabla!');
+                    alert('¡Límite de tiempo excedido!');
                     quitToMenu();
                 }, 60, 't');
             }
@@ -1030,20 +1179,21 @@
             const tbody = document.getElementById('table-game-body');
             tbody.innerHTML = '';
             
-            let count = activeDifficulty === 'facil' ? 5 : (activeDifficulty === 'medio' ? 10 : 15);
-            tableGameRows = verbData.slice(0, count).map(v => {
+            let count = activeDifficulty === 'facil' ? 4 : (activeDifficulty === 'medio' ? 7 : 10);
+            let shuffled = [...verbData].sort(() => 0.5 - Math.random());
+            tableGameRows = shuffled.slice(0, count).map(v => {
                 let filledCol = Math.floor(Math.random() * 4);
                 return { verb: v, filled: filledCol, state: { 0: filledCol === 0 ? v.inf : '', 1: filledCol === 1 ? v.past : '', 2: filledCol === 2 ? v.part : '', 3: filledCol === 3 ? v.esp : '' } };
             });
 
             tableGameRows.forEach((row, idx) => {
-                let html = `<tr class="border-b border-gray-800">`;
+                let html = `<tr class="hover:bg-gray-800/30 transition-colors">`;
                 for(let col = 0; col < 4; col++) {
                     let val = row.state[col];
                     if(row.filled === col) {
-                        html += `<td class="p-3 font-bold text-yellow-400">${val} (Fijo)</td>`;
+                        html += `<td class="p-3"><div class="w-full p-2 rounded-lg bg-green-900/30 text-green-400 font-black border border-green-500/30 text-center">${val}</div></td>`;
                     } else {
-                        html += `<td class="p-3"><input type="text" data-row="${idx}" data-col="${col}" class="table-input w-full p-2 rounded bg-gray-800 border border-gray-700 text-white" placeholder="..."></td>`;
+                        html += `<td class="p-3"><input type="text" data-row="${idx}" data-col="${col}" class="table-input w-full p-2 rounded-lg bg-gray-900/80 border border-gray-600 text-white text-center focus:border-green-500 focus:ring-2 focus:ring-green-500/20 outline-none transition-all font-semibold" placeholder="---"></td>`;
                     }
                 }
                 html += `</tr>`;
@@ -1059,10 +1209,15 @@
                 let rIdx = inp.getAttribute('data-row');
                 let cIdx = inp.getAttribute('data-col');
                 let vObj = tableGameRows[rIdx].verb;
-                let correctVal = [vObj.inf, vObj.past, vObj.part, vObj.esp][cIdx].toLowerCase();
+                let correctVal = [vObj.inf, vObj.past, vObj.part, vObj.esp][cIdx].toLowerCase().split('/');
                 let userVal = inp.value.trim().toLowerCase();
-                if(!correctVal.includes(userVal) || userVal === '') {
+                
+                if(!correctVal.some(c => userVal.includes(c)) || userVal === '') {
                     allCorrect = false;
+                    inp.classList.add('border-red-500', 'bg-red-900/20');
+                } else {
+                    inp.classList.remove('border-red-500', 'bg-red-900/20');
+                    inp.classList.add('border-green-500', 'bg-green-900/20', 'text-green-400');
                 }
             });
 
@@ -1070,8 +1225,8 @@
                 if(gameTimerInterval) clearInterval(gameTimerInterval);
                 document.getElementById('table-wrapper').classList.remove('flash-red-bg');
                 playSound('success');
-                document.getElementById('table-feedback').className = "font-bold text-green-500";
-                document.getElementById('table-feedback').innerText = "¡Tabla completada con éxito!";
+                document.getElementById('table-feedback').className = "font-black text-xl text-green-400 drop-shadow-md text-center sm:text-left w-full";
+                document.getElementById('table-feedback').innerText = "¡Estructura de datos perfecta!";
                 user.xp += 50;
                 user.coins += 20;
                 checkLevelConsumableReward();
@@ -1081,13 +1236,13 @@
                 setTimeout(() => {
                     document.getElementById('table-feedback').innerText = '';
                     loadTableGameRows();
-                }, 1500);
+                }, 2000);
             } else {
                 playSound('error');
                 currentLives--;
                 updateLivesDisplay();
-                document.getElementById('table-feedback').className = "font-bold text-red-500";
-                document.getElementById('table-feedback').innerText = "Hay errores en la tabla. Se te descuenta una vida y se te da pista de otra fila.";
+                document.getElementById('table-feedback').className = "font-black text-lg text-red-500 drop-shadow-md text-center sm:text-left w-full";
+                document.getElementById('table-feedback').innerText = "Sintaxis errónea detectada. -1 Vida.";
                 
                 let emptyInputs = Array.from(inputs).filter(i => i.value.trim() === '' && !i.disabled);
                 if(emptyInputs.length > 0) {
@@ -1095,16 +1250,19 @@
                     let rIdx = hintInput.getAttribute('data-row');
                     let cIdx = hintInput.getAttribute('data-col');
                     let vObj = tableGameRows[rIdx].verb;
-                    hintInput.value = [vObj.inf, vObj.past, vObj.part, vObj.esp][cIdx];
+                    hintInput.value = [vObj.inf, vObj.past, vObj.part, vObj.esp][cIdx].split('/')[0];
                     hintInput.disabled = true;
-                    hintInput.classList.add('bg-yellow-900/50', 'text-yellow-400');
+                    hintInput.classList.remove('border-red-500', 'bg-red-900/20');
+                    hintInput.classList.add('bg-primary/30', 'text-white', 'font-black', 'border-primary');
                 }
 
                 if(currentLives <= 0) {
                     if(gameTimerInterval) clearInterval(gameTimerInterval);
-                    document.getElementById('table-wrapper').classList.remove('flash-red-bg');
-                    alert('Te quedaste sin vidas en la tabla.');
-                    quitToMenu();
+                    setTimeout(() => {
+                        document.getElementById('table-wrapper').classList.remove('flash-red-bg');
+                        alert('Te quedaste sin vidas en el Reto de Tablas.');
+                        quitToMenu();
+                    }, 500);
                 }
             }
         }
@@ -1125,33 +1283,29 @@
                 document.getElementById('sentence-timer').classList.remove('hidden');
             }
 
+            document.getElementById('sentence-input').classList.remove('ring-4', 'ring-primary', 'bg-primary/20', 'ring-green-500', 'ring-red-500');
             generateNewSentence();
         }
 
         function generateNewSentence() {
-            currentSentenceData = verbData[Math.floor(Math.random() * verbData.length)];
+            let validVerbs = verbData.filter(v => v.s && v.t);
+            let chosenVerb = validVerbs[Math.floor(Math.random() * validVerbs.length)];
             
-            let sentenceTemplates = [
-                { template: `The dog ____ (${currentSentenceData.inf}) the bone yesterday.`, target: currentSentenceData.past },
-                { template: `She has ____ (${currentSentenceData.inf}) this book before.`, target: currentSentenceData.part },
-                { template: `I ____ (${currentSentenceData.inf}) to the store every day.`, target: currentSentenceData.inf }
-            ];
+            currentSelectedSentence = {
+                verb: chosenVerb,
+                s: chosenVerb.s,
+                t: chosenVerb.t
+            };
 
-            if(activeDifficulty === 'facil') {
-                currentSelectedSentence = sentenceTemplates[0];
-            } else if(activeDifficulty === 'medio') {
-                currentSelectedSentence = sentenceTemplates[Math.floor(Math.random() * 2)];
-            } else {
-                currentSelectedSentence = sentenceTemplates[Math.floor(Math.random() * sentenceTemplates.length)];
-            }
-
-            document.getElementById('sentence-text').innerText = currentSelectedSentence.template;
+            document.getElementById('s-verb-hint').innerText = chosenVerb.inf.toUpperCase();
+            document.getElementById('sentence-text').innerText = chosenVerb.s.replace('___', '______');
             document.getElementById('sentence-input').value = '';
+            document.getElementById('sentence-input').classList.remove('border-green-500', 'border-red-500', 'ring-4', 'ring-primary', 'bg-primary/20');
             document.getElementById('sentence-feedback').innerText = '';
 
             if(activeDifficulty === 'contrarreloj') {
                 startTimer(() => {
-                    handleSentenceFailure("¡Se acabó el tiempo!");
+                    handleSentenceFailure("¡Timeout!");
                 }, 20, 's');
             }
         }
@@ -1160,20 +1314,30 @@
             if(gameTimerInterval) clearInterval(gameTimerInterval);
             document.getElementById('sentence-wrapper').classList.remove('flash-red-bg');
             const val = document.getElementById('sentence-input').value.trim().toLowerCase();
-            const correctTargets = currentSelectedSentence.target.toLowerCase().split('/');
+            const inputEl = document.getElementById('sentence-input');
             
-            if(correctTargets.includes(val)) {
+            let correctTarget = '';
+            if (currentSelectedSentence.t === 'past') correctTarget = currentSelectedSentence.verb.past;
+            else if (currentSelectedSentence.t === 'part') correctTarget = currentSelectedSentence.verb.part;
+            else correctTarget = currentSelectedSentence.verb.inf;
+
+            const correctOptions = correctTarget.toLowerCase().split('/');
+            
+            if(correctOptions.some(opt => val === opt)) {
                 playSound('success');
-                document.getElementById('sentence-feedback').className = "font-bold text-green-500";
-                document.getElementById('sentence-feedback').innerText = "¡Correcto! Oración completada.";
+                inputEl.classList.add('border-green-500', 'ring-2', 'ring-green-500/50');
+                document.getElementById('sentence-text').innerHTML = currentSelectedSentence.s.replace('___', `<span class="text-green-400 font-black border-b-2 border-green-500">${val.toUpperCase()}</span>`);
+                document.getElementById('sentence-feedback').className = "font-black text-xl text-green-400 drop-shadow-md";
+                document.getElementById('sentence-feedback').innerText = "¡Variable asignada con éxito!";
                 user.xp += 15;
                 checkLevelConsumableReward();
                 matchLevel++;
                 checkAchievement('first_correct');
                 saveGame();
-                setTimeout(generateNewSentence, 1500);
+                setTimeout(generateNewSentence, 2000);
             } else {
-                handleSentenceFailure(`Incorrecto. Era: ${currentSelectedSentence.target}`);
+                inputEl.classList.add('border-red-500', 'ring-2', 'ring-red-500/50');
+                handleSentenceFailure(`Null Reference Exception. Era: ${correctOptions[0]}`);
             }
         }
 
@@ -1181,60 +1345,214 @@
             playSound('error');
             currentLives--;
             updateLivesDisplay();
-            document.getElementById('sentence-feedback').className = "font-bold text-red-500";
-            document.getElementById('sentence-feedback').innerText = `${msg} Vidas restantes: ${currentLives}`;
+            document.getElementById('sentence-feedback').className = "font-black text-lg text-red-500 drop-shadow-md";
+            document.getElementById('sentence-feedback').innerText = msg;
 
             if(currentLives <= 0) {
-                alert('Te quedaste sin vidas.');
-                quitToMenu();
-            }
-        }
-
-        function openStoryMap() {
-            isExtraStoryTab = false;
-            showScreen('screen-story-map');
-            updateStoryMapUI();
-        }
-
-        function switchStoryTab(tab) {
-            isExtraStoryTab = (tab === 'extra');
-            const btnMain = document.getElementById('btn-tab-main');
-            const btnExtra = document.getElementById('btn-tab-extra');
-            if(isExtraStoryTab) {
-                btnExtra.className = "px-4 py-2 rounded-lg font-bold text-xs bg-primary text-white transition";
-                btnMain.className = "px-4 py-2 rounded-lg font-bold text-xs bg-gray-800 text-gray-400 transition";
+                setTimeout(() => {
+                    alert('Memoria corrupta. Te quedaste sin vidas.');
+                    quitToMenu();
+                }, 1000);
             } else {
-                btnMain.className = "px-4 py-2 rounded-lg font-bold text-xs bg-primary text-white transition";
-                btnExtra.className = "px-4 py-2 rounded-lg font-bold text-xs bg-gray-800 text-gray-400 transition";
-            }
-            updateStoryMapUI();
-        }
-
-        function updateStoryMapUI() {
-            document.getElementById('story-map-title').innerText = isExtraStoryTab ? "Historia Extra (English Day)" : "Modo Historia";
-            document.getElementById('story-map-desc').innerText = isExtraStoryTab ? "Tres niveles extendidos sobre la preparación y la tensión del gran English Day en el colegio." : "Completa los 3 niveles de la hamburguesa de la apuesta.";
-            
-            for(let i = 1; i <= 3; i++) {
-                let node = document.getElementById(`node-${i}`);
-                if(!node) continue;
-                node.className = "map-node";
-                let prog = isExtraStoryTab ? user.extraStoryProgress : user.storyProgress;
-                if(i < prog) {
-                    node.classList.add('completed');
-                    node.innerHTML = `<i class="fa-solid fa-check"></i>`;
-                } else if(i === prog) {
-                    node.classList.add('unlocked');
-                    node.innerHTML = i;
-                } else {
-                    node.classList.add('locked');
-                    node.innerHTML = `<i class="fa-solid fa-lock"></i>`;
+                if(activeDifficulty === 'contrarreloj') {
+                    setTimeout(generateNewSentence, 1500);
                 }
             }
         }
 
+        function startMemoryLevel() {
+            showScreen('screen-memory');
+            document.getElementById('memory-diff-label').innerText = getDiffLabelText(activeDifficulty);
+            
+            const imgEl = document.getElementById('memory-char-img');
+            if(activeDifficulty === 'facil') imgEl.src = ASSETS.jeronimo;
+            else if(activeDifficulty === 'medio') imgEl.src = ASSETS.dilan;
+            else if(activeDifficulty === 'dificil') imgEl.src = ASSETS.enciso;
+            else if(activeDifficulty === 'contrarreloj') imgEl.src = ASSETS.giovani;
+
+            setupLivesAndTimer(activeDifficulty, 'memory');
+            
+            if(activeDifficulty === 'contrarreloj') {
+                document.getElementById('memory-timer').classList.remove('hidden');
+                startTimer(() => {
+                    alert('¡Tiempo agotado!');
+                    quitToMenu();
+                }, 45, 'm');
+            }
+
+            document.getElementById('memory-feedback').innerText = '';
+            generateMemoryCards();
+        }
+
+        function generateMemoryCards() {
+            let count = activeDifficulty === 'facil' ? 4 : (activeDifficulty === 'medio' ? 6 : 8);
+            totalPairs = count;
+            matchedPairs = 0;
+            flippedCards = [];
+            memoryLock = false;
+            
+            let shuffled = [...verbData].sort(() => 0.5 - Math.random()).slice(0, count);
+            let deck = [];
+            
+            shuffled.forEach((v, index) => {
+                deck.push({ id: `inf_${index}`, verb: v.inf, text: v.inf, type: 'inf' });
+                deck.push({ id: `esp_${index}`, verb: v.inf, text: v.esp.split('/')[0], type: 'esp' });
+            });
+            
+            deck.sort(() => 0.5 - Math.random());
+            
+            const grid = document.getElementById('memory-grid');
+            grid.innerHTML = '';
+            
+            deck.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'memory-card relative w-full';
+                cardEl.setAttribute('data-verb', card.verb);
+                cardEl.setAttribute('data-id', card.id);
+                
+                cardEl.innerHTML = `
+                    <div class="memory-card-inner shadow-lg">
+                        <div class="memory-card-front shadow-[0_0_15px_rgba(236,72,153,0.3)]">
+                            <i class="fa-solid fa-question opacity-50"></i>
+                        </div>
+                        <div class="memory-card-back shadow-[0_0_15px_rgba(99,102,241,0.3)]">
+                            ${card.text.toUpperCase()}
+                        </div>
+                    </div>
+                `;
+                
+                cardEl.addEventListener('click', () => handleCardClick(cardEl));
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function handleCardClick(cardEl) {
+            if (memoryLock || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
+            
+            flipCard(cardEl);
+            flippedCards.push(cardEl);
+
+            if (flippedCards.length === 2) {
+                memoryLock = true;
+                checkForMatch();
+            }
+        }
+
+        function flipCard(cardEl) {
+            playSound('flip');
+            cardEl.classList.add('flipped');
+        }
+
+        function checkForMatch() {
+            let isMatch = flippedCards[0].getAttribute('data-verb') === flippedCards[1].getAttribute('data-verb');
+
+            if (isMatch) {
+                playSound('success');
+                flippedCards[0].classList.add('matched');
+                flippedCards[1].classList.add('matched');
+                matchedPairs++;
+                document.getElementById('memory-feedback').className = "font-black text-green-400 drop-shadow-md";
+                document.getElementById('memory-feedback').innerText = "¡Enlace correcto!";
+                
+                resetMemoryTurn();
+
+                if (matchedPairs === totalPairs) {
+                    if(gameTimerInterval) clearInterval(gameTimerInterval);
+                    setTimeout(() => {
+                        document.getElementById('memory-feedback').className = "font-black text-2xl text-secondary drop-shadow-lg";
+                        document.getElementById('memory-feedback').innerText = "¡Nivel Completado!";
+                        user.xp += 40;
+                        user.coins += 15;
+                        checkLevelConsumableReward();
+                        matchLevel++;
+                        checkAchievement('memory_master');
+                        saveGame();
+                        setTimeout(generateMemoryCards, 2000);
+                    }, 1000);
+                }
+            } else {
+                document.getElementById('memory-feedback').className = "font-black text-red-500 drop-shadow-md";
+                document.getElementById('memory-feedback').innerText = "Error de conexión. -1 Vida.";
+                playSound('error');
+                currentLives--;
+                updateLivesDisplay();
+                
+                if (currentLives <= 0) {
+                    if(gameTimerInterval) clearInterval(gameTimerInterval);
+                    setTimeout(() => {
+                        alert('Te quedaste sin vidas.');
+                        quitToMenu();
+                    }, 500);
+                    return;
+                }
+
+                setTimeout(() => {
+                    flippedCards[0].classList.remove('flipped');
+                    flippedCards[1].classList.remove('flipped');
+                    resetMemoryTurn();
+                }, 1000);
+            }
+        }
+
+        function resetMemoryTurn() {
+            flippedCards = [];
+            memoryLock = false;
+        }
+
+        function openStoryMap() {
+            showScreen('screen-story-map');
+            updateStoryMapUI();
+        }
+
+        function updateStoryMapUI() {
+            const container = document.getElementById('story-nodes-container');
+            container.innerHTML = '';
+            
+            const nodeDetails = [
+                { id: 1, title: 'Preparativos', pos: 'sm:absolute sm:top-[190px] sm:left-[5%]', pathProg: 0 },
+                { id: 2, title: 'La Tensión', pos: 'sm:absolute sm:top-[90px] sm:left-[25%]', pathProg: 20 },
+                { id: 3, title: 'Giovani se enoja', pos: 'sm:absolute sm:top-[190px] sm:left-[45%]', pathProg: 40 },
+                { id: 4, title: 'La Apuesta', pos: 'sm:absolute sm:top-[290px] sm:left-[65%]', pathProg: 60 },
+                { id: 5, title: 'Las Excusas', pos: 'sm:absolute sm:top-[190px] sm:left-[85%]', pathProg: 80 },
+                { id: 6, title: 'Fase Final', pos: 'sm:absolute sm:top-[90px] sm:left-[75%]', pathProg: 100 } 
+            ];
+
+            nodeDetails.forEach((node, idx) => {
+                let statusClass = "locked";
+                let content = `<i class="fa-solid fa-lock"></i>`;
+                let shadow = "";
+
+                if (node.id < user.storyProgress) {
+                    statusClass = "completed";
+                    content = `<i class="fa-solid fa-check"></i>`;
+                } else if (node.id === user.storyProgress) {
+                    statusClass = "unlocked animate-float";
+                    content = node.id;
+                    shadow = "shadow-[0_0_30px_rgba(99,102,241,0.8)]";
+                }
+
+                container.innerHTML += `
+                    <div class="flex items-center gap-6 sm:block ${node.pos} z-10 group">
+                        <div id="node-${node.id}" onclick="selectStoryLevel(${node.id})" class="map-node ${statusClass} ${shadow}">${content}</div>
+                        <div class="sm:absolute sm:top-[85px] sm:left-1/2 sm:-translate-x-1/2 text-left sm:text-center bg-black/80 sm:bg-black/60 p-3 sm:p-2 rounded-xl sm:rounded-lg border border-white/10 w-48 sm:w-32 whitespace-nowrap opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                            <span class="text-[10px] text-yellow-400 font-black tracking-widest block uppercase">Acto ${node.id}</span>
+                            <span class="text-sm font-bold text-white drop-shadow-md">${node.title}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const pathActive = document.getElementById('map-path-active-svg');
+            if(pathActive) {
+                const totalLength = 1000;
+                pathActive.style.strokeDasharray = totalLength;
+                let progressPercent = ((user.storyProgress - 1) / 5);
+                pathActive.style.strokeDashoffset = totalLength - (totalLength * progressPercent);
+            }
+        }
+
         function selectStoryLevel(lvl) {
-            let prog = isExtraStoryTab ? user.extraStoryProgress : user.storyProgress;
-            if(lvl > prog) return alert('Nivel bloqueado. Completa el anterior primero.');
+            if(lvl > user.storyProgress) return playSound('error');
             activeStoryLevel = lvl;
             storyDialogueIndex = 0;
             showScreen('screen-story-dialogue');
@@ -1242,15 +1560,10 @@
         }
 
         function loadStoryDialogue() {
-            let chapter = isExtraStoryTab ? extraStoryChapters[activeStoryLevel] : storyChapters[activeStoryLevel];
+            let chapter = storyChapters[activeStoryLevel];
             if (storyDialogueIndex >= chapter.length) {
-                if(isExtraStoryTab) {
-                    user.extraStoryProgress = Math.min(3, activeStoryLevel + 1);
-                    checkAchievement('extra_complete');
-                } else {
-                    user.storyProgress = Math.min(3, activeStoryLevel + 1);
-                    if(activeStoryLevel === 3) checkAchievement('story_complete');
-                }
+                user.storyProgress = Math.min(7, activeStoryLevel + 1);
+                if(activeStoryLevel === 6 && user.storyProgress === 7) checkAchievement('story_complete');
                 saveGame();
                 showScreen('screen-story-map');
                 updateStoryMapUI();
@@ -1258,7 +1571,7 @@
             }
             let item = chapter[storyDialogueIndex];
             if(item.type === 'minigame') {
-                runStoryMinigame(item.diff, item.isExtra);
+                runStoryMinigame(item.diff);
                 return;
             }
             document.getElementById('story-character-name').innerText = item.char;
@@ -1271,47 +1584,56 @@
             loadStoryDialogue();
         }
 
-        function runStoryMinigame(diff, isExtra = false) {
-            currentVerb = verbData[Math.floor(Math.random() * verbData.length)];
+        function runStoryMinigame(diff) {
+            let validVerbs = verbData.filter(v => v.part !== '-');
+            currentVerb = validVerbs[Math.floor(Math.random() * validVerbs.length)];
             let box = document.getElementById('story-dialogue').parentElement;
+            
+            box.onclick = null;
+            box.classList.remove('cursor-pointer', 'hover:bg-gray-900');
+
             box.innerHTML = `
-                <h3 class="text-xl font-bold text-yellow-400 mb-2">Desafío del Nivel (${diff.toUpperCase()})</h3>
-                <p class="text-sm mb-3">Escribe el pasado y participio del verbo: <strong class="text-primary text-lg">${currentVerb.inf}</strong></p>
-                <div class="grid grid-cols-2 gap-2 mb-3">
-                    <input type="text" id="sm-past" class="p-2 rounded bg-gray-800 text-white text-center border" placeholder="Pasado">
-                    <input type="text" id="sm-part" class="p-2 rounded bg-gray-800 text-white text-center border" placeholder="Participio">
+                <h3 class="text-2xl font-black text-yellow-400 mb-4 tracking-wide uppercase drop-shadow-md flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation"></i> Firewall Activado (${diff.toUpperCase()})</h3>
+                <p class="text-lg mb-6 text-gray-300 font-medium">Ingresa los parámetros exactos para superar el bloqueo: <strong class="text-primary text-2xl ml-2 bg-primary/20 px-3 py-1 rounded border border-primary/50">${currentVerb.inf.toUpperCase()}</strong></p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <input type="text" id="sm-past" class="p-4 rounded-xl bg-gray-950 text-white text-center border-2 border-gray-700 font-bold focus:border-primary focus:ring-4 focus:ring-primary/30 outline-none transition-all shadow-inner" placeholder="PST (Pasado)">
+                    <input type="text" id="sm-part" class="p-4 rounded-xl bg-gray-950 text-white text-center border-2 border-gray-700 font-bold focus:border-primary focus:ring-4 focus:ring-primary/30 outline-none transition-all shadow-inner" placeholder="PRT (Participio)">
                 </div>
-                <button onclick="checkStoryMinigame('${diff}', ${isExtra})" class="bg-primary text-white font-bold py-2 px-6 rounded-lg">Comprobar</button>
+                <button onclick="checkStoryMinigame('${diff}')" class="w-full bg-gradient-to-r from-primary to-indigo-600 text-white font-black text-xl py-4 rounded-xl shadow-[0_10px_20px_rgba(99,102,241,0.3)] hover:scale-[1.02] transition-transform ring-2 ring-primary/50">Ejecutar Script</button>
             `;
         }
 
-        function checkStoryMinigame(diff, isExtra) {
+        function checkStoryMinigame(diff) {
             const vp = document.getElementById('sm-past').value.trim().toLowerCase();
             const vpt = document.getElementById('sm-part').value.trim().toLowerCase();
             const cp = currentVerb.past.toLowerCase().split('/');
             const cpt = currentVerb.part.toLowerCase().split('/');
 
-            if(cp.includes(vp) && (cpt.includes(vpt) || (currentVerb.part === '-' && vpt === '-'))) {
+            if(cp.some(c => vp === c) && cpt.some(c => vpt === c)) {
                 playSound('success');
-                if(diff === 'dificil' && !isExtra) {
-                    document.getElementById('reward-title').innerText = "¡APUESTA GANADA!";
-                    document.getElementById('reward-desc').innerText = "El muro de globos fue un éxito rotundo y Giovani tuvo que pagar la hamburguesa.";
+                if(diff === 'dificil' && activeStoryLevel === 6) {
+                    document.getElementById('reward-title').innerText = "¡SISTEMA HACKEADO!";
+                    document.getElementById('reward-desc').innerText = "El muro de globos resistió, tus scripts funcionaron y Giovani tuvo que pagar la mítica hamburguesa.";
                     document.getElementById('final-reward-img').src = ASSETS.burgerImage;
                     document.getElementById('reward-extra-text').innerText = "¡Has recibido la Hamburguesa Dorada en tu inventario!";
                     document.getElementById('story-reward-scene').classList.remove('hidden');
-                    addToInventory({ type: 'burger', name: 'Hamburguesa Dorada', desc: 'Suma 1 vida extra en cualquier nivel.', img: ASSETS.burgerImage });
+                    addToInventory({ type: 'burger', name: 'Hamburguesa Dorada', desc: 'Recupera 1 vida en cualquier nivel.', img: ASSETS.burgerImage });
                     checkAchievement('story_complete');
                     saveGame();
-                } else if(diff === 'dificil' && isExtra) {
-                    document.getElementById('reward-title').innerText = "¡HISTORIA EXTRA COMPLETADA!";
-                    document.getElementById('reward-desc').innerText = "Demostraste el dominio total del English Day ante todo el colegio.";
+                } else if(diff === 'dificil' && activeStoryLevel === 3) {
+                    document.getElementById('reward-title').innerText = "¡ESTRÉS SUPERADO!";
+                    document.getElementById('reward-desc').innerText = "Giovani quedó sin palabras ante la estructura de tu código verbal.";
                     document.getElementById('final-reward-img').src = ASSETS.enciso;
-                    document.getElementById('reward-extra-text').innerText = "Recibiste a Tremendo Guapo 🔥🔥 en tu inventario.";
+                    document.getElementById('reward-extra-text').innerText = "Recibiste a Tremendo Guapo en tu mochila.";
                     document.getElementById('story-reward-scene').classList.remove('hidden');
-                    addToInventory({ type: 'enciso', name: 'Tremendo Guapo', desc: 'Resuelve un campo vacío en cualquier nivel.', img: ASSETS.enciso });
-                    checkAchievement('extra_complete');
+                    addToInventory({ type: 'enciso', name: 'Tremendo Guapo', desc: 'Resuelve un campo vacío mágicamente.', img: ASSETS.enciso });
                     saveGame();
                 } else {
+                    let box = document.getElementById('story-dialogue') ? document.getElementById('story-dialogue').parentElement : document.querySelector('.glass-panel');
+                    if(box) {
+                        box.onclick = () => { advanceStoryDialogue(); playSound('click'); };
+                        box.classList.add('cursor-pointer', 'hover:bg-gray-900');
+                    }
                     storyDialogueIndex++;
                     showScreen('screen-story-dialogue');
                     loadStoryDialogue();
@@ -1319,19 +1641,28 @@
             } else {
                 playSound('error');
                 if(diff === 'dificil') {
-                    document.getElementById('reward-title').innerText = "¡FINAL MALO!";
-                    document.getElementById('reward-desc').innerText = "Fallaste el reto final difícil. Tienes que reintentarlo.";
+                    document.getElementById('reward-title').innerText = "¡ERROR CRÍTICO!";
+                    document.getElementById('reward-title').classList.replace('text-transparent', 'text-red-500');
+                    document.getElementById('reward-title').classList.replace('from-yellow-300', 'from-red-500');
+                    document.getElementById('reward-desc').innerText = "El script falló en ejecución. Giovani te ha reprobado.";
                     document.getElementById('final-reward-img').src = ASSETS.giovani;
-                    document.getElementById('reward-extra-text').innerText = "Inténtalo de nuevo.";
+                    document.getElementById('reward-extra-text').innerText = "Vuelve a intentarlo.";
+                    document.getElementById('reward-extra-text').classList.replace('text-yellow-400', 'text-red-500');
                     document.getElementById('story-reward-scene').classList.remove('hidden');
                 } else {
-                    alert('Respuesta incorrecta. Inténtalo de nuevo.');
+                    alert('Error sintáctico. Inténtalo de nuevo.');
                 }
             }
         }
 
         function completeStoryChapter() {
             document.getElementById('story-reward-scene').classList.add('hidden');
+            document.getElementById('reward-title').classList.replace('text-red-500', 'text-transparent');
+            document.getElementById('reward-title').classList.replace('from-red-500', 'from-yellow-300');
+            document.getElementById('reward-extra-text').classList.replace('text-red-500', 'text-yellow-400');
+            
+            user.storyProgress = Math.min(7, activeStoryLevel + 1);
+            saveGame();
             showScreen('screen-story-map');
             updateStoryMapUI();
         }
