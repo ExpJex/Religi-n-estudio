@@ -30,6 +30,7 @@
         .map-node.unlocked { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: 4px solid #818cf8; }
         .map-node.completed { background: linear-gradient(135deg, #10b981, #059669); color: white; border: 4px solid #34d399; }
         .map-node.locked { background: #334155; color: #64748b; border: 4px solid #475569; cursor: not-allowed; }
+        .light-boost { filter: drop-shadow(0 0 10px #38bdf8); }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-darkbg text-gray-800 dark:text-gray-100 min-h-screen flex flex-col overflow-x-hidden">
@@ -113,10 +114,13 @@
                     <p class="text-xs opacity-70 mb-4">XP: <span id="menu-xp">0</span> / <span id="menu-xp-max">100</span></p>
                     
                     <button onclick="showAchievementsModal(); playSound('click');" class="w-full bg-yellow-500/20 border border-yellow-500 text-yellow-500 py-2 rounded-lg hover:bg-yellow-500 hover:text-black transition text-sm font-bold flex items-center justify-center gap-2 mb-2">
-                        <i class="fa-solid fa-trophy"></i> Logros (<span id="achievements-count">0</span>/4)
+                        <i class="fa-solid fa-trophy"></i> Logros (<span id="achievements-count">0</span>/8)
                     </button>
-                    <button onclick="openInventoryModal(); playSound('click');" class="w-full bg-primary/20 border border-primary text-primary py-2 rounded-lg hover:bg-primary hover:text-white transition text-sm font-bold flex items-center justify-center gap-2">
+                    <button onclick="openInventoryModal(); playSound('click');" class="w-full bg-primary/20 border border-primary text-primary py-2 rounded-lg hover:bg-primary hover:text-white transition text-sm font-bold flex items-center justify-center gap-2 mb-2">
                         <i class="fa-solid fa-box-archive"></i> Mochila / Personaje
+                    </button>
+                    <button id="btn-extra-story" onclick="openExtraStoryMap(); playSound('click');" class="hidden w-full bg-secondary/20 border border-secondary text-secondary py-2 rounded-lg hover:bg-secondary hover:text-white transition text-sm font-bold flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-star"></i> Historia Extra (English Day)
                     </button>
                 </div>
 
@@ -139,7 +143,7 @@
                     <button onclick="startTableMode(); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-green-500 transition group relative animate-pop">
                         <i class="fa-solid fa-table text-3xl text-green-500 mb-3 block group-hover:-translate-y-1 transition"></i>
                         <h3 class="text-xl font-bold">Completa la Tabla</h3>
-                        <p class="text-xs opacity-70 mt-1">Tabla completa con casillas únicas.</p>
+                        <p class="text-xs opacity-70 mt-1">Tabla de 4 columnas única.</p>
                     </button>
                     <button onclick="startSentenceMode(); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-yellow-500 transition group relative animate-pop sm:col-span-2">
                         <i class="fa-solid fa-pen-to-square text-3xl text-yellow-500 mb-3 block group-hover:scale-110 transition"></i>
@@ -176,20 +180,29 @@
         <div id="screen-roulette" class="hidden flex-grow flex flex-col items-center justify-center p-4">
             <div class="glass-panel p-8 rounded-2xl max-w-lg w-full text-center animate-pop relative">
                 <button onclick="showScreen('screen-menu'); playSound('click');" class="absolute top-4 left-4 text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-2xl font-bold mb-4 text-secondary">Ruleta Verbal</h2>
                 
-                <div class="my-6 relative flex justify-center items-center">
-                    <div id="roulette-wheel" class="w-48 h-48 rounded-full border-8 border-secondary flex items-center justify-center text-xl font-extrabold bg-gradient-to-tr from-primary to-secondary shadow-2xl transition-all duration-1000">
+                <div class="flex justify-center mb-2">
+                    <img id="roulette-char-img" src="" class="w-16 h-16 rounded-full border-2 border-secondary object-cover hidden">
+                </div>
+                <h2 class="text-2xl font-bold mb-2 text-secondary">Ruleta Verbal</h2>
+                <div class="mb-4">
+                    <label class="text-xs opacity-70 mr-2">Dificultad:</label>
+                    <select id="roulette-diff" onchange="changeRouletteDifficulty()" class="bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-white">
+                        <option value="facil">Fácil (Jerónimo)</option>
+                        <option value="medio">Medio (Dilan)</option>
+                        <option value="dificil">Difícil (Giovani)</option>
+                    </select>
+                </div>
+                
+                <div class="my-4 relative flex justify-center items-center">
+                    <div id="roulette-wheel" class="w-48 h-48 rounded-full border-8 border-secondary flex items-center justify-center text-xl font-extrabold bg-gradient-to-tr from-primary to-secondary shadow-2xl transition-all duration-1000 text-white">
                         <span id="roulette-center-text">GIRAR</span>
                     </div>
                 </div>
 
                 <div id="roulette-question-box" class="hidden mb-6">
                     <p class="text-sm opacity-70 mb-2">Verbo seleccionado: <strong id="r-verb-inf" class="text-primary text-lg"></strong></p>
-                    <div class="grid grid-cols-3 gap-2 mb-4">
-                        <input type="text" id="r-input-past" class="p-2 rounded bg-gray-800 text-center border border-gray-700" placeholder="Pasado">
-                        <input type="text" id="r-input-part" class="p-2 rounded bg-gray-800 text-center border border-gray-700" placeholder="Participio">
-                        <input type="text" id="r-input-esp" class="p-2 rounded bg-gray-800 text-center border border-gray-700" placeholder="Español">
+                    <div id="roulette-inputs-container" class="grid grid-cols-3 gap-2 mb-4">
                     </div>
                     <button onclick="checkRouletteResult(); playSound('click');" class="bg-green-500 text-white font-bold px-6 py-2 rounded-lg">Verificar</button>
                 </div>
@@ -202,8 +215,16 @@
         <div id="screen-table" class="hidden flex-grow flex flex-col items-center p-4">
             <div class="w-full max-w-4xl glass-panel p-6 rounded-2xl animate-pop flex flex-col flex-grow my-4">
                 <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-3">
-                    <h2 class="text-2xl font-bold text-green-500"><i class="fa-solid fa-table"></i> Completa la Tabla</h2>
+                    <div class="flex items-center gap-3">
+                        <img id="table-char-img" src="" class="w-12 h-12 rounded-full border border-green-500 object-cover hidden">
+                        <h2 class="text-2xl font-bold text-green-500"><i class="fa-solid fa-table"></i> Completa la Tabla</h2>
+                    </div>
                     <div class="flex items-center gap-4">
+                        <select id="table-diff" onchange="changeTableDifficulty()" class="bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-white">
+                            <option value="facil">Fácil (Jerónimo)</option>
+                            <option value="medio">Medio (Dilan)</option>
+                            <option value="dificil">Difícil (Giovani)</option>
+                        </select>
                         <span id="table-lives" class="text-red-500 font-bold tracking-widest">❤️❤️❤️</span>
                         <button onclick="showScreen('screen-menu'); playSound('click');" class="bg-gray-700 text-white px-4 py-2 rounded-lg font-bold">Salir</button>
                     </div>
@@ -212,7 +233,7 @@
                     <table class="w-full text-left border-collapse" id="dynamic-game-table">
                         <thead>
                             <tr class="border-b border-gray-700 text-green-400">
-                                <th class="p-3">Verbo (Infinitivo)</th>
+                                <th class="p-3">Verbo</th>
                                 <th class="p-3">Pasado</th>
                                 <th class="p-3">Participio</th>
                                 <th class="p-3">Significado</th>
@@ -232,10 +253,21 @@
         <div id="screen-sentence" class="hidden flex-grow flex flex-col items-center justify-center p-4">
             <div class="glass-panel p-8 rounded-2xl max-w-xl w-full text-center animate-pop relative">
                 <button onclick="showScreen('screen-menu'); playSound('click');" class="absolute top-4 left-4 text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-2xl font-bold mb-4 text-yellow-400"><i class="fa-solid fa-pen-to-square"></i> Completar Oración</h2>
-                <div id="sentence-container" class="my-6">
+                <div class="flex justify-center mb-2">
+                    <img id="sentence-char-img" src="" class="w-16 h-16 rounded-full border-2 border-yellow-500 object-cover hidden">
+                </div>
+                <h2 class="text-2xl font-bold mb-2 text-yellow-400"><i class="fa-solid fa-pen-to-square"></i> Completar Oración</h2>
+                <div class="mb-4">
+                    <label class="text-xs opacity-70 mr-2">Dificultad:</label>
+                    <select id="sentence-diff" onchange="changeSentenceDifficulty()" class="bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-white">
+                        <option value="facil">Fácil (Jerónimo)</option>
+                        <option value="medio">Medio (Dilan)</option>
+                        <option value="dificil">Difícil (Giovani)</option>
+                    </select>
+                </div>
+                <div id="sentence-container" class="my-4">
                     <p id="sentence-text" class="text-xl mb-4 font-semibold text-white"></p>
-                    <input type="text" id="sentence-input" class="w-full max-w-xs p-3 rounded-lg bg-gray-800 border border-gray-700 text-center mb-4 text-white" placeholder="Escribe el verbo en pasado">
+                    <input type="text" id="sentence-input" class="w-full max-w-xs p-3 rounded-lg bg-gray-800 border border-gray-700 text-center mb-4 text-white" placeholder="Escribe el verbo correcto">
                     <br>
                     <button onclick="checkSentenceResult(); playSound('click');" class="bg-yellow-500 text-black font-bold px-6 py-2 rounded-lg">Comprobar</button>
                 </div>
@@ -380,7 +412,11 @@
             { id: 'first_correct', title: 'Primer Paso', desc: 'Responde correctamente tu primer verbo.', reward: '+10 XP', unlocked: false },
             { id: 'story_complete', title: 'Maestro de Globos', desc: 'Completa los 3 niveles del Modo Historia.', reward: '+200 XP, 100 Monedas', unlocked: false },
             { id: 'extra_complete', title: 'Tremendo Guapo', desc: 'Completa la historia extra del English Day.', reward: '+300 XP', unlocked: false },
-            { id: 'rich_student', title: 'Ahorrador', desc: 'Acumula un total de 50 monedas.', reward: '+50 XP', unlocked: false }
+            { id: 'rich_student', title: 'Ahorrador', desc: 'Acumula un total de 50 monedas.', reward: '+50 XP', unlocked: false },
+            { id: 'use_burger', title: 'Energía Dorada', desc: 'Usa una hamburguesa dorada en tu personaje.', reward: '+20 XP', unlocked: false },
+            { id: 'use_enciso', title: 'Breve y Claro', desc: 'Usa el objeto Enciso para recibir una pista.', reward: '+20 XP', unlocked: false },
+            { id: 'roulette_master', title: 'Giro Perfecto', desc: 'Gana en la Ruleta Verbal en dificultad Difícil.', reward: '+50 XP', unlocked: false },
+            { id: 'table_master', title: 'Tabla Impecable', desc: 'Completa una tabla sin perder vidas.', reward: '+60 XP', unlocked: false }
         ];
 
         let user = { 
@@ -392,7 +428,9 @@
             extraStoryUnlocked: false,
             extraStoryProgress: 1,
             achievements: [], 
-            inventory: [] 
+            inventory: [],
+            activeCharacter: null,
+            goldenLives: 0
         };
 
         let currentVerb = null;
@@ -489,6 +527,13 @@
             let unlockedCount = user.achievements ? user.achievements.length : 0;
             document.getElementById('achievements-count').innerText = unlockedCount;
             document.getElementById('inv-count').innerText = user.inventory ? user.inventory.length : 0;
+            
+            const btnExtra = document.getElementById('btn-extra-story');
+            if (user.extraStoryUnlocked) {
+                btnExtra.classList.remove('hidden');
+            } else {
+                btnExtra.classList.add('hidden');
+            }
         }
 
         function updateMenuUI() {
@@ -540,16 +585,17 @@
             } else {
                 user.inventory.forEach((item, index) => {
                     container.innerHTML += `
-                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col items-center text-center">
-                            <img src="${item.img}" class="w-16 h-16 object-contain mb-2 glow-effect">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col items-center text-center relative">
+                            <img src="${item.img}" class="w-16 h-16 object-contain mb-2 light-boost glow-effect">
                             <h4 class="font-bold text-sm text-yellow-400">${item.name}</h4>
                             <p class="text-xs opacity-70 mb-3">${item.desc}</p>
-                            <button onclick="useInventoryItem(${index})" class="bg-primary text-white text-xs font-bold py-1 px-3 rounded-lg hover:bg-indigo-600 transition">Usar / Equipar</button>
+                            <button onclick="useInventoryItem(${index})" class="bg-primary text-white text-xs font-bold py-1 px-3 rounded-lg hover:bg-indigo-600 transition">Usar / Consumir</button>
                         </div>
                     `;
                 });
             }
             document.getElementById('active-character-display').innerText = user.activeCharacter || 'Ninguno';
+            document.getElementById('modal-inventory').classList.add('hidden'); // Close then open properly
             document.getElementById('modal-inventory').classList.remove('hidden');
         }
 
@@ -568,12 +614,15 @@
             if(item.type === 'burger') {
                 user.inventory.splice(index, 1);
                 user.activeCharacter = 'Hamburguesa Dorada (Vida Extra)';
+                user.goldenLives = (user.goldenLives || 0) + 1;
+                checkAchievement('use_burger');
                 playSound('success');
-                alert('¡Hamburguesa consumida! Has obtenido una vida extra dorada.');
+                alert('¡Hamburguesa guardada en el personaje! Has obtenido una vida extra dorada.');
             } else if(item.type === 'enciso') {
-                user.activeCharacter = 'Enciso: Recibiste a tremendo guapo 🔥🔥';
+                user.activeCharacter = 'Enciso: Tremendo Guapo 🔥🔥';
+                checkAchievement('use_enciso');
                 playSound('success');
-                alert('¡Enciso equipado con éxito!');
+                alert('¡Enciso equipado! "Eso está re breve, venga le respondo una"');
             }
             saveGame();
             openInventoryModal();
@@ -597,10 +646,21 @@
 
         function startRouletteMode() {
             showScreen('screen-roulette');
+            document.getElementById('roulette-diff').value = 'facil';
+            changeRouletteDifficulty();
             document.getElementById('roulette-question-box').classList.add('hidden');
             document.getElementById('btn-spin').classList.remove('hidden');
             document.getElementById('roulette-center-text').innerText = 'GIRAR';
             document.getElementById('roulette-feedback').innerText = '';
+        }
+
+        function changeRouletteDifficulty() {
+            const diff = document.getElementById('roulette-diff').value;
+            const imgEl = document.getElementById('roulette-char-img');
+            imgEl.classList.remove('hidden');
+            if(diff === 'facil') imgEl.src = ASSETS.jeronimo;
+            else if(diff === 'medio') imgEl.src = ASSETS.dilan;
+            else if(diff === 'dificil') imgEl.src = ASSETS.giovani;
         }
 
         function spinRoulette() {
@@ -612,47 +672,93 @@
                 currentVerb = verbData[Math.floor(Math.random() * verbData.length)];
                 document.getElementById('r-verb-inf').innerText = currentVerb.inf;
                 document.getElementById('roulette-center-text').innerText = currentVerb.inf.toUpperCase();
+                
+                const diff = document.getElementById('roulette-diff').value;
+                const container = document.getElementById('roulette-inputs-container');
+                container.innerHTML = '';
+                
+                if(diff === 'facil') {
+                    container.innerHTML = `<input type="text" id="r-input-esp" class="col-span-3 p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Significado (Español)">`;
+                } else if(diff === 'medio') {
+                    container.innerHTML = `
+                        <input type="text" id="r-input-past" class="col-span-1.5 p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Pasado">
+                        <input type="text" id="r-input-esp" class="col-span-1.5 p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Significado">
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <input type="text" id="r-input-past" class="p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Pasado">
+                        <input type="text" id="r-input-part" class="p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Participio">
+                        <input type="text" id="r-input-esp" class="p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Español">
+                    `;
+                }
+
                 document.getElementById('roulette-question-box').classList.remove('hidden');
                 document.getElementById('btn-spin').classList.add('hidden');
-                document.getElementById('r-input-past').value = '';
-                document.getElementById('r-input-part').value = '';
-                document.getElementById('r-input-esp').value = '';
+                document.getElementById('roulette-feedback').innerText = '';
             }, 3000);
         }
 
         function checkRouletteResult() {
-            const vp = document.getElementById('r-input-past').value.trim().toLowerCase();
-            const vpt = document.getElementById('r-input-part').value.trim().toLowerCase();
-            const ves = document.getElementById('r-input-esp').value.trim().toLowerCase();
-
-            const cp = currentVerb.past.toLowerCase().split('/');
-            const cpt = currentVerb.part.toLowerCase().split('/');
+            const diff = document.getElementById('roulette-diff').value;
+            let ok = true;
             const ces = currentVerb.esp.toLowerCase().split('/');
+            
+            if(diff === 'facil') {
+                const ves = document.getElementById('r-input-esp').value.trim().toLowerCase();
+                if(!ces.some(e => ves.includes(e))) ok = false;
+            } else if(diff === 'medio') {
+                const vp = document.getElementById('r-input-past').value.trim().toLowerCase();
+                const ves = document.getElementById('r-input-esp').value.trim().toLowerCase();
+                const cp = currentVerb.past.toLowerCase().split('/');
+                if(!cp.includes(vp) || !ces.some(e => ves.includes(e))) ok = false;
+            } else {
+                const vp = document.getElementById('r-input-past').value.trim().toLowerCase();
+                const vpt = document.getElementById('r-input-part').value.trim().toLowerCase();
+                const ves = document.getElementById('r-input-esp').value.trim().toLowerCase();
+                const cp = currentVerb.past.toLowerCase().split('/');
+                const cpt = currentVerb.part.toLowerCase().split('/');
+                if(!cp.includes(vp) || (!cpt.includes(vpt) && currentVerb.part !== '-') || !ces.some(e => ves.includes(e))) ok = false;
+            }
 
-            if(cp.includes(vp) && (cpt.includes(vpt) || (currentVerb.part === '-' && vpt === '-')) && ces.some(e => ves.includes(e))) {
+            if(ok) {
                 playSound('success');
                 document.getElementById('roulette-feedback').className = "mt-4 font-bold text-green-500";
-                document.getElementById('roulette-feedback').innerText = "¡Excelente! Has acertado el verbo de la ruleta.";
-                user.xp += 15;
+                document.getElementById('roulette-feedback').innerText = "¡Excelente! Has acertado el verbo en la ruleta.";
+                user.xp += 20;
                 user.coins += 5;
+                if(diff === 'dificil') checkAchievement('roulette_master');
                 checkAchievement('first_correct');
                 saveGame();
             } else {
                 playSound('error');
                 document.getElementById('roulette-feedback').className = "mt-4 font-bold text-red-500";
-                document.getElementById('roulette-feedback').innerText = `Incorrecto. Era: ${currentVerb.past} | ${currentVerb.part} | ${currentVerb.esp}`;
+                document.getElementById('roulette-feedback').innerText = `Incorrecto. Era: ${currentVerb.inf} | ${currentVerb.past} | ${currentVerb.part} | ${currentVerb.esp}`;
             }
         }
 
         function startTableMode() {
             showScreen('screen-table');
+            document.getElementById('table-diff').value = 'facil';
+            changeTableDifficulty();
+        }
+
+        function changeTableDifficulty() {
+            const diff = document.getElementById('table-diff').value;
+            const imgEl = document.getElementById('table-char-img');
+            imgEl.classList.remove('hidden');
+            if(diff === 'facil') imgEl.src = ASSETS.jeronimo;
+            else if(diff === 'medio') imgEl.src = ASSETS.dilan;
+            else if(diff === 'dificil') imgEl.src = ASSETS.giovani;
+
             tableLives = 3;
             document.getElementById('table-lives').innerText = '❤️❤️❤️';
             document.getElementById('table-feedback').innerText = '';
             
             const tbody = document.getElementById('table-game-body');
             tbody.innerHTML = '';
-            tableGameRows = verbData.slice(0, 15).map(v => {
+            
+            let count = diff === 'facil' ? 5 : (diff === 'medio' ? 10 : 15);
+            tableGameRows = verbData.slice(0, count).map(v => {
                 let filledCol = Math.floor(Math.random() * 4);
                 return { verb: v, filled: filledCol, state: { 0: filledCol === 0 ? v.inf : '', 1: filledCol === 1 ? v.past : '', 2: filledCol === 2 ? v.part : '', 3: filledCol === 3 ? v.esp : '' } };
             });
@@ -660,10 +766,9 @@
             tableGameRows.forEach((row, idx) => {
                 let html = `<tr class="border-b border-gray-800">`;
                 for(let col = 0; col < 4; col++) {
-                    let fieldName = ['inf', 'past', 'part', 'esp'][col];
                     let val = row.state[col];
                     if(row.filled === col) {
-                        html += `<td class="p-3 font-bold text-yellow-400">${val} (Dado)</td>`;
+                        html += `<td class="p-3 font-bold text-yellow-400">${val} (Fijo)</td>`;
                     } else {
                         html += `<td class="p-3"><input type="text" data-row="${idx}" data-col="${col}" class="table-input w-full p-2 rounded bg-gray-800 border border-gray-700 text-white" placeholder="..."></td>`;
                     }
@@ -677,6 +782,7 @@
             let inputs = document.querySelectorAll('.table-input');
             let allCorrect = true;
             inputs.forEach(inp => {
+                if(inp.disabled) return;
                 let rIdx = inp.getAttribute('data-row');
                 let cIdx = inp.getAttribute('data-col');
                 let vObj = tableGameRows[rIdx].verb;
@@ -693,15 +799,26 @@
                 document.getElementById('table-feedback').innerText = "¡Tabla completada con éxito!";
                 user.xp += 50;
                 user.coins += 20;
+                if(tableLives === 3) checkAchievement('table_master');
                 saveGame();
             } else {
                 playSound('error');
+                
+                if(user.goldenLives && user.goldenLives > 0) {
+                    user.goldenLives--;
+                    playSound('success');
+                    document.getElementById('table-feedback').className = "font-bold text-yellow-400";
+                    document.getElementById('table-feedback').innerText = "¡Tu Hamburguesa Dorada te ha salvado de perder una vida!";
+                    saveGame();
+                    return;
+                }
+
                 tableLives--;
                 document.getElementById('table-lives').innerText = '❤️'.repeat(Math.max(0, tableLives));
                 document.getElementById('table-feedback').className = "font-bold text-red-500";
-                document.getElementById('table-feedback').innerText = "Hay errores en la tabla. Se te descuenta una vida y se revela una pista extra.";
+                document.getElementById('table-feedback').innerText = "Hay errores en la tabla. Se te descuenta una vida y se te da pista de otra fila.";
                 
-                let emptyInputs = Array.from(inputs).filter(i => i.value.trim() === '');
+                let emptyInputs = Array.from(inputs).filter(i => i.value.trim() === '' && !i.disabled);
                 if(emptyInputs.length > 0) {
                     let hintInput = emptyInputs[0];
                     let rIdx = hintInput.getAttribute('data-row');
@@ -721,30 +838,80 @@
 
         function startSentenceMode() {
             showScreen('screen-sentence');
+            document.getElementById('sentence-diff').value = 'facil';
+            changeSentenceDifficulty();
+        }
+
+        function changeSentenceDifficulty() {
+            const diff = document.getElementById('sentence-diff').value;
+            const imgEl = document.getElementById('sentence-char-img');
+            imgEl.classList.remove('hidden');
+            if(diff === 'facil') imgEl.src = ASSETS.jeronimo;
+            else if(diff === 'medio') imgEl.src = ASSETS.dilan;
+            else if(diff === 'dificil') imgEl.src = ASSETS.giovani;
+
+            generateNewSentence();
+        }
+
+        function generateNewSentence() {
+            const diff = document.getElementById('sentence-diff').value;
             currentSentenceData = verbData[Math.floor(Math.random() * verbData.length)];
-            document.getElementById('sentence-text').innerText = `The dog ____ (${currentSentenceData.inf}) the apple.`;
+            
+            let sentenceTemplates = [
+                { template: `The dog ____ (${currentSentenceData.inf}) the bone yesterday.`, target: currentSentenceData.past },
+                { template: `She has ____ (${currentSentenceData.inf}) this book before.`, target: currentSentenceData.part },
+                { template: `I ____ (${currentSentenceData.inf}) to the store every day.`, target: currentSentenceData.inf }
+            ];
+
+            if(diff === 'facil') {
+                currentSelectedSentence = sentenceTemplates[0]; // Past
+            } else if(diff === 'medio') {
+                currentSelectedSentence = sentenceTemplates[Math.floor(Math.random() * 2)];
+            } else {
+                currentSelectedSentence = sentenceTemplates[Math.floor(Math.random() * sentenceTemplates.length)];
+            }
+
+            document.getElementById('sentence-text').innerText = currentSelectedSentence.template;
             document.getElementById('sentence-input').value = '';
             document.getElementById('sentence-feedback').innerText = '';
         }
 
+        let currentSelectedSentence = null;
+
         function checkSentenceResult() {
             const val = document.getElementById('sentence-input').value.trim().toLowerCase();
-            const correctPast = currentSentenceData.past.toLowerCase().split('/');
-            if(correctPast.includes(val)) {
+            const correctTargets = currentSelectedSentence.target.toLowerCase().split('/');
+            
+            if(correctTargets.includes(val)) {
                 playSound('success');
                 document.getElementById('sentence-feedback').className = "font-bold text-green-500";
                 document.getElementById('sentence-feedback').innerText = "¡Correcto! Oración completada.";
-                user.xp += 10;
+                user.xp += 15;
+                checkAchievement('first_correct');
                 saveGame();
+                setTimeout(generateNewSentence, 1500);
             } else {
                 playSound('error');
+                
+                if(user.activeCharacter && user.activeCharacter.includes('Enciso')) {
+                    document.getElementById('sentence-feedback').className = "font-bold text-yellow-400";
+                    document.getElementById('sentence-feedback').innerText = `Enciso dice: “Eso está re breve, venga le respondo una” -> La respuesta era: ${currentSelectedSentence.target}`;
+                    return;
+                }
+
                 document.getElementById('sentence-feedback').className = "font-bold text-red-500";
-                document.getElementById('sentence-feedback').innerText = `Incorrecto. El pasado de ${currentSentenceData.inf} es ${currentSentenceData.past}.`;
+                document.getElementById('sentence-feedback').innerText = `Incorrecto. La respuesta correcta era: ${currentSelectedSentence.target}`;
             }
         }
 
         function openStoryMap() {
             isExtraStory = false;
+            showScreen('screen-story-map');
+            updateStoryMapUI();
+        }
+
+        function openExtraStoryMap() {
+            isExtraStory = true;
             showScreen('screen-story-map');
             updateStoryMapUI();
         }
@@ -841,7 +1008,7 @@
                     document.getElementById('reward-title').innerText = "¡APUESTA GANADA!";
                     document.getElementById('reward-desc').innerText = "El muro de globos fue un éxito rotundo y Giovani tuvo que pagar la hamburguesa.";
                     document.getElementById('final-reward-img').src = ASSETS.burgerImage;
-                    document.getElementById('reward-extra-text').innerText = "¡Has recibido la Hamburguesa Dorada!";
+                    document.getElementById('reward-extra-text').innerText = "¡Has recibido la Hamburguesa Dorada con efecto de luz!";
                     document.getElementById('story-reward-scene').classList.remove('hidden');
                     addToInventory({ type: 'burger', name: 'Hamburguesa Dorada', desc: 'Vida extra y trofeo de la apuesta', img: ASSETS.burgerImage });
                     checkAchievement('story_complete');
@@ -856,7 +1023,7 @@
                 playSound('error');
                 if(diff === 'dificil') {
                     document.getElementById('reward-title').innerText = "¡FINAL MALO!";
-                    document.getElementById('reward-desc').innerText = "Fallaste el reto final. La hamburguesa se le da solo a las mujeres del salón.";
+                    document.getElementById('reward-desc').innerText = "Fallaste el reto final difícil. La hamburguesa se le da solo a las mujeres del salón.";
                     document.getElementById('final-reward-img').src = ASSETS.giovani;
                     document.getElementById('reward-extra-text').innerText = "Te quedaste sin la hamburguesa.";
                     document.getElementById('story-reward-scene').classList.remove('hidden');
@@ -871,7 +1038,7 @@
             currentVerb = verbData[Math.floor(Math.random() * verbData.length)];
             box.innerHTML = `
                 <h3 class="text-xl font-bold text-primary mb-2">Desafío Extra: Tiempo Récord</h3>
-                <p class="text-sm mb-3">Enciso debe decir el verbo <strong class="text-yellow-400 text-lg">${currentVerb.inf}</strong> sin errores.</p>
+                <p class="text-sm mb-3">Enciso debe decir el verbo <strong class="text-yellow-400 text-lg">${currentVerb.inf}</strong> en tiempo récord sin errores.</p>
                 <div class="grid grid-cols-2 gap-2 mb-3">
                     <input type="text" id="em-past" class="p-2 rounded bg-gray-800 text-white text-center border" placeholder="Pasado">
                     <input type="text" id="em-part" class="p-2 rounded bg-gray-800 text-white text-center border" placeholder="Participio">
@@ -893,7 +1060,7 @@
                 document.getElementById('final-reward-img').src = ASSETS.enciso;
                 document.getElementById('reward-extra-text').innerText = "Recibiste a tremendo guapo 🔥🔥";
                 document.getElementById('story-reward-scene').classList.remove('hidden');
-                addToInventory({ type: 'enciso', name: 'Tremendo Guapo', desc: 'Enciso legendario 🔥🔥', img: ASSETS.enciso });
+                addToInventory({ type: 'enciso', name: 'Tremendo Guapo', desc: 'Enciso legendario 🔥🔥 con efecto de luz', img: ASSETS.enciso });
                 checkAchievement('extra_complete');
                 saveGame();
             } else {
