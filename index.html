@@ -229,7 +229,7 @@
                         <div id="node-1" onclick="selectStoryLevel(1)" class="map-node unlocked">1</div>
                         <div class="text-left bg-black/60 p-3 rounded-xl border border-white/10 w-52">
                             <span class="text-xs text-yellow-400 font-bold block">Nivel 1</span>
-                            <span class="text-sm font-semibold text-white">La Apuesta del Muro</span>
+                            <span class="text-sm font-semibold text-white">La Apuesta de los globos</span>
                         </div>
                     </div>
 
@@ -237,7 +237,7 @@
                         <div id="node-2" onclick="selectStoryLevel(2)" class="map-node locked">2</div>
                         <div class="text-left bg-black/60 p-3 rounded-xl border border-white/10 w-52">
                             <span class="text-xs text-yellow-400 font-bold block">Nivel 2</span>
-                            <span class="text-sm font-semibold text-white">Pruebas y Excusas</span>
+                            <span class="text-sm font-semibold text-white">Solo Excusas</span>
                         </div>
                     </div>
 
@@ -355,8 +355,8 @@
 
         const storyChapters = {
             1: [
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¿Y si construimos la pared de globos?" },
-                { char: 'Enciso', img: ASSETS.enciso, text: "Uyy sí, va a quedar brutal." },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¿Y si construimos la bandera de brazil con globos?" },
+                { char: 'Enciso', img: ASSETS.enciso, text: "Uyy sí, va a quedar re melo." },
                 { char: 'Giovani', img: ASSETS.giovani, text: "Jajaja, ¿cómo va a quedar bien una pared de globos?" },
                 { char: 'Jerónimo', img: ASSETS.jeronimo, text: "Si la pared queda perfecta, usted nos gasta una hamburguesa." },
                 { char: 'Giovani', img: ASSETS.giovani, text: "Trato hecho. Pero demuestren que dominan los verbos primero." },
@@ -364,15 +364,15 @@
             ],
             2: [
                 { char: 'Enciso', img: ASSETS.enciso, text: "¡Eso está quedando re melo! Pero ese Giovani anda buscando excusas para no pagar." },
-                { char: 'Dilan', img: ASSETS.dilan, text: "Pilas, yo sé que ese man se acuerda perfectamente." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "Uy no, yo sé que ese man se acuerda perfectamente." },
                 { char: 'Giovani', img: ASSETS.giovani, text: "Hmm, veo que avanzan... pero dudo que conozcan todos los tiempos verbales avanzados." },
                 { type: 'minigame', diff: 'medio' }
             ],
             3: [
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡Ya quedó lista la pared, usted nos debe la hamburguesa!" },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡Ya quedó listo eso, usted nos debe la hamburguesa!" },
                 { char: 'Giovani', img: ASSETS.giovani, text: "Ehh... bueno, te juro que no recuerdo haber hecho ninguna apuesta de hamburguesas..." },
-                { char: 'Dilan', img: ASSETS.dilan, text: "Un momento, profe. Yo me acuerdo. ¡Usted dijo 'Trato hecho' frente a todos!" },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Digamos que sí... Una apuesta es una apuesta." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "Espere, profe. Yo me acuerdo. ¡Usted claramente dijo 'Trato hecho' frente a todos!" },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Digamos que sí...." },
                 { type: 'reward' }
             ]
         };
