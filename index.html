@@ -38,11 +38,11 @@
     <!-- DECLARACIÓN DE IMÁGENES -->
     <script>
         const ASSETS = {
-            burgerImage: 'image.png', // Imagen local de la hamburguesa
-            jeronimo: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jeronimo&backgroundColor=ffdfbf',
-            dilan: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dilan&backgroundColor=c0aede',
-            enciso: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Enciso&backgroundColor=ffdfbf',
-            giovani: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Giovani&style=circle&backgroundColor=ffb6c1'
+            burgerImage: 'burger.png', // Imagen local de la hamburguesa
+            jeronimo: 'jeronimo.jpg',
+            dilan: 'dilan.jpg',
+            enciso: 'enciso.jpg',
+            giovani: 'giovani.jpg'
         };
 
         // --- SISTEMA DE SONIDOS MODIFICABLES (Web Audio API) ---
@@ -349,24 +349,24 @@
 
         const storyChapters = {
             1: [
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡El English Day está cerca! ¿Y si construimos una pared de globos gigante para la entrada del colegio?" },
-                { char: 'Enciso', img: ASSETS.enciso, text: "Suena increíble, pero requerirá mucho trabajo y repasar bien los verbos." },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Jajaja, imposible. Ustedes jamás terminarán a tiempo." },
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¿Apostamos, profe? Si la pared queda perfecta, usted nos compra una hamburguesa a todos." },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Trato hecho. Demuestren que saben dominar los verbos básicos para empezar." },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¿Y si construimos la bandera de brazil con globos?" },
+                { char: 'Enciso', img: ASSETS.enciso, text: "Uyy si." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Jajaja, ¿como va a quedar bien una pared de globos?." },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "Si la pared queda perfecta, usted nos gasta una hamburguesa." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Bueno, tomare fotos a los que estan de acuerdo. Pero demuestren que saben dominar los verbos básicos antes de." },
                 { type: 'minigame', diff: 'facil' }
             ],
             2: [
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡Ya levantamos la mitad de la estructura! Pero el profe Giovani anda buscando excusas para no pagar." },
-                { char: 'Dilan', img: ASSETS.dilan, text: "No se preocupen, yo estoy vigilando cada movimiento estratégico del profesor." },
+                { char: 'Enciso', img: ASSETS.jeronimo, text: "¡ESO ESTA QUEDANDO RE MELO! Pero ese Giovani anda buscando excusas para no pagar." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "Pere, yo se que ese man se acuerda." },
                 { char: 'Giovani', img: ASSETS.giovani, text: "Hmm, veo que avanzan... pero dudo que conozcan los tiempos más complejos de los verbos." },
                 { type: 'minigame', diff: 'medio' }
             ],
             3: [
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡La pared de globos está terminada y es un éxito total!" },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡Ya quedo, usted nos debe la hamburguesa!" },
                 { char: 'Giovani', img: ASSETS.giovani, text: "Ehh... bueno, te juro que no recuerdo haber hecho ninguna apuesta de hamburguesas..." },
-                { char: 'Dilan', img: ASSETS.dilan, text: "Un momento, profe. Yo soy el testigo principal. ¡Usted dijo 'Trato hecho' frente a todos!" },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Rayos... me atrapó. Una apuesta es una apuesta." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "Un momento, profe. Yo me acuerdo. ¡Usted dijo 'Trato hecho' frente a todos!" },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Digamos que si... Una apuesta es una apuesta." },
                 { type: 'reward' }
             ]
         };
