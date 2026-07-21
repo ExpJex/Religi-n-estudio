@@ -25,7 +25,6 @@
         .animate-pop { animation: pop 0.4s ease-out forwards; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         .animate-shake { animation: shake 0.3s ease-in-out; }
-        /* Estilos del Mapa de Niveles Estilo Duolingo/Candy Crush */
         .map-node { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.25rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
         .map-node:hover:not(.locked) { transform: scale(1.1); }
         .map-node.unlocked { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: 4px solid #818cf8; }
@@ -35,17 +34,15 @@
 </head>
 <body class="bg-gray-100 dark:bg-darkbg text-gray-800 dark:text-gray-100 min-h-screen flex flex-col overflow-x-hidden">
 
-    <!-- DECLARACIÓN DE IMÁGENES -->
     <script>
         const ASSETS = {
-            burgerImage: 'burger.png', // Imagen local de la hamburguesa
-            jeronimo: 'jeronimo.jpg',
-            dilan: 'dilan.jpg',
-            enciso: 'enciso.jpg',
-            giovani: 'giovani.jpg'
+            burgerImage: 'burger.jpeg',
+            jeronimo: 'jeronimo.jpeg',
+            dilan: 'dilan.jpeg',
+            enciso: 'enciso.jpeg',
+            giovani: 'giovani.jpeg'
         };
 
-        // --- SISTEMA DE SONIDOS MODIFICABLES (Web Audio API) ---
         let soundEnabled = true;
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
@@ -80,7 +77,6 @@
 
     <div id="app" class="flex-grow flex flex-col relative">
         
-        <!-- Navbar -->
         <nav class="glass-panel p-4 flex justify-between items-center z-10 sticky top-0">
             <div class="flex items-center gap-2 text-xl font-bold text-primary">
                 <i class="fa-solid fa-gamepad"></i> Verb Quest
@@ -93,7 +89,6 @@
             </div>
         </nav>
 
-        <!-- Pantalla de Login -->
         <div id="screen-login" class="flex-grow flex items-center justify-center p-4">
             <div class="glass-panel p-8 rounded-2xl max-w-md w-full text-center animate-pop">
                 <h1 class="text-3xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Verb Quest</h1>
@@ -103,7 +98,6 @@
             </div>
         </div>
 
-        <!-- Menú Principal -->
         <div id="screen-menu" class="hidden flex-grow flex flex-col items-center p-4">
             <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
                 
@@ -126,6 +120,11 @@
                         <h3 class="text-xl font-bold">Modo Historia</h3>
                         <p class="text-xs opacity-70 mt-1">Mapa de niveles de la hamburguesa.</p>
                     </button>
+                    <button onclick="openTrainingMode(); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-blue-400 transition group relative animate-pop">
+                        <i class="fa-solid fa-book text-3xl text-blue-400 mb-3 block group-hover:scale-110 transition"></i>
+                        <h3 class="text-xl font-bold">Modo Entrenamiento</h3>
+                        <p class="text-xs opacity-70 mt-1">Lista completa de verbos irregulares.</p>
+                    </button>
                     <button onclick="showDifficultySelect('ruleta'); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-secondary transition group relative animate-pop">
                         <i class="fa-solid fa-life-ring text-3xl text-secondary mb-3 block group-hover:rotate-180 transition"></i>
                         <h3 class="text-xl font-bold">Ruleta Verbal</h3>
@@ -142,7 +141,6 @@
             </div>
         </div>
 
-        <!-- Pantalla de Dificultad -->
         <div id="screen-difficulty" class="hidden flex-grow flex items-center justify-center p-4">
             <div class="glass-panel p-8 rounded-2xl max-w-2xl w-full animate-pop text-center">
                 <h2 class="text-3xl font-bold mb-6">Selecciona la Dificultad</h2>
@@ -168,7 +166,29 @@
             </div>
         </div>
 
-        <!-- Contenedor del Juego Activo -->
+        <div id="screen-training" class="hidden flex-grow flex flex-col p-4">
+            <div class="w-full max-w-4xl mx-auto glass-panel p-6 rounded-2xl animate-pop flex flex-col flex-grow my-4">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-3">
+                    <h2 class="text-2xl font-bold text-primary"><i class="fa-solid fa-book"></i> Modo Entrenamiento</h2>
+                    <button onclick="showScreen('screen-menu'); playSound('click');" class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-indigo-600 transition">Volver</button>
+                </div>
+                <div class="overflow-y-auto flex-grow max-h-[70vh] pr-2">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-gray-700 text-primary">
+                                <th class="p-3">Infinitivo</th>
+                                <th class="p-3">Pasado</th>
+                                <th class="p-3">Participio</th>
+                                <th class="p-3">Español</th>
+                            </tr>
+                        </thead>
+                        <tbody id="training-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <div id="screen-game" class="hidden flex-grow flex flex-col items-center p-4">
             <div class="w-full max-w-3xl glass-panel p-6 rounded-2xl animate-pop relative">
                 <button onclick="quitGame(); playSound('click');" class="absolute top-4 right-4 text-red-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -193,7 +213,6 @@
             </div>
         </div>
 
-        <!-- MODO HISTORIA: MAPA ESTILO DUOLINGO / CANDY CRUSH -->
         <div id="screen-story-map" class="hidden flex-grow flex flex-col items-center justify-center p-4 bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80');">
             <div class="absolute inset-0 bg-black/70 backdrop-blur-sm z-0"></div>
             
@@ -203,12 +222,9 @@
                 <h2 class="text-3xl font-extrabold text-white mb-2">Mapa del English Day</h2>
                 <p class="text-sm text-gray-300 mb-8">Completa los 3 niveles para ganar la hamburguesa de la apuesta.</p>
                 
-                <!-- Nodos del Mapa (Camino Vertical escalonado) -->
                 <div class="flex flex-col items-center gap-8 relative my-4">
-                    <!-- Línea de conexión visual -->
                     <div class="absolute w-2 h-full bg-gray-600/50 z-0"></div>
 
-                    <!-- Nivel 1 -->
                     <div class="flex items-center gap-4 z-10">
                         <div id="node-1" onclick="selectStoryLevel(1)" class="map-node unlocked">1</div>
                         <div class="text-left bg-black/60 p-3 rounded-xl border border-white/10 w-52">
@@ -217,7 +233,6 @@
                         </div>
                     </div>
 
-                    <!-- Nivel 2 -->
                     <div class="flex items-center gap-4 z-10 translate-x-6">
                         <div id="node-2" onclick="selectStoryLevel(2)" class="map-node locked">2</div>
                         <div class="text-left bg-black/60 p-3 rounded-xl border border-white/10 w-52">
@@ -226,7 +241,6 @@
                         </div>
                     </div>
 
-                    <!-- Nivel 3 -->
                     <div class="flex items-center gap-4 z-10 -translate-x-4">
                         <div id="node-3" onclick="selectStoryLevel(3)" class="map-node locked">3</div>
                         <div class="text-left bg-black/60 p-3 rounded-xl border border-white/10 w-52">
@@ -238,7 +252,6 @@
             </div>
         </div>
 
-        <!-- Pantalla de Diálogo del Modo Historia -->
         <div id="screen-story-dialogue" class="hidden flex-grow flex flex-col items-center justify-end p-4 pb-10 bg-cover bg-center transition-all duration-1000 relative" style="background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80');">
             <div class="absolute inset-0 bg-black/60 z-0"></div>
             
@@ -251,7 +264,6 @@
                 </div>
             </div>
             
-            <!-- Pantalla final de premio (Hamburguesa) -->
             <div id="story-reward-scene" class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95 backdrop-blur-md text-center p-4">
                 <h1 class="text-5xl font-extrabold text-yellow-400 mb-4 animate-pop">¡APUESTA GANADA!</h1>
                 <p class="text-white text-lg mb-6 max-w-xl">El muro de globos fue un éxito rotundo y Giovani tuvo que pagar la hamburguesa.</p>
@@ -263,16 +275,13 @@
             </div>
         </div>
 
-        <!-- MODAL DE LOGROS -->
         <div id="modal-achievements" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
             <div class="glass-panel bg-gray-900/90 p-6 rounded-2xl max-w-md w-full animate-pop border border-yellow-500/30">
                 <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
                     <h3 class="text-xl font-bold text-yellow-400"><i class="fa-solid fa-trophy"></i> Logros del Estudiante</h3>
                     <button onclick="closeAchievementsModal(); playSound('click');" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
                 </div>
-                <div id="achievements-list" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
-                    <!-- Inyectado por JS -->
-                </div>
+                <div id="achievements-list" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2"></div>
             </div>
         </div>
 
@@ -322,7 +331,6 @@
             { inf: 'learn', past: 'learnt/learned', part: 'learnt/learned', esp: 'aprender' }
         ];
 
-        // --- SISTEMA DE LOGROS DEFINIDOS ---
         const achievementsData = [
             { id: 'first_correct', title: 'Primer Paso', desc: 'Responde correctamente tu primer verbo.', reward: '+10 XP', unlocked: false },
             { id: 'story_complete', title: 'Maestro de Globos', desc: 'Completa los 3 niveles del Modo Historia.', reward: '+200 XP, 100 Monedas', unlocked: false },
@@ -331,7 +339,6 @@
         ];
 
         let user = { nickname: '', xp: 0, level: 1, coins: 0, storyProgress: 1, achievements: [] };
-        
         let currentMode = '';
         let currentDifficulty = '';
         let score = 0;
@@ -342,31 +349,30 @@
         let timeLeft = 0;
         let currentVerb = null;
         
-        // Modo Historia por Niveles
         let activeStoryLevel = 1;
         let storyDialogueIndex = 0;
         let isStoryGameMode = false;
 
         const storyChapters = {
             1: [
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¿Y si construimos la bandera de brazil con globos?" },
-                { char: 'Enciso', img: ASSETS.enciso, text: "Uyy si." },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Jajaja, ¿como va a quedar bien una pared de globos?." },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¿Y si construimos la pared de globos?" },
+                { char: 'Enciso', img: ASSETS.enciso, text: "Uyy sí, va a quedar brutal." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Jajaja, ¿cómo va a quedar bien una pared de globos?" },
                 { char: 'Jerónimo', img: ASSETS.jeronimo, text: "Si la pared queda perfecta, usted nos gasta una hamburguesa." },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Bueno, tomare fotos a los que estan de acuerdo. Pero demuestren que saben dominar los verbos básicos antes de." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Trato hecho. Pero demuestren que dominan los verbos primero." },
                 { type: 'minigame', diff: 'facil' }
             ],
             2: [
-                { char: 'Enciso', img: ASSETS.jeronimo, text: "¡ESO ESTA QUEDANDO RE MELO! Pero ese Giovani anda buscando excusas para no pagar." },
-                { char: 'Dilan', img: ASSETS.dilan, text: "Pere, yo se que ese man se acuerda." },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Hmm, veo que avanzan... pero dudo que conozcan los tiempos más complejos de los verbos." },
+                { char: 'Enciso', img: ASSETS.enciso, text: "¡Eso está quedando re melo! Pero ese Giovani anda buscando excusas para no pagar." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "Pilas, yo sé que ese man se acuerda perfectamente." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Hmm, veo que avanzan... pero dudo que conozcan todos los tiempos verbales avanzados." },
                 { type: 'minigame', diff: 'medio' }
             ],
             3: [
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡Ya quedo, usted nos debe la hamburguesa!" },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¡Ya quedó lista la pared, usted nos debe la hamburguesa!" },
                 { char: 'Giovani', img: ASSETS.giovani, text: "Ehh... bueno, te juro que no recuerdo haber hecho ninguna apuesta de hamburguesas..." },
                 { char: 'Dilan', img: ASSETS.dilan, text: "Un momento, profe. Yo me acuerdo. ¡Usted dijo 'Trato hecho' frente a todos!" },
-                { char: 'Giovani', img: ASSETS.giovani, text: "Digamos que si... Una apuesta es una apuesta." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Digamos que sí... Una apuesta es una apuesta." },
                 { type: 'reward' }
             ]
         };
@@ -413,17 +419,16 @@
         }
         
         function showScreen(id) {
-            ['screen-login', 'screen-menu', 'screen-difficulty', 'screen-game', 'screen-story-map', 'screen-story-dialogue'].forEach(s => document.getElementById(s).classList.add('hidden'));
+            ['screen-login', 'screen-menu', 'screen-difficulty', 'screen-training', 'screen-game', 'screen-story-map', 'screen-story-dialogue'].forEach(s => document.getElementById(s).classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
             if (id === 'screen-menu') updateMenuUI();
+            if (id === 'screen-story-map') updateStoryMapUI();
         }
 
         function updateNavStats() {
             document.getElementById('user-stats').classList.remove('hidden');
             document.getElementById('nav-coins').innerText = user.coins;
             document.getElementById('nav-level').innerText = user.level;
-            
-            // Contar logros desbloqueados
             let unlockedCount = user.achievements ? user.achievements.length : 0;
             document.getElementById('achievements-count').innerText = unlockedCount;
         }
@@ -469,301 +474,343 @@
             document.getElementById('modal-achievements').classList.add('hidden');
         }
 
-        // --- MAPA DE NIVELES MODO HISTORIA ---
+        function openTrainingMode() {
+            showScreen('screen-training');
+            const tbody = document.getElementById('training-table-body');
+            tbody.innerHTML = '';
+            verbData.forEach(v => {
+                tbody.innerHTML += `
+                    <tr class="border-b border-gray-800 hover:bg-white/5 transition">
+                        <td class="p-3 font-bold text-primary">${v.inf}</td>
+                        <td class="p-3">${v.past}</td>
+                        <td class="p-3">${v.part}</td>
+                        <td class="p-3 opacity-80">${v.esp}</td>
+                    </tr>
+                `;
+            });
+        }
+
         function openStoryMap() {
-            if(!user.storyProgress) user.storyProgress = 1;
-            
-            // Actualizar nodos visualmente según progreso
-            for(let i=1; i<=3; i++) {
-                const node = document.getElementById(`node-${i}`);
+            showScreen('screen-story-map');
+            updateStoryMapUI();
+        }
+
+        function updateStoryMapUI() {
+            for(let i = 1; i <= 3; i++) {
+                let node = document.getElementById(`node-${i}`);
+                if(!node) continue;
                 node.className = "map-node";
                 if(i < user.storyProgress) {
                     node.classList.add('completed');
-                    node.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    node.innerHTML = `<i class="fa-solid fa-check"></i>`;
                 } else if(i === user.storyProgress) {
                     node.classList.add('unlocked');
                     node.innerHTML = i;
                 } else {
                     node.classList.add('locked');
-                    node.innerHTML = '<i class="fa-solid fa-lock"></i>';
+                    node.innerHTML = `<i class="fa-solid fa-lock"></i>`;
                 }
             }
-            showScreen('screen-story-map');
         }
 
-        function selectStoryLevel(level) {
-            if(level > user.storyProgress) {
-                alert("¡Completa el nivel anterior para desbloquear este reto!");
-                playSound('error');
-                return;
-            }
-            activeStoryLevel = level;
+        function selectStoryLevel(lvl) {
+            if(lvl > user.storyProgress) return alert('Nivel bloqueado. Completa el anterior primero.');
+            activeStoryLevel = lvl;
             storyDialogueIndex = 0;
+            isStoryGameMode = true;
             showScreen('screen-story-dialogue');
-            document.getElementById('story-reward-scene').classList.add('hidden');
-            renderStoryDialogue();
+            loadStoryDialogue();
         }
 
-        function renderStoryDialogue() {
-            const chapter = storyChapters[activeStoryLevel];
-            if(storyDialogueIndex >= chapter.length) return;
-            
-            const step = chapter[storyDialogueIndex];
-
-            if(step.type === 'minigame') {
-                isStoryGameMode = true;
-                startGame('ruleta', step.diff);
+        function loadStoryDialogue() {
+            let chapter = storyChapters[activeStoryLevel];
+            if (storyDialogueIndex >= chapter.length) {
+                if(activeStoryLevel < 3) {
+                    user.storyProgress = Math.max(user.storyProgress, activeStoryLevel + 1);
+                    saveGame();
+                }
+                showScreen('screen-story-map');
+                updateStoryMapUI();
                 return;
             }
-
-            if(step.type === 'reward') {
+            let item = chapter[storyDialogueIndex];
+            if(item.type === 'minigame') {
+                isStoryGameMode = true;
+                startGame('ruleta', item.diff);
+                return;
+            }
+            if(item.type === 'reward') {
+                isStoryGameMode = false;
                 document.getElementById('story-reward-scene').classList.remove('hidden');
-                user.xp += 300; user.coins += 100;
-                if(user.storyProgress <= 3) user.storyProgress = 3;
                 checkAchievement('story_complete');
+                user.coins += 100;
+                user.xp += 200;
                 saveGame();
                 return;
             }
-
-            const imgEl = document.getElementById('story-character-img');
-            imgEl.classList.remove('animate-pop'); void imgEl.offsetWidth; imgEl.classList.add('animate-pop');
-            imgEl.src = step.img;
-            document.getElementById('story-character-name').innerText = step.char;
-            
-            const textEl = document.getElementById('story-dialogue');
-            textEl.innerHTML = ''; let i = 0;
-            const typeWriter = setInterval(() => {
-                if (i < step.text.length) { textEl.innerHTML += step.text.charAt(i); i++; } 
-                else clearInterval(typeWriter);
-            }, 25);
+            document.getElementById('story-character-name').innerText = item.char;
+            document.getElementById('story-character-img').src = item.img;
+            document.getElementById('story-dialogue').innerText = item.text;
         }
 
         function advanceStoryDialogue() {
             storyDialogueIndex++;
-            renderStoryDialogue();
+            loadStoryDialogue();
         }
 
         function completeStoryChapter() {
-            if(activeStoryLevel < 3) {
-                user.storyProgress = Math.max(user.storyProgress, activeStoryLevel + 1);
-            }
+            document.getElementById('story-reward-scene').classList.add('hidden');
+            user.storyProgress = 3;
             saveGame();
-            openStoryMap();
+            showScreen('screen-story-map');
+            updateStoryMapUI();
         }
 
-        // --- SELECCIÓN Y CONFIGURACIÓN DE JUEGO ---
-        function showDifficultySelect(mode) { 
-            currentMode = mode; 
-            showScreen('screen-difficulty'); 
-        }
-
-        function updateHearts() {
-            let h = ''; for(let i=0; i<lives; i++) h += '❤️';
-            document.getElementById('lives-display').innerText = h;
-        }
-
-        function startGame(mode, difficulty) {
+        function showDifficultySelect(mode) {
             currentMode = mode;
-            currentDifficulty = difficulty;
+            isStoryGameMode = false;
+            showScreen('screen-difficulty');
+        }
+
+        function startGame(mode, diff) {
+            currentMode = mode;
+            currentDifficulty = diff;
             score = 0;
             currentQCount = 1;
             
-            // REGLAS ESTRICTAS DE PREGUNTAS Y VIDAS SOLICITADAS
-            if (difficulty === 'facil') { maxQuestions = 5; lives = 5; }
-            else if (difficulty === 'medio') { maxQuestions = 15; lives = 3; }
-            else if (difficulty === 'dificil') { maxQuestions = 30; lives = 1; }
-            else if (difficulty === 'reloj') { maxQuestions = 999; lives = 1; }
-            
-            updateHearts();
-            document.getElementById('score-val').innerText = "0";
-            
+            if (diff === 'facil') { maxQuestions = 5; lives = 5; }
+            else if (diff === 'medio') { maxQuestions = 15; lives = 3; }
+            else if (diff === 'dificil') { maxQuestions = 30; lives = 1; }
+            else if (diff === 'reloj') { maxQuestions = 999; lives = 1; timeLeft = 60; startTimer(); }
+
             showScreen('screen-game');
-            let t = mode === 'ruleta' ? 'Ruleta Verbal' : mode === 'tabla' ? 'Completa la Tabla' : 'Completar Oración';
-            document.getElementById('game-title').innerText = `${t} (${difficulty})`;
-
-            const timerEl = document.getElementById('game-timer-display');
-            if (difficulty === 'reloj') {
-                timerEl.classList.remove('hidden'); timeLeft = 60; document.getElementById('timer-val').innerText = timeLeft;
-                clearInterval(gameTimer);
-                gameTimer = setInterval(() => {
-                    timeLeft--; document.getElementById('timer-val').innerText = timeLeft;
-                    if (timeLeft <= 0) endGame("¡Se acabó el tiempo!");
-                }, 1000);
-            } else { timerEl.classList.add('hidden'); }
-
-            renderRound();
+            document.getElementById('game-title').innerText = `${mode.toUpperCase()} - ${diff.toUpperCase()}`;
+            updateGameStats();
+            nextRound();
         }
 
-        function renderRound() {
-            document.getElementById('btn-next').classList.add('hidden');
-            document.getElementById('game-feedback').innerText = '';
-            document.getElementById('game-workspace').innerHTML = '';
-            
-            let qStr = currentDifficulty === 'reloj' ? `${currentQCount}/∞` : `${currentQCount}/${maxQuestions}`;
-            document.getElementById('q-val').innerText = qStr;
-
-            currentVerb = verbData[Math.floor(Math.random() * verbData.length)];
-
-            if (currentMode === 'ruleta') renderRuleta();
-            else if (currentMode === 'tabla') renderTabla();
-            else if (currentMode === 'oracion') renderOracion();
-        }
-
-        function renderRuleta() {
-            const ws = document.getElementById('game-workspace');
-            ws.innerHTML = `
-                <div class="relative w-48 h-48 mx-auto mb-8">
-                    <div id="roulette-wheel" class="w-full h-full rounded-full border-8 border-primary bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-[0_0_30px_rgba(99,102,241,0.5)]">
-                        <span id="roulette-verb" class="text-3xl font-extrabold text-white">?</span>
-                    </div>
-                    <div class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[25px] border-t-yellow-400 drop-shadow-md z-10"></div>
-                </div>
-                <button id="btn-spin" onclick="spinRoulette(); playSound('click');" class="bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition mb-6">Girar Ruleta</button>
-                <div id="ruleta-inputs" class="w-full max-w-md hidden grid gap-4">
-                    <input type="text" id="in-past" placeholder="Pasado Simple" class="w-full p-3 rounded bg-gray-100 dark:bg-gray-800 border outline-none focus:ring-2 focus:ring-primary dark:text-white">
-                    <input type="text" id="in-part" placeholder="Participio Pasado" class="w-full p-3 rounded bg-gray-100 dark:bg-gray-800 border outline-none focus:ring-2 focus:ring-primary dark:text-white">
-                    <input type="text" id="in-esp" placeholder="Significado en Español" class="w-full p-3 rounded bg-gray-100 dark:bg-gray-800 border outline-none focus:ring-2 focus:ring-primary dark:text-white">
-                    <button onclick="checkRuleta()" class="bg-green-500 text-white font-bold py-2 rounded shadow hover:bg-green-600 transition mt-2">Comprobar</button>
-                </div>
-            `;
-        }
-
-        function spinRoulette() {
-            document.getElementById('btn-spin').classList.add('hidden');
-            const wheel = document.getElementById('roulette-wheel');
-            wheel.classList.add('spinning');
-            setTimeout(() => {
-                wheel.classList.remove('spinning');
-                document.getElementById('roulette-verb').innerText = currentVerb.inf;
-                document.getElementById('ruleta-inputs').classList.remove('hidden');
-                if (currentDifficulty === 'facil') { document.getElementById('in-part').classList.add('hidden'); document.getElementById('in-esp').classList.add('hidden'); } 
-                else if (currentDifficulty === 'medio') { document.getElementById('in-esp').classList.add('hidden'); }
-            }, 3000);
-        }
-
-        function checkRuleta() {
-            let passed = true;
-            let valPast = document.getElementById('in-past').value.trim().toLowerCase();
-            let valPart = document.getElementById('in-part') ? document.getElementById('in-part').value.trim().toLowerCase() : '';
-            let valEsp = document.getElementById('in-esp') ? document.getElementById('in-esp').value.trim().toLowerCase() : '';
-            const checkMatch = (i, t) => t === '-' ? (i === '' || i === '-') : (t.includes(i) && i.length > 1);
-            if (!checkMatch(valPast, currentVerb.past)) passed = false;
-            if (currentDifficulty !== 'facil' && !checkMatch(valPart, currentVerb.part)) passed = false;
-            if (currentDifficulty === 'dificil' && !currentVerb.esp.includes(valEsp)) passed = false;
-            handleResult(passed, `Era: ${currentVerb.past} / ${currentVerb.part} / ${currentVerb.esp}`);
-        }
-
-        function renderTabla() {
-            const ws = document.getElementById('game-workspace');
-            const showIdx = Math.floor(Math.random() * 4); 
-            let v = [
-                showIdx===0?`<div class="p-3 bg-primary/20 rounded font-bold">${currentVerb.inf}</div>`:`<input type="text" id="t-inf" class="w-full p-3 rounded border dark:bg-gray-800 outline-none focus:ring-2">`,
-                showIdx===1?`<div class="p-3 bg-primary/20 rounded font-bold">${currentVerb.past}</div>`:`<input type="text" id="t-past" class="w-full p-3 rounded border dark:bg-gray-800 outline-none focus:ring-2">`,
-                showIdx===2?`<div class="p-3 bg-primary/20 rounded font-bold">${currentVerb.part}</div>`:`<input type="text" id="t-part" class="w-full p-3 rounded border dark:bg-gray-800 outline-none focus:ring-2">`,
-                showIdx===3?`<div class="p-3 bg-primary/20 rounded font-bold">${currentVerb.esp}</div>`:`<input type="text" id="t-esp" class="w-full p-3 rounded border dark:bg-gray-800 outline-none focus:ring-2">`
-            ];
-            ws.innerHTML = `
-                <div class="w-full max-w-2xl grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
-                    <div class="font-bold text-center text-xs uppercase opacity-70 mb-1">Infinitive</div><div class="font-bold text-center text-xs uppercase opacity-70 mb-1">Past Simple</div>
-                    <div class="font-bold text-center text-xs uppercase opacity-70 mb-1">Past Part.</div><div class="font-bold text-center text-xs uppercase opacity-70 mb-1">Meaning</div>
-                    ${v[0]}${v[1]}${v[2]}${v[3]}
-                </div>
-                <button onclick="checkTabla(${showIdx})" class="bg-green-500 text-white font-bold py-2 px-8 rounded shadow hover:bg-green-600 transition">Comprobar</button>
-            `;
-        }
-
-        function checkTabla(showIdx) {
-            let passed = true;
-            if (showIdx !== 0 && document.getElementById('t-inf').value.trim().toLowerCase() !== currentVerb.inf) passed = false;
-            if (showIdx !== 1 && !currentVerb.past.includes(document.getElementById('t-past').value.trim().toLowerCase())) passed = false;
-            if (showIdx !== 2 && !currentVerb.part.includes(document.getElementById('t-part').value.trim().toLowerCase())) passed = false;
-            if (showIdx !== 3 && !currentVerb.esp.includes(document.getElementById('t-esp').value.trim().toLowerCase())) passed = false;
-            handleResult(passed, `Era: ${currentVerb.inf} | ${currentVerb.past} | ${currentVerb.part} | ${currentVerb.esp}`);
-        }
-
-        function renderOracion() {
-            const ws = document.getElementById('game-workspace');
-            ws.innerHTML = `
-                <p class="text-xl mb-6 text-center">I usually ____ (${currentVerb.inf}) early, but yesterday I <input type="text" id="o-ans" class="w-32 border-b-2 border-primary bg-transparent text-center font-bold outline-none dark:text-white"> late.</p>
-                <button onclick="checkOracion()" class="bg-green-500 text-white font-bold py-2 px-8 rounded shadow hover:bg-green-600 transition">Comprobar</button>
-            `;
-        }
-        function checkOracion() {
-            let val = document.getElementById('o-ans').value.trim().toLowerCase();
-            handleResult(currentVerb.past.includes(val) && val.length > 1, `El pasado de ${currentVerb.inf} es ${currentVerb.past}.`);
-        }
-
-        function handleResult(isCorrect, msgError) {
-            const feedback = document.getElementById('game-feedback');
-            const ws = document.getElementById('game-workspace');
-            
-            if (isCorrect) {
-                playSound('success');
-                feedback.innerHTML = `<span class="text-green-500"><i class="fa-solid fa-check"></i> ¡Correcto! +10 Puntos</span>`;
-                score += 10;
-                user.coins += 2; user.xp += 10;
-                checkAchievement('first_correct');
-                if(user.coins >= 50) checkAchievement('rich_student');
-                if(currentDifficulty === 'dificil') checkAchievement('survive_hard');
-            } else {
-                playSound('error');
-                ws.classList.add('animate-shake'); setTimeout(() => ws.classList.remove('animate-shake'), 300);
-                feedback.innerHTML = `<span class="text-red-500"><i class="fa-solid fa-xmark"></i> Incorrecto. ${msgError}</span>`;
-                lives--;
-                updateHearts();
-            }
-
+        function updateGameStats() {
+            document.getElementById('q-val').innerText = `${currentQCount}/${maxQuestions === 999 ? '∞' : maxQuestions}`;
+            document.getElementById('lives-display').innerText = '❤️'.repeat(Math.max(0, lives));
             document.getElementById('score-val').innerText = score;
-            ws.querySelectorAll('button').forEach(b => b.classList.add('hidden'));
-            
-            if (lives <= 0) {
-                setTimeout(() => endGame("¡Te quedaste sin vidas!"), 1500);
-            } else if (currentQCount >= maxQuestions && currentDifficulty !== 'reloj') {
-                setTimeout(() => endGame("¡Completaste todas las preguntas del nivel!"), 1500);
-            } else {
-                document.getElementById('btn-next').classList.remove('hidden');
-            }
+        }
+
+        function startTimer() {
+            clearInterval(gameTimer);
+            document.getElementById('game-timer-display').classList.remove('hidden');
+            document.getElementById('timer-val').innerText = timeLeft;
+            gameTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-val').innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(gameTimer);
+                    endGame(false);
+                }
+            }, 1000);
         }
 
         function nextRound() {
-            currentQCount++;
-            renderRound();
-        }
-
-        function quitGame() { 
-            clearInterval(gameTimer); 
-            isStoryGameMode = false; 
-            showScreen('screen-menu'); 
-        }
-
-        function endGame(reason) {
             clearInterval(gameTimer);
+            if(currentDifficulty === 'reloj' && currentMode !== 'reloj') {
+                startTimer();
+            }
+
+            document.getElementById('game-feedback').innerText = '';
+            document.getElementById('btn-next').classList.add('hidden');
             
-            // Retorno al modo historia si venía de un nivel del mapa
-            if (isStoryGameMode) {
-                if (lives <= 0) {
-                    alert(`Has fallado el reto en el Modo Historia. Vuelve a intentarlo.`);
-                    isStoryGameMode = false;
-                    openStoryMap();
-                } else {
-                    alert(`¡Reto del Nivel ${activeStoryLevel} superado con éxito!`);
-                    isStoryGameMode = false;
-                    if(activeStoryLevel < 3) {
-                        user.storyProgress = Math.max(user.storyProgress, activeStoryLevel + 1);
-                    }
-                    saveGame();
-                    showScreen('screen-story-dialogue');
-                    storyDialogueIndex++;
-                    renderStoryDialogue();
-                }
+            if (!isStoryGameMode && currentQCount > maxQuestions && currentDifficulty !== 'reloj') {
+                endGame(true);
                 return;
             }
 
-            alert(`${reason}\nPuntuación final: ${score}\n¡Ganaste Monedas y XP!`);
-            saveGame();
-            quitGame();
+            updateGameStats();
+            currentVerb = verbData[Math.floor(Math.random() * verbData.length)];
+            
+            const ws = document.getElementById('game-workspace');
+            ws.innerHTML = '';
+
+            if (currentMode === 'ruleta') {
+                ws.innerHTML = `
+                    <div class="text-center w-full">
+                        <p class="text-sm opacity-70 mb-2">Infinitivo:</p>
+                        <h3 class="text-4xl font-extrabold text-primary mb-6">${currentVerb.inf}</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-xl mx-auto mb-4">
+                            <div>
+                                <label class="block text-xs opacity-70 mb-1">Pasado</label>
+                                <input type="text" id="input-past" class="w-full p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border dark:border-gray-600 text-center outline-none focus:ring-2 focus:ring-primary dark:text-white" placeholder="Pasado">
+                            </div>
+                            <div>
+                                <label class="block text-xs opacity-70 mb-1">Participio</label>
+                                <input type="text" id="input-part" class="w-full p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border dark:border-gray-600 text-center outline-none focus:ring-2 focus:ring-primary dark:text-white" placeholder="Participio">
+                            </div>
+                            <div>
+                                <label class="block text-xs opacity-70 mb-1">Significado</label>
+                                <input type="text" id="input-esp" class="w-full p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border dark:border-gray-600 text-center outline-none focus:ring-2 focus:ring-primary dark:text-white" placeholder="Significado">
+                            </div>
+                        </div>
+                        <button onclick="checkRuletaAnswer()" class="bg-primary text-white font-bold py-2 px-8 rounded-lg hover:scale-105 transition shadow-md">Comprobar</button>
+                    </div>
+                `;
+            } else if (currentMode === 'tabla') {
+                ws.innerHTML = `
+                    <div class="text-center w-full">
+                        <p class="text-sm opacity-70 mb-2">Completa los datos del verbo:</p>
+                        <h3 class="text-3xl font-extrabold text-green-500 mb-6">${currentVerb.inf}</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-xl mx-auto mb-4">
+                            <input type="text" id="input-past" class="p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border dark:border-gray-600 text-center" placeholder="Pasado">
+                            <input type="text" id="input-part" class="p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border dark:border-gray-600 text-center" placeholder="Participio">
+                            <input type="text" id="input-esp" class="p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border dark:border-gray-600 text-center" placeholder="Español">
+                        </div>
+                        <button onclick="checkTableAnswer()" class="bg-green-500 text-white font-bold py-2 px-8 rounded-lg hover:scale-105 transition shadow-md">Verificar</button>
+                    </div>
+                `;
+            } else if (currentMode === 'oracion') {
+                let randomSentence = `Yesterday, I ${currentVerb.past.split('/')[0]} to the store.`;
+                ws.innerHTML = `
+                    <div class="text-center w-full">
+                        <p class="text-sm opacity-70 mb-2">Escribe el pasado correcto para la oración:</p>
+                        <p class="text-xl font-semibold mb-4 text-yellow-400">Verbo base: ${currentVerb.inf} (${currentVerb.esp})</p>
+                        <input type="text" id="input-oracion" class="w-full max-w-md p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border dark:border-gray-600 text-center mb-4" placeholder="Pasado del verbo">
+                        <br>
+                        <button onclick="checkOracionAnswer()" class="bg-yellow-500 text-black font-bold py-2 px-8 rounded-lg hover:scale-105 transition shadow-md">Comprobar</button>
+                    </div>
+                `;
+            }
         }
 
+        function checkRuletaAnswer() {
+            const valPast = document.getElementById('input-past').value.trim().toLowerCase();
+            const valPart = document.getElementById('input-part').value.trim().toLowerCase();
+            const valEsp = document.getElementById('input-esp').value.trim().toLowerCase();
+
+            const correctPast = currentVerb.past.toLowerCase().split('/');
+            const correctPart = currentVerb.part.toLowerCase().split('/');
+            const correctEsp = currentVerb.esp.toLowerCase().split('/');
+
+            let isPastCorrect = correctPast.includes(valPast);
+            let isPartCorrect = correctPart.includes(valPart) || (currentVerb.part === '-' && valPart === '-');
+            let isEspCorrect = correctEsp.some(e => valEsp.includes(e));
+
+            if (isPastCorrect && isPartCorrect && isEspCorrect) {
+                playSound('success');
+                document.getElementById('game-feedback').className = "font-bold text-lg h-6 text-green-500";
+                document.getElementById('game-feedback').innerText = "¡Correcto!";
+                score += 10;
+                user.xp += 10;
+                checkAchievement('first_correct');
+                if(user.xp >= user.level * 100) {
+                    user.level++;
+                    alert(`¡Subiste al nivel ${user.level}!`);
+                }
+                saveGame();
+                
+                if(isStoryGameMode) {
+                    setTimeout(() => {
+                        storyDialogueIndex++;
+                        showScreen('screen-story-dialogue');
+                        loadStoryDialogue();
+                    }, 1000);
+                } else {
+                    currentQCount++;
+                    document.getElementById('btn-next').classList.remove('hidden');
+                }
+            } else {
+                playSound('error');
+                document.getElementById('game-feedback').className = "font-bold text-lg h-6 text-red-500";
+                document.getElementById('game-feedback').innerText = `Incorrecto. Correcto: ${currentVerb.past} | ${currentVerb.part} | ${currentVerb.esp}`;
+                lives--;
+                updateGameStats();
+                if (lives <= 0) {
+                    endGame(false);
+                } else {
+                    currentQCount++;
+                    document.getElementById('btn-next').classList.remove('hidden');
+                }
+            }
+        }
+
+        function checkTableAnswer() {
+            const valPast = document.getElementById('input-past').value.trim().toLowerCase();
+            const valPart = document.getElementById('input-part').value.trim().toLowerCase();
+            const valEsp = document.getElementById('input-esp').value.trim().toLowerCase();
+
+            if (currentVerb.past.toLowerCase().includes(valPast) && currentVerb.part.toLowerCase().includes(valPart) && currentVerb.esp.toLowerCase().includes(valEsp)) {
+                playSound('success');
+                document.getElementById('game-feedback').className = "font-bold text-lg h-6 text-green-500";
+                document.getElementById('game-feedback').innerText = "¡Excelente!";
+                score += 10;
+                user.xp += 15;
+                saveGame();
+                currentQCount++;
+                document.getElementById('btn-next').classList.remove('hidden');
+            } else {
+                playSound('error');
+                document.getElementById('game-feedback').className = "font-bold text-lg h-6 text-red-500";
+                document.getElementById('game-feedback').innerText = `Error. Era: ${currentVerb.past} / ${currentVerb.part} / ${currentVerb.esp}`;
+                lives--;
+                updateGameStats();
+                if(lives <= 0) endGame(false);
+                else {
+                    currentQCount++;
+                    document.getElementById('btn-next').classList.remove('hidden');
+                }
+            }
+        }
+
+        function checkOracionAnswer() {
+            const val = document.getElementById('input-oracion').value.trim().toLowerCase();
+            if (currentVerb.past.toLowerCase().split('/').includes(val)) {
+                playSound('success');
+                document.getElementById('game-feedback').className = "font-bold text-lg h-6 text-green-500";
+                document.getElementById('game-feedback').innerText = "¡Muy bien!";
+                score += 10;
+                user.xp += 10;
+                saveGame();
+                currentQCount++;
+                document.getElementById('btn-next').classList.remove('hidden');
+            } else {
+                playSound('error');
+                document.getElementById('game-feedback').className = "font-bold text-lg h-6 text-red-500";
+                document.getElementById('game-feedback').innerText = `Incorrecto. Era: ${currentVerb.past}`;
+                lives--;
+                updateGameStats();
+                if(lives <= 0) endGame(false);
+                else {
+                    currentQCount++;
+                    document.getElementById('btn-next').classList.remove('hidden');
+                }
+            }
+        }
+
+        function endGame(won) {
+            clearInterval(gameTimer);
+            document.getElementById('game-timer-display').classList.add('hidden');
+            if (won) {
+                playSound('success');
+                user.coins += 20;
+                if(currentDifficulty === 'dificil') checkAchievement('survive_hard');
+                if(user.coins >= 50) checkAchievement('rich_student');
+                alert(`¡Partida terminada! Has ganado ${score} puntos y 20 monedas.`);
+            } else {
+                playSound('error');
+                alert('¡Te quedaste sin vidas! Inténtalo de nuevo.');
+            }
+            saveGame();
+            if(isStoryGameMode) {
+                showScreen('screen-story-map');
+            } else {
+                showScreen('screen-menu');
+            }
+        }
+
+        function quitGame() {
+            clearInterval(gameTimer);
+            if(isStoryGameMode) {
+                showScreen('screen-story-map');
+            } else {
+                showScreen('screen-menu');
+            }
+        }
     </script>
 </body>
 </html>
