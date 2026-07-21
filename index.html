@@ -119,16 +119,13 @@
                     <button onclick="openInventoryModal(); playSound('click');" class="w-full bg-primary/20 border border-primary text-primary py-2 rounded-lg hover:bg-primary hover:text-white transition text-sm font-bold flex items-center justify-center gap-2 mb-2">
                         <i class="fa-solid fa-box-archive"></i> Mochila / Personaje
                     </button>
-                    <button id="btn-extra-story" onclick="openExtraStoryMap(); playSound('click');" class="hidden w-full bg-secondary/20 border border-secondary text-secondary py-2 rounded-lg hover:bg-secondary hover:text-white transition text-sm font-bold flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-star"></i> Historia Extra (English Day)
-                    </button>
                 </div>
 
                 <div class="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <button onclick="openStoryMap(); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-primary transition group relative animate-pop">
+                    <button onclick="openStoryMap(); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-primary transition group relative animate-pop sm:col-span-2">
                         <i class="fa-solid fa-map text-3xl text-primary mb-3 block group-hover:scale-110 transition"></i>
                         <h3 class="text-xl font-bold">Modo Historia</h3>
-                        <p class="text-xs opacity-70 mt-1">Mapa de niveles de la hamburguesa.</p>
+                        <p class="text-xs opacity-70 mt-1">Mapa de niveles de la hamburguesa y la historia extra del English Day.</p>
                     </button>
                     <button onclick="openTrainingMode(); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-blue-400 transition group relative animate-pop">
                         <i class="fa-solid fa-book text-3xl text-blue-400 mb-3 block group-hover:scale-110 transition"></i>
@@ -145,7 +142,7 @@
                         <h3 class="text-xl font-bold">Completa la Tabla</h3>
                         <p class="text-xs opacity-70 mt-1">Tabla de 4 columnas única.</p>
                     </button>
-                    <button onclick="startSentenceMode(); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-yellow-500 transition group relative animate-pop sm:col-span-2">
+                    <button onclick="startSentenceMode(); playSound('click');" class="glass-panel p-6 rounded-2xl text-left hover:border-yellow-500 transition group relative animate-pop">
                         <i class="fa-solid fa-pen-to-square text-3xl text-yellow-500 mb-3 block group-hover:scale-110 transition"></i>
                         <h3 class="text-xl font-bold">Completar Oración</h3>
                         <p class="text-xs opacity-70 mt-1">Completa los espacios en las oraciones.</p>
@@ -181,8 +178,12 @@
             <div class="glass-panel p-8 rounded-2xl max-w-lg w-full text-center animate-pop relative">
                 <button onclick="showScreen('screen-menu'); playSound('click');" class="absolute top-4 left-4 text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left"></i></button>
                 
-                <div class="flex justify-center mb-2">
-                    <img id="roulette-char-img" src="" class="w-16 h-16 rounded-full border-2 border-secondary object-cover hidden">
+                <div class="flex justify-between items-center mb-2 px-2">
+                    <div class="flex items-center gap-2">
+                        <img id="roulette-char-img" src="" class="w-12 h-12 rounded-full border-2 border-secondary object-cover hidden">
+                        <span id="roulette-lives" class="text-red-500 font-bold tracking-widest text-lg">❤️❤️❤️</span>
+                    </div>
+                    <span id="roulette-timer" class="text-yellow-400 font-bold text-lg hidden"><i class="fa-solid fa-clock"></i> <span id="r-time-left">30</span>s</span>
                 </div>
                 <h2 class="text-2xl font-bold mb-2 text-secondary">Ruleta Verbal</h2>
                 <div class="mb-4">
@@ -190,7 +191,8 @@
                     <select id="roulette-diff" onchange="changeRouletteDifficulty()" class="bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-white">
                         <option value="facil">Fácil (Jerónimo)</option>
                         <option value="medio">Medio (Dilan)</option>
-                        <option value="dificil">Difícil (Giovani)</option>
+                        <option value="dificil">Difícil - Enciso</option>
+                        <option value="contrarreloj">Contrarreloj - Giovani</option>
                     </select>
                 </div>
                 
@@ -204,7 +206,7 @@
                     <p class="text-sm opacity-70 mb-2">Verbo seleccionado: <strong id="r-verb-inf" class="text-primary text-lg"></strong></p>
                     <div id="roulette-inputs-container" class="grid grid-cols-3 gap-2 mb-4">
                     </div>
-                    <button onclick="checkRouletteResult(); playSound('click');" class="bg-green-500 text-white font-bold px-6 py-2 rounded-lg">Verificar</button>
+                    <button onclick="checkRouletteResult(); playSound('click');" class="bg-green-500 text-white font-bold px-6 py-2 rounded-lg hover:bg-green-600 transition">Verificar</button>
                 </div>
 
                 <button id="btn-spin" onclick="spinRoulette(); playSound('click');" class="bg-secondary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition">Girar Ruleta</button>
@@ -223,8 +225,10 @@
                         <select id="table-diff" onchange="changeTableDifficulty()" class="bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-white">
                             <option value="facil">Fácil (Jerónimo)</option>
                             <option value="medio">Medio (Dilan)</option>
-                            <option value="dificil">Difícil (Giovani)</option>
+                            <option value="dificil">Difícil - Enciso</option>
+                            <option value="contrarreloj">Contrarreloj - Giovani</option>
                         </select>
+                        <span id="table-timer" class="text-yellow-400 font-bold hidden"><i class="fa-solid fa-clock"></i> <span id="t-time-left">60</span>s</span>
                         <span id="table-lives" class="text-red-500 font-bold tracking-widest">❤️❤️❤️</span>
                         <button onclick="showScreen('screen-menu'); playSound('click');" class="bg-gray-700 text-white px-4 py-2 rounded-lg font-bold">Salir</button>
                     </div>
@@ -253,8 +257,12 @@
         <div id="screen-sentence" class="hidden flex-grow flex flex-col items-center justify-center p-4">
             <div class="glass-panel p-8 rounded-2xl max-w-xl w-full text-center animate-pop relative">
                 <button onclick="showScreen('screen-menu'); playSound('click');" class="absolute top-4 left-4 text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left"></i></button>
-                <div class="flex justify-center mb-2">
-                    <img id="sentence-char-img" src="" class="w-16 h-16 rounded-full border-2 border-yellow-500 object-cover hidden">
+                <div class="flex justify-between items-center mb-2 px-2">
+                    <div class="flex items-center gap-2">
+                        <img id="sentence-char-img" src="" class="w-12 h-12 rounded-full border-2 border-yellow-500 object-cover hidden">
+                        <span id="sentence-lives" class="text-red-500 font-bold tracking-widest text-lg">❤️❤️❤️</span>
+                    </div>
+                    <span id="sentence-timer" class="text-yellow-400 font-bold text-lg hidden"><i class="fa-solid fa-clock"></i> <span id="s-time-left">20</span>s</span>
                 </div>
                 <h2 class="text-2xl font-bold mb-2 text-yellow-400"><i class="fa-solid fa-pen-to-square"></i> Completar Oración</h2>
                 <div class="mb-4">
@@ -262,14 +270,15 @@
                     <select id="sentence-diff" onchange="changeSentenceDifficulty()" class="bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm text-white">
                         <option value="facil">Fácil (Jerónimo)</option>
                         <option value="medio">Medio (Dilan)</option>
-                        <option value="dificil">Difícil (Giovani)</option>
+                        <option value="dificil">Difícil - Enciso</option>
+                        <option value="contrarreloj">Contrarreloj - Giovani</option>
                     </select>
                 </div>
                 <div id="sentence-container" class="my-4">
                     <p id="sentence-text" class="text-xl mb-4 font-semibold text-white"></p>
                     <input type="text" id="sentence-input" class="w-full max-w-xs p-3 rounded-lg bg-gray-800 border border-gray-700 text-center mb-4 text-white" placeholder="Escribe el verbo correcto">
                     <br>
-                    <button onclick="checkSentenceResult(); playSound('click');" class="bg-yellow-500 text-black font-bold px-6 py-2 rounded-lg">Comprobar</button>
+                    <button onclick="checkSentenceResult(); playSound('click');" class="bg-yellow-500 text-black font-bold px-6 py-2 rounded-lg hover:bg-yellow-400 transition">Comprobar</button>
                 </div>
                 <p id="sentence-feedback" class="font-bold mt-2"></p>
             </div>
@@ -281,10 +290,15 @@
             <div class="z-10 w-full max-w-xl glass-panel p-8 rounded-3xl text-center relative border-2 border-primary/50 shadow-2xl">
                 <button onclick="showScreen('screen-menu'); playSound('click');" class="absolute top-4 left-4 text-white opacity-70 hover:opacity-100"><i class="fa-solid fa-arrow-left"></i> Menú</button>
                 
+                <div class="flex justify-center gap-2 mb-4">
+                    <button onclick="switchStoryTab('main'); playSound('click');" id="btn-tab-main" class="px-4 py-2 rounded-lg font-bold text-xs bg-primary text-white transition">Historia Principal</button>
+                    <button onclick="switchStoryTab('extra'); playSound('click');" id="btn-tab-extra" class="px-4 py-2 rounded-lg font-bold text-xs bg-gray-800 text-gray-400 transition">Historia Extra (English Day)</button>
+                </div>
+
                 <h2 id="story-map-title" class="text-3xl font-extrabold text-white mb-2">Mapa del English Day</h2>
                 <p id="story-map-desc" class="text-sm text-gray-300 mb-8">Completa los 3 niveles para ganar la hamburguesa de la apuesta.</p>
                 
-                <div class="flex flex-col items-center gap-8 relative my-4">
+                <div class="flex flex-col items-center gap-6 relative my-4">
                     <div class="absolute w-2 h-full bg-gray-600/50 z-0"></div>
 
                     <div class="flex items-center gap-4 z-10">
@@ -425,7 +439,6 @@
             level: 1, 
             coins: 0, 
             storyProgress: 1, 
-            extraStoryUnlocked: false,
             extraStoryProgress: 1,
             achievements: [], 
             inventory: [],
@@ -435,11 +448,14 @@
 
         let currentVerb = null;
         let tableGameRows = [];
-        let tableLives = 3;
+        let currentLives = 3;
+        let maxLives = 3;
         let activeStoryLevel = 1;
         let storyDialogueIndex = 0;
-        let isExtraStory = false;
+        let isExtraStoryTab = false;
         let currentSentenceData = null;
+        let gameTimerInterval = null;
+        let timeLeft = 0;
 
         const storyChapters = {
             1: [
@@ -467,14 +483,22 @@
 
         const extraStoryChapters = {
             1: [
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¿Adivina quién es?" },
-                { char: 'Dilan', img: ASSETS.dilan, text: "Tiene cara de que le gusta el inglés." },
-                { char: 'Giovani', img: ASSETS.giovani, text: "¡Silencio! Estoy explicando el English Day y ustedes jugando en plena clase." },
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "Jajaja, tranquilo profe." },
-                { char: 'Giovani', img: ASSETS.giovani, text: "¡Ya me harté, me voy de este salón!" },
-                { char: 'Enciso', img: ASSETS.enciso, text: "Se pasaron muchachos..." },
-                { char: 'Enciso', img: ASSETS.enciso, text: "Tengo que demostrarle a Giovani que sí haremos bien el English Day diciendo todos los verbos en tiempo récord." },
-                { type: 'extraminigame' }
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "El ambiente en el colegio se siente tenso hoy, es el tan esperado English Day." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "Todos los salones están decorados, pero nuestro grupo quiere hacer algo legendario en el auditorio central." },
+                { char: 'Enciso', img: ASSETS.enciso, text: "Tenemos que montar toda la escenografía bilingüe antes de que llegue el profesor Giovani a inspeccionar." },
+                { type: 'minigame', diff: 'facil', isExtra: true }
+            ],
+            2: [
+                { char: 'Enciso', img: ASSETS.enciso, text: "¡Excelente! La primera parte del montaje quedó lista. Pero ahora los jueces exponen verbos compuestos y expresiones complejas." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "No podemos flaquear aquí, el resto de cursos nos está observando de cerca." },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "Concentración total, respondamos con precisión quirúrgica." },
+                { type: 'minigame', diff: 'medio', isExtra: true }
+            ],
+            3: [
+                { char: 'Giovani', img: ASSETS.giovani, text: "Muy bien muchachos, admito que su stand del English Day superó las expectativas de todos." },
+                { char: 'Enciso', img: ASSETS.enciso, text: "¡Lo logramos! Demostramos que dominamos el inglés con categoría y altura." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Sin embargo, para llevarse la máxima mención honorífica, deberán superar la prueba definitiva de velocidad y dominio verbal." },
+                { type: 'minigame', diff: 'dificil', isExtra: true }
             ]
         };
 
@@ -514,6 +538,7 @@
         }
         
         function showScreen(id) {
+            if(gameTimerInterval) clearInterval(gameTimerInterval);
             ['screen-login', 'screen-menu', 'screen-training', 'screen-roulette', 'screen-table', 'screen-sentence', 'screen-story-map', 'screen-story-dialogue'].forEach(s => document.getElementById(s).classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
             if (id === 'screen-menu') updateMenuUI();
@@ -527,13 +552,6 @@
             let unlockedCount = user.achievements ? user.achievements.length : 0;
             document.getElementById('achievements-count').innerText = unlockedCount;
             document.getElementById('inv-count').innerText = user.inventory ? user.inventory.length : 0;
-            
-            const btnExtra = document.getElementById('btn-extra-story');
-            if (user.extraStoryUnlocked) {
-                btnExtra.classList.remove('hidden');
-            } else {
-                btnExtra.classList.add('hidden');
-            }
         }
 
         function updateMenuUI() {
@@ -595,7 +613,7 @@
                 });
             }
             document.getElementById('active-character-display').innerText = user.activeCharacter || 'Ninguno';
-            document.getElementById('modal-inventory').classList.add('hidden'); // Close then open properly
+            document.getElementById('modal-inventory').classList.add('hidden');
             document.getElementById('modal-inventory').classList.remove('hidden');
         }
 
@@ -654,13 +672,54 @@
             document.getElementById('roulette-feedback').innerText = '';
         }
 
+        function setupLivesAndTimer(diff) {
+            if(gameTimerInterval) clearInterval(gameTimerInterval);
+            document.getElementById('roulette-timer').classList.add('hidden');
+            document.getElementById('table-timer').classList.add('hidden');
+            document.getElementById('sentence-timer').classList.add('hidden');
+
+            if(diff === 'facil') { maxLives = 5; currentLives = 5; }
+            else if(diff === 'medio') { maxLives = 4; currentLives = 4; }
+            else if(diff === 'dificil') { maxLives = 3; currentLives = 3; }
+            else if(diff === 'contrarreloj') { maxLives = 3; currentLives = 3; timeLeft = 30; }
+
+            const livesStr = '❤️'.repeat(currentLives);
+            document.getElementById('roulette-lives').innerText = livesStr;
+            document.getElementById('table-lives').innerText = livesStr;
+            document.getElementById('sentence-lives').innerText = livesStr;
+        }
+
+        function startTimer(callback) {
+            if(gameTimerInterval) clearInterval(gameTimerInterval);
+            document.getElementById('r-time-left').innerText = timeLeft;
+            document.getElementById('t-time-left').innerText = timeLeft;
+            document.getElementById('s-time-left').innerText = timeLeft;
+            
+            gameTimerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('r-time-left').innerText = timeLeft;
+                document.getElementById('t-time-left').innerText = timeLeft;
+                document.getElementById('s-time-left').innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(gameTimerInterval);
+                    callback();
+                }
+            }, 1000);
+        }
+
         function changeRouletteDifficulty() {
             const diff = document.getElementById('roulette-diff').value;
             const imgEl = document.getElementById('roulette-char-img');
             imgEl.classList.remove('hidden');
             if(diff === 'facil') imgEl.src = ASSETS.jeronimo;
             else if(diff === 'medio') imgEl.src = ASSETS.dilan;
-            else if(diff === 'dificil') imgEl.src = ASSETS.giovani;
+            else if(diff === 'dificil') imgEl.src = ASSETS.enciso;
+            else if(diff === 'contrarreloj') imgEl.src = ASSETS.giovani;
+
+            setupLivesAndTimer(diff);
+            if(diff === 'contrarreloj') {
+                document.getElementById('roulette-timer').classList.remove('hidden');
+            }
         }
 
         function spinRoulette() {
@@ -695,10 +754,19 @@
                 document.getElementById('roulette-question-box').classList.remove('hidden');
                 document.getElementById('btn-spin').classList.add('hidden');
                 document.getElementById('roulette-feedback').innerText = '';
+
+                if(diff === 'contrarreloj') {
+                    timeLeft = 25;
+                    document.getElementById('roulette-timer').classList.remove('hidden');
+                    startTimer(() => {
+                        handleRouletteFailure("¡Se acabó el tiempo!");
+                    });
+                }
             }, 3000);
         }
 
         function checkRouletteResult() {
+            if(gameTimerInterval) clearInterval(gameTimerInterval);
             const diff = document.getElementById('roulette-diff').value;
             let ok = true;
             const ces = currentVerb.esp.toLowerCase().split('/');
@@ -726,13 +794,37 @@
                 document.getElementById('roulette-feedback').innerText = "¡Excelente! Has acertado el verbo en la ruleta.";
                 user.xp += 20;
                 user.coins += 5;
-                if(diff === 'dificil') checkAchievement('roulette_master');
+                if(diff === 'dificil' || diff === 'contrarreloj') checkAchievement('roulette_master');
                 checkAchievement('first_correct');
                 saveGame();
+                setTimeout(() => {
+                    document.getElementById('roulette-question-box').classList.add('hidden');
+                    document.getElementById('btn-spin').classList.remove('hidden');
+                }, 1500);
             } else {
-                playSound('error');
-                document.getElementById('roulette-feedback').className = "mt-4 font-bold text-red-500";
-                document.getElementById('roulette-feedback').innerText = `Incorrecto. Era: ${currentVerb.inf} | ${currentVerb.past} | ${currentVerb.part} | ${currentVerb.esp}`;
+                handleRouletteFailure("Respuesta incorrecta.");
+            }
+        }
+
+        function handleRouletteFailure(msg) {
+            playSound('error');
+            if(user.goldenLives && user.goldenLives > 0) {
+                user.goldenLives--;
+                playSound('success');
+                document.getElementById('roulette-feedback').className = "mt-4 font-bold text-yellow-400";
+                document.getElementById('roulette-feedback').innerText = "¡Tu Hamburguesa Dorada te ha salvado de perder una vida!";
+                saveGame();
+                return;
+            }
+
+            currentLives--;
+            document.getElementById('roulette-lives').innerText = '❤️'.repeat(Math.max(0, currentLives));
+            document.getElementById('roulette-feedback').className = "mt-4 font-bold text-red-500";
+            document.getElementById('roulette-feedback').innerText = `${msg} Vidas restantes: ${currentLives}`;
+
+            if(currentLives <= 0) {
+                alert('Te quedaste sin vidas en la ruleta.');
+                showScreen('screen-menu');
             }
         }
 
@@ -748,10 +840,19 @@
             imgEl.classList.remove('hidden');
             if(diff === 'facil') imgEl.src = ASSETS.jeronimo;
             else if(diff === 'medio') imgEl.src = ASSETS.dilan;
-            else if(diff === 'dificil') imgEl.src = ASSETS.giovani;
+            else if(diff === 'dificil') imgEl.src = ASSETS.enciso;
+            else if(diff === 'contrarreloj') imgEl.src = ASSETS.giovani;
 
-            tableLives = 3;
-            document.getElementById('table-lives').innerText = '❤️❤️❤️';
+            setupLivesAndTimer(diff);
+            if(diff === 'contrarreloj') {
+                timeLeft = 60;
+                document.getElementById('table-timer').classList.remove('hidden');
+                startTimer(() => {
+                    alert('¡Se acabó el tiempo en la tabla!');
+                    showScreen('screen-menu');
+                });
+            }
+
             document.getElementById('table-feedback').innerText = '';
             
             const tbody = document.getElementById('table-game-body');
@@ -794,12 +895,13 @@
             });
 
             if(allCorrect) {
+                if(gameTimerInterval) clearInterval(gameTimerInterval);
                 playSound('success');
                 document.getElementById('table-feedback').className = "font-bold text-green-500";
                 document.getElementById('table-feedback').innerText = "¡Tabla completada con éxito!";
                 user.xp += 50;
                 user.coins += 20;
-                if(tableLives === 3) checkAchievement('table_master');
+                if(currentLives === maxLives) checkAchievement('table_master');
                 saveGame();
             } else {
                 playSound('error');
@@ -813,8 +915,8 @@
                     return;
                 }
 
-                tableLives--;
-                document.getElementById('table-lives').innerText = '❤️'.repeat(Math.max(0, tableLives));
+                currentLives--;
+                document.getElementById('table-lives').innerText = '❤️'.repeat(Math.max(0, currentLives));
                 document.getElementById('table-feedback').className = "font-bold text-red-500";
                 document.getElementById('table-feedback').innerText = "Hay errores en la tabla. Se te descuenta una vida y se te da pista de otra fila.";
                 
@@ -829,7 +931,8 @@
                     hintInput.classList.add('bg-yellow-900/50');
                 }
 
-                if(tableLives <= 0) {
+                if(currentLives <= 0) {
+                    if(gameTimerInterval) clearInterval(gameTimerInterval);
                     alert('Te quedaste sin vidas en la tabla.');
                     showScreen('screen-menu');
                 }
@@ -848,7 +951,17 @@
             imgEl.classList.remove('hidden');
             if(diff === 'facil') imgEl.src = ASSETS.jeronimo;
             else if(diff === 'medio') imgEl.src = ASSETS.dilan;
-            else if(diff === 'dificil') imgEl.src = ASSETS.giovani;
+            else if(diff === 'dificil') imgEl.src = ASSETS.enciso;
+            else if(diff === 'contrarreloj') imgEl.src = ASSETS.giovani;
+
+            setupLivesAndTimer(diff);
+            if(diff === 'contrarreloj') {
+                timeLeft = 20;
+                document.getElementById('sentence-timer').classList.remove('hidden');
+                startTimer(() => {
+                    handleSentenceFailure("¡Se acabó el tiempo!");
+                });
+            }
 
             generateNewSentence();
         }
@@ -864,7 +977,7 @@
             ];
 
             if(diff === 'facil') {
-                currentSelectedSentence = sentenceTemplates[0]; // Past
+                currentSelectedSentence = sentenceTemplates[0];
             } else if(diff === 'medio') {
                 currentSelectedSentence = sentenceTemplates[Math.floor(Math.random() * 2)];
             } else {
@@ -874,11 +987,19 @@
             document.getElementById('sentence-text').innerText = currentSelectedSentence.template;
             document.getElementById('sentence-input').value = '';
             document.getElementById('sentence-feedback').innerText = '';
+
+            if(diff === 'contrarreloj') {
+                timeLeft = 20;
+                startTimer(() => {
+                    handleSentenceFailure("¡Se acabó el tiempo!");
+                });
+            }
         }
 
         let currentSelectedSentence = null;
 
         function checkSentenceResult() {
+            if(gameTimerInterval) clearInterval(gameTimerInterval);
             const val = document.getElementById('sentence-input').value.trim().toLowerCase();
             const correctTargets = currentSelectedSentence.target.toLowerCase().split('/');
             
@@ -891,40 +1012,68 @@
                 saveGame();
                 setTimeout(generateNewSentence, 1500);
             } else {
-                playSound('error');
-                
-                if(user.activeCharacter && user.activeCharacter.includes('Enciso')) {
-                    document.getElementById('sentence-feedback').className = "font-bold text-yellow-400";
-                    document.getElementById('sentence-feedback').innerText = `Enciso dice: “Eso está re breve, venga le respondo una” -> La respuesta era: ${currentSelectedSentence.target}`;
-                    return;
-                }
+                handleSentenceFailure(`Incorrecto. Era: ${currentSelectedSentence.target}`);
+            }
+        }
 
-                document.getElementById('sentence-feedback').className = "font-bold text-red-500";
-                document.getElementById('sentence-feedback').innerText = `Incorrecto. La respuesta correcta era: ${currentSelectedSentence.target}`;
+        function handleSentenceFailure(msg) {
+            playSound('error');
+            
+            if(user.activeCharacter && user.activeCharacter.includes('Enciso')) {
+                document.getElementById('sentence-feedback').className = "font-bold text-yellow-400";
+                document.getElementById('sentence-feedback').innerText = `Enciso dice: “Eso está re breve, venga le respondo una” -> La respuesta era: ${currentSelectedSentence.target}`;
+                return;
+            }
+
+            if(user.goldenLives && user.goldenLives > 0) {
+                user.goldenLives--;
+                playSound('success');
+                document.getElementById('sentence-feedback').className = "font-bold text-yellow-400";
+                document.getElementById('sentence-feedback').innerText = "¡Tu Hamburguesa Dorada te ha salvado de perder una vida!";
+                saveGame();
+                return;
+            }
+
+            currentLives--;
+            document.getElementById('sentence-lives').innerText = '❤️'.repeat(Math.max(0, currentLives));
+            document.getElementById('sentence-feedback').className = "font-bold text-red-500";
+            document.getElementById('sentence-feedback').innerText = `${msg} Vidas restantes: ${currentLives}`;
+
+            if(currentLives <= 0) {
+                alert('Te quedaste sin vidas.');
+                showScreen('screen-menu');
             }
         }
 
         function openStoryMap() {
-            isExtraStory = false;
+            isExtraStoryTab = false;
             showScreen('screen-story-map');
             updateStoryMapUI();
         }
 
-        function openExtraStoryMap() {
-            isExtraStory = true;
-            showScreen('screen-story-map');
+        function switchStoryTab(tab) {
+            isExtraStoryTab = (tab === 'extra');
+            const btnMain = document.getElementById('btn-tab-main');
+            const btnExtra = document.getElementById('btn-tab-extra');
+            if(isExtraStoryTab) {
+                btnExtra.className = "px-4 py-2 rounded-lg font-bold text-xs bg-primary text-white transition";
+                btnMain.className = "px-4 py-2 rounded-lg font-bold text-xs bg-gray-800 text-gray-400 transition";
+            } else {
+                btnMain.className = "px-4 py-2 rounded-lg font-bold text-xs bg-primary text-white transition";
+                btnExtra.className = "px-4 py-2 rounded-lg font-bold text-xs bg-gray-800 text-gray-400 transition";
+            }
             updateStoryMapUI();
         }
 
         function updateStoryMapUI() {
-            document.getElementById('story-map-title').innerText = isExtraStory ? "English Day - Historia Extra" : "Mapa del English Day";
-            document.getElementById('story-map-desc').innerText = isExtraStory ? "Ayuda a Enciso a demostrarle a Giovani el dominio de los verbos." : "Completa los 3 niveles para ganar la hamburguesa de la apuesta.";
+            document.getElementById('story-map-title').innerText = isExtraStoryTab ? "Historia Extra (English Day)" : "Modo Historia";
+            document.getElementById('story-map-desc').innerText = isExtraStoryTab ? "Tres niveles extendidos sobre la preparación y la tensión del gran English Day en el colegio." : "Completa los 3 niveles de la hamburguesa de la apuesta.";
             
             for(let i = 1; i <= 3; i++) {
                 let node = document.getElementById(`node-${i}`);
                 if(!node) continue;
                 node.className = "map-node";
-                let prog = isExtraStory ? user.extraStoryProgress : user.storyProgress;
+                let prog = isExtraStoryTab ? user.extraStoryProgress : user.storyProgress;
                 if(i < prog) {
                     node.classList.add('completed');
                     node.innerHTML = `<i class="fa-solid fa-check"></i>`;
@@ -939,7 +1088,7 @@
         }
 
         function selectStoryLevel(lvl) {
-            let prog = isExtraStory ? user.extraStoryProgress : user.storyProgress;
+            let prog = isExtraStoryTab ? user.extraStoryProgress : user.storyProgress;
             if(lvl > prog) return alert('Nivel bloqueado. Completa el anterior primero.');
             activeStoryLevel = lvl;
             storyDialogueIndex = 0;
@@ -948,15 +1097,14 @@
         }
 
         function loadStoryDialogue() {
-            let chapter = isExtraStory ? extraStoryChapters[activeStoryLevel] : storyChapters[activeStoryLevel];
+            let chapter = isExtraStoryTab ? extraStoryChapters[activeStoryLevel] : storyChapters[activeStoryLevel];
             if (storyDialogueIndex >= chapter.length) {
-                if(isExtraStory) {
-                    user.extraStoryUnlocked = true;
+                if(isExtraStoryTab) {
+                    user.extraStoryProgress = Math.min(3, activeStoryLevel + 1);
                     checkAchievement('extra_complete');
                 } else {
-                    if(activeStoryLevel < 3) {
-                        user.storyProgress = Math.max(user.storyProgress, activeStoryLevel + 1);
-                    }
+                    user.storyProgress = Math.min(3, activeStoryLevel + 1);
+                    if(activeStoryLevel === 3) checkAchievement('story_complete');
                 }
                 saveGame();
                 showScreen('screen-story-map');
@@ -965,11 +1113,7 @@
             }
             let item = chapter[storyDialogueIndex];
             if(item.type === 'minigame') {
-                runStoryMinigame(item.diff);
-                return;
-            }
-            if(item.type === 'extraminigame') {
-                runExtraStoryMinigame();
+                runStoryMinigame(item.diff, item.isExtra);
                 return;
             }
             document.getElementById('story-character-name').innerText = item.char;
@@ -982,21 +1126,21 @@
             loadStoryDialogue();
         }
 
-        function runStoryMinigame(diff) {
+        function runStoryMinigame(diff, isExtra = false) {
             currentVerb = verbData[Math.floor(Math.random() * verbData.length)];
             let box = document.getElementById('story-dialogue').parentElement;
             box.innerHTML = `
-                <h3 class="text-xl font-bold text-yellow-400 mb-2">Desafío de Nivel (${diff.toUpperCase()})</h3>
+                <h3 class="text-xl font-bold text-yellow-400 mb-2">Desafío del Nivel (${diff.toUpperCase()})</h3>
                 <p class="text-sm mb-3">Escribe el pasado y participio del verbo: <strong class="text-primary text-lg">${currentVerb.inf}</strong></p>
                 <div class="grid grid-cols-2 gap-2 mb-3">
                     <input type="text" id="sm-past" class="p-2 rounded bg-gray-800 text-white text-center border" placeholder="Pasado">
                     <input type="text" id="sm-part" class="p-2 rounded bg-gray-800 text-white text-center border" placeholder="Participio">
                 </div>
-                <button onclick="checkStoryMinigame('${diff}')" class="bg-primary text-white font-bold py-2 px-6 rounded-lg">Comprobar</button>
+                <button onclick="checkStoryMinigame('${diff}', ${isExtra})" class="bg-primary text-white font-bold py-2 px-6 rounded-lg">Comprobar</button>
             `;
         }
 
-        function checkStoryMinigame(diff) {
+        function checkStoryMinigame(diff, isExtra) {
             const vp = document.getElementById('sm-past').value.trim().toLowerCase();
             const vpt = document.getElementById('sm-part').value.trim().toLowerCase();
             const cp = currentVerb.past.toLowerCase().split('/');
@@ -1004,7 +1148,7 @@
 
             if(cp.includes(vp) && (cpt.includes(vpt) || (currentVerb.part === '-' && vpt === '-'))) {
                 playSound('success');
-                if(diff === 'dificil') {
+                if(diff === 'dificil' && !isExtra) {
                     document.getElementById('reward-title').innerText = "¡APUESTA GANADA!";
                     document.getElementById('reward-desc').innerText = "El muro de globos fue un éxito rotundo y Giovani tuvo que pagar la hamburguesa.";
                     document.getElementById('final-reward-img').src = ASSETS.burgerImage;
@@ -1012,7 +1156,15 @@
                     document.getElementById('story-reward-scene').classList.remove('hidden');
                     addToInventory({ type: 'burger', name: 'Hamburguesa Dorada', desc: 'Vida extra y trofeo de la apuesta', img: ASSETS.burgerImage });
                     checkAchievement('story_complete');
-                    user.extraStoryUnlocked = true;
+                    saveGame();
+                } else if(diff === 'dificil' && isExtra) {
+                    document.getElementById('reward-title').innerText = "¡HISTORIA EXTRA COMPLETADA!";
+                    document.getElementById('reward-desc').innerText = "Demostraste el dominio total del English Day ante todo el colegio.";
+                    document.getElementById('final-reward-img').src = ASSETS.enciso;
+                    document.getElementById('reward-extra-text').innerText = "Recibiste a Tremendo Guapo 🔥🔥 en tu inventario.";
+                    document.getElementById('story-reward-scene').classList.remove('hidden');
+                    addToInventory({ type: 'enciso', name: 'Tremendo Guapo', desc: 'Enciso legendario 🔥🔥 con efecto de luz', img: ASSETS.enciso });
+                    checkAchievement('extra_complete');
                     saveGame();
                 } else {
                     storyDialogueIndex++;
@@ -1023,49 +1175,13 @@
                 playSound('error');
                 if(diff === 'dificil') {
                     document.getElementById('reward-title').innerText = "¡FINAL MALO!";
-                    document.getElementById('reward-desc').innerText = "Fallaste el reto final difícil. La hamburguesa se le da solo a las mujeres del salón.";
+                    document.getElementById('reward-desc').innerText = "Fallaste el reto final difícil. Tienes que reintentarlo.";
                     document.getElementById('final-reward-img').src = ASSETS.giovani;
-                    document.getElementById('reward-extra-text').innerText = "Te quedaste sin la hamburguesa.";
+                    document.getElementById('reward-extra-text').innerText = "Inténtalo de nuevo.";
                     document.getElementById('story-reward-scene').classList.remove('hidden');
                 } else {
                     alert('Respuesta incorrecta. Inténtalo de nuevo.');
                 }
-            }
-        }
-
-        function runExtraStoryMinigame() {
-            let box = document.getElementById('story-dialogue').parentElement;
-            currentVerb = verbData[Math.floor(Math.random() * verbData.length)];
-            box.innerHTML = `
-                <h3 class="text-xl font-bold text-primary mb-2">Desafío Extra: Tiempo Récord</h3>
-                <p class="text-sm mb-3">Enciso debe decir el verbo <strong class="text-yellow-400 text-lg">${currentVerb.inf}</strong> en tiempo récord sin errores.</p>
-                <div class="grid grid-cols-2 gap-2 mb-3">
-                    <input type="text" id="em-past" class="p-2 rounded bg-gray-800 text-white text-center border" placeholder="Pasado">
-                    <input type="text" id="em-part" class="p-2 rounded bg-gray-800 text-white text-center border" placeholder="Participio">
-                </div>
-                <button onclick="checkExtraMinigame()" class="bg-primary text-white font-bold py-2 px-6 rounded-lg">Demostrar</button>
-            `;
-        }
-
-        function checkExtraMinigame() {
-            const vp = document.getElementById('em-past').value.trim().toLowerCase();
-            const vpt = document.getElementById('em-part').value.trim().toLowerCase();
-            const cp = currentVerb.past.toLowerCase().split('/');
-            const cpt = currentVerb.part.toLowerCase().split('/');
-
-            if(cp.includes(vp) && (cpt.includes(vpt) || (currentVerb.part === '-' && vpt === '-'))) {
-                playSound('success');
-                document.getElementById('reward-title').innerText = "¡GIOVANI RESPONDE!";
-                document.getElementById('reward-desc').innerText = "Que crack 😭🥀";
-                document.getElementById('final-reward-img').src = ASSETS.enciso;
-                document.getElementById('reward-extra-text').innerText = "Recibiste a tremendo guapo 🔥🔥";
-                document.getElementById('story-reward-scene').classList.remove('hidden');
-                addToInventory({ type: 'enciso', name: 'Tremendo Guapo', desc: 'Enciso legendario 🔥🔥 con efecto de luz', img: ASSETS.enciso });
-                checkAchievement('extra_complete');
-                saveGame();
-            } else {
-                playSound('error');
-                alert('Fallaste el tiempo récord. Inténtalo de nuevo.');
             }
         }
 
