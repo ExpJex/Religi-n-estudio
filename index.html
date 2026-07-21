@@ -33,6 +33,8 @@
         .light-boost { filter: drop-shadow(0 0 10px #38bdf8); }
         @keyframes spin-slow { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
         .animate-spin-slow { animation: spin-slow 3s linear infinite; }
+        @keyframes flash-red { 0%, 100% { background-color: rgba(15, 23, 42, 0.8); } 50% { background-color: rgba(185, 28, 28, 0.4); } }
+        .flash-red-bg { animation: flash-red 1s infinite; }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-darkbg text-gray-800 dark:text-gray-100 min-h-screen flex flex-col overflow-x-hidden">
@@ -74,6 +76,11 @@
                 gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'tiktak') {
+                osc.frequency.setValueAtTime(900, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.05);
             }
         }
     </script>
@@ -174,7 +181,7 @@
         </div>
 
         <div id="screen-roulette" class="hidden flex-grow flex flex-col items-center justify-center p-4">
-            <div class="glass-panel p-8 rounded-2xl max-w-lg w-full text-center animate-pop relative">
+            <div id="roulette-wrapper" class="glass-panel p-8 rounded-2xl max-w-lg w-full text-center animate-pop relative transition-colors duration-500">
                 <button onclick="quitToMenu(); playSound('click');" class="absolute top-4 left-4 text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left"></i></button>
                 
                 <div class="flex justify-between items-center mb-2 px-2 mt-4">
@@ -211,7 +218,7 @@
         </div>
 
         <div id="screen-table" class="hidden flex-grow flex flex-col items-center p-4">
-            <div class="w-full max-w-4xl glass-panel p-6 rounded-2xl animate-pop flex flex-col flex-grow my-4 relative">
+            <div id="table-wrapper" class="w-full max-w-4xl glass-panel p-6 rounded-2xl animate-pop flex flex-col flex-grow my-4 relative transition-colors duration-500">
                 <button onclick="quitToMenu(); playSound('click');" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
                 <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-3 mt-4">
                     <div class="flex items-center gap-3">
@@ -249,7 +256,7 @@
         </div>
 
         <div id="screen-sentence" class="hidden flex-grow flex flex-col items-center justify-center p-4">
-            <div class="glass-panel p-8 rounded-2xl max-w-xl w-full text-center animate-pop relative">
+            <div id="sentence-wrapper" class="glass-panel p-8 rounded-2xl max-w-xl w-full text-center animate-pop relative transition-colors duration-500">
                 <button onclick="quitToMenu(); playSound('click');" class="absolute top-4 left-4 text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left"></i></button>
                 <div class="flex justify-between items-center mb-2 px-2 mt-4">
                     <div class="flex items-center gap-2">
@@ -564,6 +571,10 @@
         
         function showScreen(id) {
             if(gameTimerInterval) clearInterval(gameTimerInterval);
+            document.getElementById('roulette-wrapper').classList.remove('flash-red-bg');
+            document.getElementById('table-wrapper').classList.remove('flash-red-bg');
+            document.getElementById('sentence-wrapper').classList.remove('flash-red-bg');
+
             ['screen-login', 'screen-menu', 'screen-training', 'screen-roulette', 'screen-table', 'screen-sentence', 'screen-story-map', 'screen-story-dialogue'].forEach(s => document.getElementById(s).classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
             if (id === 'screen-menu') updateMenuUI();
@@ -747,9 +758,21 @@
                 let inputs = document.getElementById('roulette-inputs-container').querySelectorAll('input');
                 for(let i=0; i<inputs.length; i++) {
                     if(inputs[i].value === '') {
-                        if(inputs[i].id === 'r-input-esp') inputs[i].value = currentVerb.esp.split('/')[0];
-                        if(inputs[i].id === 'r-input-past') inputs[i].value = currentVerb.past.split('/')[0];
-                        if(inputs[i].id === 'r-input-part') inputs[i].value = currentVerb.part.split('/')[0];
+                        if(inputs[i].id === 'r-input-esp') {
+                            inputs[i].value = currentVerb.esp.split('/')[0];
+                        } else if(inputs[i].id === 'r-input-past') {
+                            inputs[i].value = currentVerb.past.split('/')[0];
+                        } else if(inputs[i].id === 'r-input-part') {
+                            inputs[i].value = currentVerb.part.split('/')[0];
+                        } else {
+                            if(inputs[i].placeholder.toLowerCase().includes('español') || inputs[i].placeholder.toLowerCase().includes('significado')) {
+                                inputs[i].value = currentVerb.esp.split('/')[0];
+                            } else if(inputs[i].placeholder.toLowerCase().includes('pasado')) {
+                                inputs[i].value = currentVerb.past.split('/')[0];
+                            } else if(inputs[i].placeholder.toLowerCase().includes('participio')) {
+                                inputs[i].value = currentVerb.part.split('/')[0];
+                            }
+                        }
                         playSound('success');
                         break;
                     }
@@ -802,6 +825,7 @@
         function setupLivesAndTimer(diff, mode) {
             if(gameTimerInterval) clearInterval(gameTimerInterval);
             document.getElementById(`${mode}-timer`).classList.add('hidden');
+            document.getElementById(`${mode}-wrapper`).classList.remove('flash-red-bg');
 
             if(diff === 'facil') { maxLives = 5; currentLives = 5; }
             else if(diff === 'medio') { maxLives = 4; currentLives = 4; }
@@ -827,11 +851,28 @@
             gameTimerInterval = setInterval(() => {
                 timeLeft--;
                 document.getElementById(`${modePrefix}-time-left`).innerText = timeLeft;
+                playSound('tiktak');
+                
+                let wrapperEl = document.getElementById(`${modePrefix}-wrapper`);
+                if(ifModeWrapper(modePrefix)) {
+                    document.getElementById(ifModeWrapper(modePrefix)).classList.add('flash-red-bg');
+                }
+
                 if(timeLeft <= 0) {
                     clearInterval(gameTimerInterval);
+                    if(ifModeWrapper(modePrefix)) {
+                        document.getElementById(ifModeWrapper(modePrefix)).classList.remove('flash-red-bg');
+                    }
                     callback();
                 }
             }, 1000);
+        }
+
+        function ifModeWrapper(prefix) {
+            if(prefix === 'r') return 'roulette-wrapper';
+            if(prefix === 't') return 'table-wrapper';
+            if(prefix === 's') return 'sentence-wrapper';
+            return null;
         }
 
         function startRouletteLevel() {
@@ -869,8 +910,8 @@
                     container.innerHTML = `<input type="text" id="r-input-esp" class="col-span-3 p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Significado (Español)">`;
                 } else if(activeDifficulty === 'medio') {
                     container.innerHTML = `
-                        <input type="text" id="r-input-past" class="col-span-1.5 p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Pasado">
-                        <input type="text" id="r-input-esp" class="col-span-1.5 p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Significado">
+                        <input type="text" id="r-input-past" class="col-span-1 p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Pasado">
+                        <input type="text" id="r-input-esp" class="col-span-2 p-2 rounded bg-gray-800 text-center border border-gray-700 text-white" placeholder="Significado">
                     `;
                 } else {
                     container.innerHTML = `
@@ -895,6 +936,7 @@
 
         function checkRouletteResult() {
             if(gameTimerInterval) clearInterval(gameTimerInterval);
+            document.getElementById('roulette-wrapper').classList.remove('flash-red-bg');
             let ok = true;
             const ces = currentVerb.esp.toLowerCase().split('/');
             
@@ -961,6 +1003,7 @@
             if(activeDifficulty === 'contrarreloj') {
                 document.getElementById('table-timer').classList.remove('hidden');
                 startTimer(() => {
+                    document.getElementById('table-wrapper').classList.remove('flash-red-bg');
                     alert('¡Se acabó el tiempo en la tabla!');
                     quitToMenu();
                 }, 60, 't');
@@ -1009,6 +1052,7 @@
 
             if(allCorrect) {
                 if(gameTimerInterval) clearInterval(gameTimerInterval);
+                document.getElementById('table-wrapper').classList.remove('flash-red-bg');
                 playSound('success');
                 document.getElementById('table-feedback').className = "font-bold text-green-500";
                 document.getElementById('table-feedback').innerText = "¡Tabla completada con éxito!";
@@ -1036,6 +1080,7 @@
 
                 if(currentLives <= 0) {
                     if(gameTimerInterval) clearInterval(gameTimerInterval);
+                    document.getElementById('table-wrapper').classList.remove('flash-red-bg');
                     alert('Te quedaste sin vidas en la tabla.');
                     quitToMenu();
                 }
@@ -1091,6 +1136,7 @@
 
         function checkSentenceResult() {
             if(gameTimerInterval) clearInterval(gameTimerInterval);
+            document.getElementById('sentence-wrapper').classList.remove('flash-red-bg');
             const val = document.getElementById('sentence-input').value.trim().toLowerCase();
             const correctTargets = currentSelectedSentence.target.toLowerCase().split('/');
             
