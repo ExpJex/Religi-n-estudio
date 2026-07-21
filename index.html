@@ -487,20 +487,21 @@
 
         let activeGameMode = '';
         let activeDifficulty = '';
+        let matchLevel = 1;
         let consumablesUsedThisMatch = { burger: false, enciso: false };
 
         const storyChapters = {
             1: [
                 { char: 'Jerónimo', img: ASSETS.jeronimo, text: "¿Y si construimos la pared de globos?" },
-                { char: 'Enciso', img: ASSETS.enciso, text: "Uyy sí, va a quedar brutal." },
+                { char: 'Enciso', img: ASSETS.enciso, text: "Uy, sí, va a quedar genial." },
                 { char: 'Giovani', img: ASSETS.giovani, text: "Jajaja, ¿cómo va a quedar bien una pared de globos?" },
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "Si la pared queda perfecta, usted nos gasta una hamburguesa." },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "Si la pared queda perfecta, usted nos invita a una hamburguesa." },
                 { char: 'Giovani', img: ASSETS.giovani, text: "Trato hecho. Pero demuestren que dominan los verbos primero." },
                 { type: 'minigame', diff: 'facil' }
             ],
             2: [
-                { char: 'Enciso', img: ASSETS.enciso, text: "¡Eso está quedando re melo! Pero ese Giovani anda buscando excusas para no pagar." },
-                { char: 'Dilan', img: ASSETS.dilan, text: "Pilas, yo sé que ese man se acuerda perfectamente." },
+                { char: 'Enciso', img: ASSETS.enciso, text: "¡Esto está quedando increíble! Pero ese profesor anda buscando excusas para no pagar." },
+                { char: 'Dilan', img: ASSETS.dilan, text: "Pilas, yo sé que él se acuerda perfectamente." },
                 { char: 'Giovani', img: ASSETS.giovani, text: "Hmm, veo que avanzan... pero dudo que conozcan todos los tiempos verbales avanzados." },
                 { type: 'minigame', diff: 'medio' }
             ],
@@ -515,19 +516,19 @@
 
         const extraStoryChapters = {
             1: [
-                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "El ambiente en el colegio se siente tenso hoy, es el tan esperado English Day." },
+                { char: 'Jerónimo', img: ASSETS.jeronimo, text: "El ambiente en el colegio se siente tenso hoy, ya que es el tan esperado English Day." },
                 { char: 'Dilan', img: ASSETS.dilan, text: "Todos los salones están decorados, pero nuestro grupo quiere hacer algo legendario en el auditorio central." },
                 { char: 'Enciso', img: ASSETS.enciso, text: "Tenemos que montar toda la escenografía bilingüe antes de que llegue el profesor Giovani a inspeccionar." },
                 { type: 'minigame', diff: 'facil', isExtra: true }
             ],
             2: [
-                { char: 'Enciso', img: ASSETS.enciso, text: "¡Excelente! La primera parte del montaje quedó lista. Pero ahora los jueces exponen verbos compuestos y expresiones complejas." },
+                { char: 'Enciso', img: ASSETS.enciso, text: "¡Excelente! La primera parte del montaje quedó lista. Pero ahora los jueces evalúan verbos compuestos y expresiones complejas." },
                 { char: 'Dilan', img: ASSETS.dilan, text: "No podemos flaquear aquí, el resto de cursos nos está observando de cerca." },
                 { char: 'Jerónimo', img: ASSETS.jeronimo, text: "Concentración total, respondamos con precisión quirúrgica." },
                 { type: 'minigame', diff: 'medio', isExtra: true }
             ],
             3: [
-                { char: 'Giovani', img: ASSETS.giovani, text: "Muy bien muchachos, admito que su stand del English Day superó las expectativas de todos." },
+                { char: 'Giovani', img: ASSETS.giovani, text: "Muy bien, muchachos, admito que su stand del English Day superó las expectativas de todos." },
                 { char: 'Enciso', img: ASSETS.enciso, text: "¡Lo logramos! Demostramos que dominamos el inglés con categoría y altura." },
                 { char: 'Giovani', img: ASSETS.giovani, text: "Sin embargo, para llevarse la máxima mención honorífica, deberán superar la prueba definitiva de velocidad y dominio verbal." },
                 { type: 'minigame', diff: 'dificil', isExtra: true }
@@ -584,6 +585,7 @@
         function quitToMenu() {
             activeGameMode = '';
             activeDifficulty = '';
+            matchLevel = 1;
             consumablesUsedThisMatch = { burger: false, enciso: false };
             showScreen('screen-menu');
         }
@@ -655,6 +657,7 @@
 
         function selectLevel(diff) {
             activeDifficulty = diff;
+            matchLevel = 1;
             consumablesUsedThisMatch = { burger: false, enciso: false };
             document.getElementById('modal-level-select').classList.add('hidden');
             
@@ -698,6 +701,14 @@
             if(!user.inventory) user.inventory = [];
             user.inventory.push(item);
             saveGame();
+        }
+
+        function checkLevelConsumableReward() {
+            if (matchLevel === 1 || matchLevel % 2 !== 0) {
+                const rewardItem = Math.random() < 0.5 ? { type: 'burger', name: 'Hamburguesa Dorada', desc: 'Suma 1 vida extra en cualquier nivel.', img: ASSETS.burgerImage } : { type: 'enciso', name: 'Tremendo Guapo', desc: 'Resuelve un campo vacío en cualquier nivel.', img: ASSETS.enciso };
+                addToInventory(rewardItem);
+                alert(`¡Nivel ${matchLevel} alcanzado! Has recibido un consumible aleatorio: ${rewardItem.name}`);
+            }
         }
 
         function useInventoryItem(index) {
@@ -963,6 +974,8 @@
                 document.getElementById('roulette-feedback').innerText = "¡Excelente! Has acertado el verbo en la ruleta.";
                 user.xp += 20;
                 user.coins += 5;
+                checkLevelConsumableReward();
+                matchLevel++;
                 if(activeDifficulty === 'dificil' || activeDifficulty === 'contrarreloj') checkAchievement('roulette_master');
                 checkAchievement('first_correct');
                 saveGame();
@@ -1010,7 +1023,10 @@
             }
 
             document.getElementById('table-feedback').innerText = '';
-            
+            loadTableGameRows();
+        }
+
+        function loadTableGameRows() {
             const tbody = document.getElementById('table-game-body');
             tbody.innerHTML = '';
             
@@ -1058,8 +1074,14 @@
                 document.getElementById('table-feedback').innerText = "¡Tabla completada con éxito!";
                 user.xp += 50;
                 user.coins += 20;
+                checkLevelConsumableReward();
+                matchLevel++;
                 if(currentLives === maxLives) checkAchievement('table_master');
                 saveGame();
+                setTimeout(() => {
+                    document.getElementById('table-feedback').innerText = '';
+                    loadTableGameRows();
+                }, 1500);
             } else {
                 playSound('error');
                 currentLives--;
@@ -1145,6 +1167,8 @@
                 document.getElementById('sentence-feedback').className = "font-bold text-green-500";
                 document.getElementById('sentence-feedback').innerText = "¡Correcto! Oración completada.";
                 user.xp += 15;
+                checkLevelConsumableReward();
+                matchLevel++;
                 checkAchievement('first_correct');
                 saveGame();
                 setTimeout(generateNewSentence, 1500);
