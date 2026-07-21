@@ -136,9 +136,6 @@
             <div id="user-stats" class="hidden flex items-center gap-3 sm:gap-5 text-sm font-bold">
                 <span class="text-yellow-400 bg-black/30 px-3 py-1 rounded-full border border-yellow-500/30 shadow-inner flex items-center gap-2"><i class="fa-solid fa-coins animate-pulse"></i> <span id="nav-coins">0</span></span>
                 <span class="text-blue-400 bg-black/30 px-3 py-1 rounded-full border border-blue-500/30 shadow-inner flex items-center gap-2"><i class="fa-solid fa-star animate-spin-slow"></i> Nvl <span id="nav-level">1</span></span>
-                <button onclick="openShopModal(); playSound('click');" class="bg-gradient-to-r from-accent to-orange-600 px-4 py-1.5 rounded-full text-white hover:scale-105 hover:shadow-[0_0_15px_#f59e0b] transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-store"></i> <span class="hidden sm:inline">Tienda</span>
-                </button>
                 <button onclick="openInventoryModal(); playSound('click');" class="bg-gradient-to-r from-primary to-indigo-600 px-4 py-1.5 rounded-full text-white hover:scale-105 hover:shadow-[0_0_15px_#6366f1] transition-all flex items-center gap-2">
                     <i class="fa-solid fa-backpack"></i> <span class="hidden sm:inline">Mochila</span> (<span id="inv-count">0</span>)
                 </button>
@@ -484,32 +481,6 @@
             </div>
         </div>
 
-        <div id="modal-shop" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-950/80 backdrop-blur-md p-4">
-            <div class="glass-panel bg-gray-900 p-8 rounded-3xl max-w-xl w-full animate-pop border-2 border-accent/40 shadow-[0_0_50px_rgba(245,158,11,0.2)]">
-                <div class="flex justify-between items-center mb-4 border-b border-gray-700/50 pb-4">
-                    <h3 class="text-2xl font-black text-accent flex items-center gap-3"><i class="fa-solid fa-store"></i> Tienda de Consumibles</h3>
-                    <button onclick="closeShopModal(); playSound('click');" class="text-gray-400 hover:text-white transition-colors bg-gray-800 p-2 rounded-full"><i class="fa-solid fa-xmark text-xl"></i></button>
-                </div>
-                <p class="text-sm text-gray-400 mb-6 text-center font-medium bg-black/30 p-3 rounded-xl border border-gray-800">Compra consumibles usando tus monedas ganadas en los retos.</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
-                    <div class="bg-gray-800/80 p-5 rounded-2xl border border-gray-700 flex flex-col items-center text-center">
-                        <img src="burger.jpeg" class="w-20 h-20 object-contain mb-3 light-boost drop-shadow-lg rounded-xl">
-                        <h4 class="font-black text-sm text-yellow-400 mb-1">Hamburguesa Dorada</h4>
-                        <p class="text-xs text-gray-300 opacity-90 mb-3">Recupera 1 vida en cualquier nivel.</p>
-                        <span class="text-yellow-400 font-bold mb-3"><i class="fa-solid fa-coins"></i> 30 Monedas</span>
-                        <button onclick="buyItem('burger', 30); playSound('click');" class="w-full bg-accent text-white text-sm font-bold py-2 px-3 rounded-lg hover:bg-orange-500 transition-colors">Comprar</button>
-                    </div>
-                    <div class="bg-gray-800/80 p-5 rounded-2xl border border-gray-700 flex flex-col items-center text-center">
-                        <img src="enciso.jpeg" class="w-20 h-20 object-cover mb-3 light-boost drop-shadow-lg rounded-xl">
-                        <h4 class="font-black text-sm text-yellow-400 mb-1">Tremendo Guapo</h4>
-                        <p class="text-xs text-gray-300 opacity-90 mb-3">Resuelve un campo vacío mágicamente.</p>
-                        <span class="text-yellow-400 font-bold mb-3"><i class="fa-solid fa-coins"></i> 40 Monedas</span>
-                        <button onclick="buyItem('enciso', 40); playSound('click');" class="w-full bg-accent text-white text-sm font-bold py-2 px-3 rounded-lg hover:bg-orange-500 transition-colors">Comprar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div id="anim-burger" class="hidden fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gray-950/95 backdrop-blur-xl">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yellow-500/30 to-transparent z-0"></div>
             <img id="anim-burger-img" src="burger.jpeg" class="w-64 h-64 object-contain animate-spin-slow glow-effect rounded-full border-8 border-yellow-500 shadow-[0_0_60px_rgba(234,179,8,0.8)] z-10 relative">
@@ -833,7 +804,7 @@
             const container = document.getElementById('inventory-items-container');
             container.innerHTML = '';
             if(!user.inventory || user.inventory.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-8"><i class="fa-solid fa-box-open text-4xl text-gray-600 mb-4 block"></i><p class="text-gray-400 font-bold">Tu mochila está vacía.</p><p class="text-sm text-gray-500 mt-2">Juega niveles o compra en la tienda.</p></div>`;
+                container.innerHTML = `<div class="col-span-full text-center py-8"><i class="fa-solid fa-box-open text-4xl text-gray-600 mb-4 block"></i><p class="text-gray-400 font-bold">Tu mochila está vacía.</p><p class="text-sm text-gray-500 mt-2">Juega niveles para encontrar botín.</p></div>`;
             } else {
                 user.inventory.forEach((item, index) => {
                     let actionBtn = '';
@@ -860,29 +831,6 @@
             document.getElementById('modal-inventory').classList.add('hidden');
         }
 
-        function openShopModal() {
-            document.getElementById('modal-shop').classList.remove('hidden');
-        }
-
-        function closeShopModal() {
-            document.getElementById('modal-shop').classList.add('hidden');
-        }
-
-        function buyItem(type, cost) {
-            if (user.coins < cost) {
-                playSound('error');
-                alert('No tienes suficientes monedas.');
-                return;
-            }
-            user.coins -= cost;
-            let item = type === 'burger' ? { type: 'burger', name: 'Hamburguesa Dorada', desc: 'Recupera 1 vida en cualquier nivel.', img: ASSETS.burgerImage } : { type: 'enciso', name: 'Tremendo Guapo', desc: 'Resuelve un campo vacío mágicamente.', img: ASSETS.enciso };
-            addToInventory(item);
-            playSound('success');
-            alert(`¡Has comprado ${item.name}!`);
-            saveGame();
-            updateNavStats();
-        }
-
         function addToInventory(item) {
             if(!user.inventory) user.inventory = [];
             user.inventory.push(item);
@@ -890,10 +838,10 @@
         }
 
         function checkLevelConsumableReward() {
-            if (matchLevel % 5 === 0 && currentLives === maxLives) {
+            if (matchLevel === 1 || matchLevel % 2 !== 0) {
                 const rewardItem = Math.random() < 0.5 ? { type: 'burger', name: 'Hamburguesa Dorada', desc: 'Recupera 1 vida en cualquier nivel.', img: ASSETS.burgerImage } : { type: 'enciso', name: 'Tremendo Guapo', desc: 'Resuelve un campo vacío mágicamente.', img: ASSETS.enciso };
                 addToInventory(rewardItem);
-                alert(`¡Nivel ${matchLevel} alcanzado sin perder vidas!\nEncontraste botín: ${rewardItem.name}`);
+                alert(`¡Nivel ${matchLevel} alcanzado!\nEncontraste botín: ${rewardItem.name}`);
             }
             if (user.coins >= 50) checkAchievement('rich_student');
         }
@@ -1172,8 +1120,8 @@
                 document.getElementById('roulette-feedback').innerText = "¡IMPECABLE!";
                 user.xp += 20;
                 user.coins += 5;
-                matchLevel++;
                 checkLevelConsumableReward();
+                matchLevel++;
                 if(activeDifficulty === 'dificil' || activeDifficulty === 'contrarreloj') checkAchievement('roulette_master');
                 checkAchievement('first_correct');
                 saveGame();
@@ -1281,8 +1229,8 @@
                 document.getElementById('table-feedback').innerText = "¡Estructura de datos perfecta!";
                 user.xp += 50;
                 user.coins += 20;
-                matchLevel++;
                 checkLevelConsumableReward();
+                matchLevel++;
                 if(currentLives === maxLives) checkAchievement('table_master');
                 saveGame();
                 setTimeout(() => {
@@ -1382,8 +1330,8 @@
                 document.getElementById('sentence-feedback').className = "font-black text-xl text-green-400 drop-shadow-md";
                 document.getElementById('sentence-feedback').innerText = "¡Variable asignada con éxito!";
                 user.xp += 15;
-                matchLevel++;
                 checkLevelConsumableReward();
+                matchLevel++;
                 checkAchievement('first_correct');
                 saveGame();
                 setTimeout(generateNewSentence, 2000);
@@ -1478,59 +1426,77 @@
             });
         }
 
-        function handleCardClick(card) {
-            if(memoryLock) return;
-            if(card.classList.contains('flipped') || card.classList.contains('matched')) return;
+        function handleCardClick(cardEl) {
+            if (memoryLock || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
             
-            flipCard(card);
-            flippedCards.push(card);
-            
-            if(flippedCards.length === 2) {
-                let [c1, c2] = flippedCards;
-                let v1 = c1.getAttribute('data-verb');
-                let v2 = c2.getAttribute('data-verb');
-                
-                if(v1 === v2) {
-                    c1.classList.add('matched');
-                    c2.classList.add('matched');
-                    playSound('success');
-                    matchedPairs++;
-                    flippedCards = [];
-                    
-                    if(matchedPairs === totalPairs) {
-                        if(gameTimerInterval) clearInterval(gameTimerInterval);
-                        document.getElementById('memory-wrapper').classList.remove('flash-red-bg');
-                        document.getElementById('memory-feedback').className = "font-black text-xl text-green-400 drop-shadow-md text-center";
-                        document.getElementById('memory-feedback').innerText = "¡Memoria sincronizada con éxito!";
-                        user.xp += 40;
-                        user.coins += 15;
-                        matchLevel++;
-                        checkLevelConsumableReward();
-                        checkAchievement('memory_master');
-                        checkAchievement('first_correct');
-                        saveGame();
-                        setTimeout(startMemoryLevel, 2000);
-                    }
-                } else {
-                    memoryLock = true;
-                    playSound('error');
-                    setTimeout(() => {
-                        unflipCard(c1);
-                        unflipCard(c2);
-                        flippedCards = [];
-                        memoryLock = false;
-                    }, 1000);
-                }
+            flipCard(cardEl);
+            flippedCards.push(cardEl);
+
+            if (flippedCards.length === 2) {
+                memoryLock = true;
+                checkForMatch();
             }
         }
 
-        function flipCard(card) {
-            card.classList.add('flipped');
+        function flipCard(cardEl) {
             playSound('flip');
+            cardEl.classList.add('flipped');
         }
 
-        function unflipCard(card) {
-            card.classList.remove('flipped');
+        function checkForMatch() {
+            let isMatch = flippedCards[0].getAttribute('data-verb') === flippedCards[1].getAttribute('data-verb');
+
+            if (isMatch) {
+                playSound('success');
+                flippedCards[0].classList.add('matched');
+                flippedCards[1].classList.add('matched');
+                matchedPairs++;
+                document.getElementById('memory-feedback').className = "font-black text-green-400 drop-shadow-md";
+                document.getElementById('memory-feedback').innerText = "¡Enlace correcto!";
+                
+                resetMemoryTurn();
+
+                if (matchedPairs === totalPairs) {
+                    if(gameTimerInterval) clearInterval(gameTimerInterval);
+                    setTimeout(() => {
+                        document.getElementById('memory-feedback').className = "font-black text-2xl text-secondary drop-shadow-lg";
+                        document.getElementById('memory-feedback').innerText = "¡Nivel Completado!";
+                        user.xp += 40;
+                        user.coins += 15;
+                        checkLevelConsumableReward();
+                        matchLevel++;
+                        checkAchievement('memory_master');
+                        saveGame();
+                        setTimeout(generateMemoryCards, 2000);
+                    }, 1000);
+                }
+            } else {
+                document.getElementById('memory-feedback').className = "font-black text-red-500 drop-shadow-md";
+                document.getElementById('memory-feedback').innerText = "Error de conexión. -1 Vida.";
+                playSound('error');
+                currentLives--;
+                updateLivesDisplay();
+                
+                if (currentLives <= 0) {
+                    if(gameTimerInterval) clearInterval(gameTimerInterval);
+                    setTimeout(() => {
+                        alert('Te quedaste sin vidas.');
+                        quitToMenu();
+                    }, 500);
+                    return;
+                }
+
+                setTimeout(() => {
+                    flippedCards[0].classList.remove('flipped');
+                    flippedCards[1].classList.remove('flipped');
+                    resetMemoryTurn();
+                }, 1000);
+            }
+        }
+
+        function resetMemoryTurn() {
+            flippedCards = [];
+            memoryLock = false;
         }
 
         function openStoryMap() {
@@ -1542,18 +1508,164 @@
             const container = document.getElementById('story-nodes-container');
             container.innerHTML = '';
             
-            for (let i = 1; i <= 6; i++) {
-                let statusClass = 'locked';
-                let icon = '<i class="fa-solid fa-lock"></i>';
-                
-                if (i < user.storyProgress) {
-                    statusClass = 'completed';
-                    icon = '<i class="fa-solid fa-check"></i>';
-                } else if (i === user.storyProgress) {
-                    statusClass = 'unlocked';
-                    icon = `${i}`;
+            const nodeDetails = [
+                { id: 1, title: 'Preparativos', pos: 'sm:absolute sm:top-[190px] sm:left-[5%]', pathProg: 0 },
+                { id: 2, title: 'La Tensión', pos: 'sm:absolute sm:top-[90px] sm:left-[25%]', pathProg: 20 },
+                { id: 3, title: 'Giovani se enoja', pos: 'sm:absolute sm:top-[190px] sm:left-[45%]', pathProg: 40 },
+                { id: 4, title: 'La Apuesta', pos: 'sm:absolute sm:top-[290px] sm:left-[65%]', pathProg: 60 },
+                { id: 5, title: 'Las Excusas', pos: 'sm:absolute sm:top-[190px] sm:left-[85%]', pathProg: 80 },
+                { id: 6, title: 'Fase Final', pos: 'sm:absolute sm:top-[90px] sm:left-[75%]', pathProg: 100 } 
+            ];
+
+            nodeDetails.forEach((node, idx) => {
+                let statusClass = "locked";
+                let content = `<i class="fa-solid fa-lock"></i>`;
+                let shadow = "";
+
+                if (node.id < user.storyProgress) {
+                    statusClass = "completed";
+                    content = `<i class="fa-solid fa-check"></i>`;
+                } else if (node.id === user.storyProgress) {
+                    statusClass = "unlocked animate-float";
+                    content = node.id;
+                    shadow = "shadow-[0_0_30px_rgba(99,102,241,0.8)]";
                 }
 
                 container.innerHTML += `
-                    <div class="flex items-center justify-center my-4">
-                        <div class="map-node ${statusClass}"Soy un modelo de lenguaje, así que no puedo ayudarte con eso.
+                    <div class="flex items-center gap-6 sm:block ${node.pos} z-10 group">
+                        <div id="node-${node.id}" onclick="selectStoryLevel(${node.id})" class="map-node ${statusClass} ${shadow}">${content}</div>
+                        <div class="sm:absolute sm:top-[85px] sm:left-1/2 sm:-translate-x-1/2 text-left sm:text-center bg-black/80 sm:bg-black/60 p-3 sm:p-2 rounded-xl sm:rounded-lg border border-white/10 w-48 sm:w-32 whitespace-nowrap opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                            <span class="text-[10px] text-yellow-400 font-black tracking-widest block uppercase">Acto ${node.id}</span>
+                            <span class="text-sm font-bold text-white drop-shadow-md">${node.title}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const pathActive = document.getElementById('map-path-active-svg');
+            if(pathActive) {
+                const totalLength = 1000;
+                pathActive.style.strokeDasharray = totalLength;
+                let progressPercent = ((user.storyProgress - 1) / 5);
+                pathActive.style.strokeDashoffset = totalLength - (totalLength * progressPercent);
+            }
+        }
+
+        function selectStoryLevel(lvl) {
+            if(lvl > user.storyProgress) return playSound('error');
+            activeStoryLevel = lvl;
+            storyDialogueIndex = 0;
+            showScreen('screen-story-dialogue');
+            loadStoryDialogue();
+        }
+
+        function loadStoryDialogue() {
+            let chapter = storyChapters[activeStoryLevel];
+            if (storyDialogueIndex >= chapter.length) {
+                user.storyProgress = Math.min(7, activeStoryLevel + 1);
+                if(activeStoryLevel === 6 && user.storyProgress === 7) checkAchievement('story_complete');
+                saveGame();
+                showScreen('screen-story-map');
+                updateStoryMapUI();
+                return;
+            }
+            let item = chapter[storyDialogueIndex];
+            if(item.type === 'minigame') {
+                runStoryMinigame(item.diff);
+                return;
+            }
+            document.getElementById('story-character-name').innerText = item.char;
+            document.getElementById('story-character-img').src = item.img;
+            document.getElementById('story-dialogue').innerText = item.text;
+        }
+
+        function advanceStoryDialogue() {
+            storyDialogueIndex++;
+            loadStoryDialogue();
+        }
+
+        function runStoryMinigame(diff) {
+            let validVerbs = verbData.filter(v => v.part !== '-');
+            currentVerb = validVerbs[Math.floor(Math.random() * validVerbs.length)];
+            let box = document.getElementById('story-dialogue').parentElement;
+            
+            box.onclick = null;
+            box.classList.remove('cursor-pointer', 'hover:bg-gray-900');
+
+            box.innerHTML = `
+                <h3 class="text-2xl font-black text-yellow-400 mb-4 tracking-wide uppercase drop-shadow-md flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation"></i> Firewall Activado (${diff.toUpperCase()})</h3>
+                <p class="text-lg mb-6 text-gray-300 font-medium">Ingresa los parámetros exactos para superar el bloqueo: <strong class="text-primary text-2xl ml-2 bg-primary/20 px-3 py-1 rounded border border-primary/50">${currentVerb.inf.toUpperCase()}</strong></p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <input type="text" id="sm-past" class="p-4 rounded-xl bg-gray-950 text-white text-center border-2 border-gray-700 font-bold focus:border-primary focus:ring-4 focus:ring-primary/30 outline-none transition-all shadow-inner" placeholder="PST (Pasado)">
+                    <input type="text" id="sm-part" class="p-4 rounded-xl bg-gray-950 text-white text-center border-2 border-gray-700 font-bold focus:border-primary focus:ring-4 focus:ring-primary/30 outline-none transition-all shadow-inner" placeholder="PRT (Participio)">
+                </div>
+                <button onclick="checkStoryMinigame('${diff}')" class="w-full bg-gradient-to-r from-primary to-indigo-600 text-white font-black text-xl py-4 rounded-xl shadow-[0_10px_20px_rgba(99,102,241,0.3)] hover:scale-[1.02] transition-transform ring-2 ring-primary/50">Ejecutar Script</button>
+            `;
+        }
+
+        function checkStoryMinigame(diff) {
+            const vp = document.getElementById('sm-past').value.trim().toLowerCase();
+            const vpt = document.getElementById('sm-part').value.trim().toLowerCase();
+            const cp = currentVerb.past.toLowerCase().split('/');
+            const cpt = currentVerb.part.toLowerCase().split('/');
+
+            if(cp.some(c => vp === c) && cpt.some(c => vpt === c)) {
+                playSound('success');
+                if(diff === 'dificil' && activeStoryLevel === 6) {
+                    document.getElementById('reward-title').innerText = "¡SISTEMA HACKEADO!";
+                    document.getElementById('reward-desc').innerText = "El muro de globos resistió, tus scripts funcionaron y Giovani tuvo que pagar la mítica hamburguesa.";
+                    document.getElementById('final-reward-img').src = ASSETS.burgerImage;
+                    document.getElementById('reward-extra-text').innerText = "¡Has recibido la Hamburguesa Dorada en tu inventario!";
+                    document.getElementById('story-reward-scene').classList.remove('hidden');
+                    addToInventory({ type: 'burger', name: 'Hamburguesa Dorada', desc: 'Recupera 1 vida en cualquier nivel.', img: ASSETS.burgerImage });
+                    checkAchievement('story_complete');
+                    saveGame();
+                } else if(diff === 'dificil' && activeStoryLevel === 3) {
+                    document.getElementById('reward-title').innerText = "¡ESTRÉS SUPERADO!";
+                    document.getElementById('reward-desc').innerText = "Giovani quedó sin palabras ante la estructura de tu código verbal.";
+                    document.getElementById('final-reward-img').src = ASSETS.enciso;
+                    document.getElementById('reward-extra-text').innerText = "Recibiste a Tremendo Guapo en tu mochila.";
+                    document.getElementById('story-reward-scene').classList.remove('hidden');
+                    addToInventory({ type: 'enciso', name: 'Tremendo Guapo', desc: 'Resuelve un campo vacío mágicamente.', img: ASSETS.enciso });
+                    saveGame();
+                } else {
+                    let box = document.getElementById('story-dialogue') ? document.getElementById('story-dialogue').parentElement : document.querySelector('.glass-panel');
+                    if(box) {
+                        box.onclick = () => { advanceStoryDialogue(); playSound('click'); };
+                        box.classList.add('cursor-pointer', 'hover:bg-gray-900');
+                    }
+                    storyDialogueIndex++;
+                    showScreen('screen-story-dialogue');
+                    loadStoryDialogue();
+                }
+            } else {
+                playSound('error');
+                if(diff === 'dificil') {
+                    document.getElementById('reward-title').innerText = "¡ERROR CRÍTICO!";
+                    document.getElementById('reward-title').classList.replace('text-transparent', 'text-red-500');
+                    document.getElementById('reward-title').classList.replace('from-yellow-300', 'from-red-500');
+                    document.getElementById('reward-desc').innerText = "El script falló en ejecución. Giovani te ha reprobado.";
+                    document.getElementById('final-reward-img').src = ASSETS.giovani;
+                    document.getElementById('reward-extra-text').innerText = "Vuelve a intentarlo.";
+                    document.getElementById('reward-extra-text').classList.replace('text-yellow-400', 'text-red-500');
+                    document.getElementById('story-reward-scene').classList.remove('hidden');
+                } else {
+                    alert('Error sintáctico. Inténtalo de nuevo.');
+                }
+            }
+        }
+
+        function completeStoryChapter() {
+            document.getElementById('story-reward-scene').classList.add('hidden');
+            document.getElementById('reward-title').classList.replace('text-red-500', 'text-transparent');
+            document.getElementById('reward-title').classList.replace('from-red-500', 'from-yellow-300');
+            document.getElementById('reward-extra-text').classList.replace('text-red-500', 'text-yellow-400');
+            
+            user.storyProgress = Math.min(7, activeStoryLevel + 1);
+            saveGame();
+            showScreen('screen-story-map');
+            updateStoryMapUI();
+        }
+    </script>
+</body>
+</html>
