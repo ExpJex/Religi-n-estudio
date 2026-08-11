@@ -102,7 +102,7 @@
             padding: 15px 20px;
             border-radius: 15px;
             margin-bottom: 30px;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 800;
             display: flex;
             justify-content: space-between;
@@ -142,9 +142,6 @@
         .lesson-node.gold {
             background: var(--gold);
             box-shadow: 0 8px 0 var(--gold-shadow);
-        }
-        .lesson-node.gold:active {
-            box-shadow: 0 4px 0 var(--gold-shadow);
         }
 
         .lesson-title-bubble {
@@ -243,9 +240,9 @@
         }
 
         .question-title {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .options-grid {
@@ -259,7 +256,7 @@
             border-bottom: 4px solid var(--gray);
             padding: 15px 20px;
             border-radius: 15px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.1s;
@@ -273,38 +270,6 @@
             border-color: var(--secondary);
             background: #e1f5fe;
             color: var(--secondary-shadow);
-        }
-
-        .order-area {
-            min-height: 80px;
-            border-bottom: 2px solid var(--gray);
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 10px 0;
-        }
-        .word-bank {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .word-chip {
-            background: white;
-            border: 2px solid var(--gray);
-            border-bottom: 4px solid var(--gray);
-            padding: 10px 15px;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .word-chip:active {
-            transform: translateY(2px);
-            border-bottom-width: 2px;
-        }
-        .word-chip.hidden {
-            visibility: hidden;
         }
 
         .footer-bar {
@@ -332,15 +297,6 @@
         .footer-bar.correct .feedback-message { display: block; color: var(--primary-shadow); }
         .footer-bar.incorrect .feedback-message { display: block; color: var(--danger-shadow); }
 
-        .correct-answer-text {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--danger-shadow);
-            margin-bottom: 15px;
-            display: none;
-        }
-        .footer-bar.incorrect .correct-answer-text { display: block; }
-
         .action-btn {
             background: var(--gray);
             color: var(--text-light);
@@ -361,11 +317,6 @@
             border-bottom-color: var(--primary-shadow);
             cursor: pointer;
         }
-        .action-btn.active:active {
-            transform: translateY(2px);
-            border-bottom-width: 2px;
-            margin-top: 2px;
-        }
 
         #summary-screen {
             padding: 40px 20px;
@@ -373,7 +324,7 @@
             justify-content: center;
             text-align: center;
         }
-        .summary-title { font-size: 2.5rem; font-weight: 900; color: var(--gold); margin-bottom: 10px; }
+        .summary-title { font-size: 2.3rem; font-weight: 900; color: var(--gold); margin-bottom: 10px; }
         .stats-container { display: flex; gap: 20px; margin: 30px 0; width: 100%; justify-content: center; }
         .stat-box { background: white; border: 2px solid var(--gray); border-radius: 15px; padding: 20px; flex: 1; max-width: 120px; display: flex; flex-direction: column; align-items: center; }
         .stat-box-title { font-size: 0.9rem; font-weight: 700; color: var(--text-light); margin-bottom: 10px; }
@@ -385,38 +336,33 @@
 
 <div id="app-container">
     <header class="navbar">
-        <div class="stat-item streak"><span class="stat-icon">🔥</span> <span id="nav-streak">0</span></div>
+        <div class="stat-item streak"><span class="stat-icon">🔥</span> <span id="nav-streak">1</span></div>
         <div class="stat-item xp"><span class="stat-icon">⚡</span> <span id="nav-xp">0</span></div>
-        <div class="stat-item hearts"><span class="stat-icon">❤️</span> <span>5</span></div>
+        <div class="stat-item hearts"><span class="stat-icon">❤️</span> <span id="nav-hearts">5</span></div>
     </header>
 
     <main id="home-screen" class="screen active">
-        <div class="section-header"><span>Unidad 1</span><span>Gramática y Sostenibilidad</span></div>
+        <div class="section-header"><span>Cuaderno & Libro</span><span>Temas Actuales</span></div>
         <div id="path-container" style="display: flex; flex-direction: column; align-items: center; width: 100%;"></div>
     </main>
 
     <main id="theory-screen" class="screen">
         <h2 class="theory-title" id="theory-title"></h2>
         <div class="theory-content" id="theory-content"></div>
-        <button class="btn-primary" onclick="startQuiz()" style="margin: 0 auto; display: block;">¡Empezar Lección!</button>
+        <button class="btn-primary" onclick="startQuiz()" style="margin: 0 auto; display: block;">¡Empezar Práctica!</button>
     </main>
 
     <main id="quiz-screen" class="screen">
         <div class="progress-container">
-            <span class="close-btn" onclick="quitLesson()">×</span>
+            <span class="close-btn" onclick="returnToHome()">×</span>
             <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
         </div>
         <div id="question-area">
             <h2 class="question-title" id="question-title"></h2>
-            <div class="options-grid" id="mc-container" style="display: none;"></div>
-            <div id="order-container" style="display: none;">
-                <div class="order-area" id="order-target"></div>
-                <div class="word-bank" id="order-source"></div>
-            </div>
+            <div class="options-grid" id="mc-container"></div>
         </div>
         <div class="footer-bar" id="footer-bar">
             <div class="feedback-message" id="feedback-message"></div>
-            <div class="correct-answer-text" id="correct-answer-text">Respuesta correcta: <span></span></div>
             <button class="action-btn" id="action-btn" onclick="handleAction()">Comprobar</button>
         </div>
     </main>
@@ -424,29 +370,70 @@
     <main id="summary-screen" class="screen">
         <h2 class="summary-title">¡Lección Completada!</h2>
         <div class="stats-container">
-            <div class="stat-box xp"><span class="stat-box-title">XP</span><span class="stat-box-value" id="summary-xp"></span></div>
-            <div class="stat-box acc"><span class="stat-box-title">PRECISIÓN</span><span class="stat-box-value" id="summary-acc"></span></div>
+            <div class="stat-box xp"><span class="stat-box-title">XP</span><span class="stat-box-value" id="summary-xp">0</span></div>
         </div>
         <button class="btn-primary" onclick="returnToHome()">Continuar</button>
     </main>
 </div>
 
 <script>
-    const appState = { xp: 0, streak: 1, currentLessonId: null, currentQuestionIndex: 0, mistakes: 0, selectedAnswer: null, orderedAnswer: [], state: 'IDLE' };
+    const appState = { xp: 0, streak: 1, hearts: 5, currentLessonId: null, currentQuestionIndex: 0, selectedAnswer: null };
 
+    // Contenido basado estrictamente en tus notas e imágenes del cuaderno
     const lessonsData = [
-        { id: 'l1', title: 'Voz Pasiva', icon: '🏛️', completions: 0, theory: '<b>Passive Voice:</b> Se usa para enfatizar el objeto de la acción.<br><b>Estructura:</b> Sujeto + to be + Participio Pasado.', questions: [{ type: 'mc', text: '¿Cuál es la pasiva correcta?', options: ['The house was built in 1990.', 'They built the house.', 'The house built.'], answer: 0 }] },
-        { id: 'l2', title: 'Modales', icon: '🗣️', completions: 0, theory: '<b>Modales:</b> Expresan habilidad, obligación o consejo.<br>Ej: Must (obligación), Should (consejo).', questions: [{ type: 'mc', text: '¿Qué modal indica un consejo?', options: ['Must', 'Should', 'Can'], answer: 1 }] },
-        { id: 'l3', title: 'Past Perfect', icon: '⏳', completions: 0, theory: '<b>Past Perfect:</b> Acción ocurrida antes de otra en el pasado.<br><b>Estructura:</b> Had + Participio.', questions: [{ type: 'mc', text: 'Completa: I ____ finished my work.', options: ['have', 'had', 'was'], answer: 1 }] },
-        { id: 'l4', title: 'Sostenibilidad', icon: '🌱', completions: 0, theory: '<b>Vocabulario:</b> Food waste (desperdicio), Local sourcing (compra local).', questions: [{ type: 'mc', text: '¿Qué significa "Food waste"?', options: ['Comida sana', 'Desperdicio', 'Comida local'], answer: 1 }] }
+        {
+            id: 'l1',
+            title: 'Passive Voice (Present Simple)',
+            icon: '🏛️',
+            completions: 1,
+            theory: '<b>Voz Pasiva (Presente Simple):</b> Se usa para cambiar el foco de la oración, enfocándose en el objeto.<br><b>Estructura:</b> Object + am/is/are + Past Participle.<br><i>Ejemplo:</i> The story <b>is written</b>.',
+            questions: [
+                { text: 'Transform to passive: "The author writes a story."', options: ['The story is written.', 'The story was written.', 'A story writes.'], answer: 0 },
+                { text: 'Choose the correct negative passive form:', options: ['The actors aren\'t announced', 'The actors isn\'t announce', 'The actors don\'t announce'], answer: 0 }
+            ]
+        },
+        {
+            id: 'l2',
+            title: 'Past Perfect vs Past Simple',
+            icon: '⏳',
+            completions: 1,
+            theory: '<b>Past Perfect:</b> Muestra una acción que ocurrió <i>antes</i> de otra en el pasado simple.<br><b>Estructura:</b> had + Past Participle.<br><i>Ejemplo:</i> When we arrived, the film <b>had started</b>.',
+            questions: [
+                { text: 'Complete: "I tried to buy my ticket but I ___ lost my money."', options: ['had', 'have', 'was'], answer: 0 },
+                { text: '¿Qué acción ocurrió primero en: "When we arrived, the film had started"?', options: ['Llegar al cine', 'Que la película empezara', 'Ocurrieron al mismo tiempo'], answer: 1 }
+            ]
+        },
+        {
+            id: 'l3',
+            title: 'Modal Verbs',
+            icon: '🗣️',
+            completions: 1,
+            theory: '<b>Modal Verbs:</b> Expresan certeza, posibilidad, habilidad o consejo.<br>• <b>Should:</b> Advice (consejo)<br>• <b>Must:</b> Obligation<br>• <b>Could:</b> Ability, permission, possibility',
+            questions: [
+                { text: 'Which modal verb is used for "Advice" (consejo)?', options: ['Should', 'Must', 'Had to'], answer: 0 },
+                { text: 'Which modal expresses strong advice according to your notes?', options: ['Had better', 'Can', 'Might'], answer: 0 }
+            ]
+        },
+        {
+            id: 'l4',
+            title: 'Sustainable Food',
+            icon: '🌱',
+            completions: 1,
+            theory: '<b>Sostenibilidad Alimentaria:</b><br>• El alimento que genera más calentamiento global (worst food) es la carne de res (<b>beef</b>) por sus altas emisiones y uso de suelo.<br>• Ingredientes recomendados: Nuts, citrus, apples.',
+            questions: [
+                { text: 'What is the worst food for global warming according to your notes?', options: ['Beef', 'Apples', 'Nuts'], answer: 0 },
+                { text: 'Which of these are good ingredients for the environment?', options: ['Nuts, citrus, apples', 'Beef and cheese', 'Sheep'], answer: 0 }
+            ]
+        }
     ];
 
     function renderHome() {
         const container = document.getElementById('path-container');
         container.innerHTML = '';
-        lessonsData.forEach((l, i) => {
-            const wrap = document.createElement('div'); wrap.className = 'node-container';
-            wrap.innerHTML = `<div class="lesson-node ${l.completions >= 3 ? 'gold' : ''}" onclick="openTheory('${l.id}')">${l.icon}<div class="lesson-title-bubble">${l.title}</div><div class="crown-indicator">${l.completions}</div></div>`;
+        lessonsData.forEach((l) => {
+            const wrap = document.createElement('div');
+            wrap.className = 'node-container';
+            wrap.innerHTML = `<div class="lesson-node gold" onclick="openTheory('${l.id}')">${l.icon}<div class="lesson-title-bubble">${l.title}</div><div class="crown-indicator">✓</div></div>`;
             container.appendChild(wrap);
         });
         switchScreen('home-screen');
@@ -457,11 +444,95 @@
         document.getElementById(id).classList.add('active');
     }
 
-    function openTheory(id) { appState.currentLessonId = id; document.getElementById('theory-title').innerText = lessonsData.find(l=>l.id==id).title; document.getElementById('theory-content').innerHTML = lessonsData.find(l=>l.id==id).theory; switchScreen('theory-screen'); }
-    function startQuiz() { appState.currentQuestionIndex = 0; renderQuestion(); switchScreen('quiz-screen'); }
-    function renderQuestion() { const l = lessonsData.find(l=>l.id==appState.currentLessonId); const q = l.questions[appState.currentQuestionIndex]; document.getElementById('question-title').innerText = q.text; document.getElementById('mc-container').innerHTML = ''; q.options.forEach((o,i) => { const b = document.createElement('button'); b.className = 'option-btn'; b.innerText = o; b.onclick = () => { appState.selectedAnswer = i; document.querySelectorAll('.option-btn').forEach(b=>b.classList.remove('selected')); b.classList.add('selected'); document.getElementById('action-btn').classList.add('active'); }; document.getElementById('mc-container').appendChild(b); }); document.getElementById('mc-container').style.display = 'flex'; }
-    function handleAction() { const q = lessonsData.find(l=>l.id==appState.currentLessonId).questions[appState.currentQuestionIndex]; if (appState.selectedAnswer === q.answer) { appState.xp += 10; switchScreen('summary-screen'); } else { alert('Incorrecto'); } }
-    function returnToHome() { renderHome(); }
+    function openTheory(id) {
+        appState.currentLessonId = id;
+        const lesson = lessonsData.find(l => l.id === id);
+        document.getElementById('theory-title').innerText = lesson.title;
+        document.getElementById('theory-content').innerHTML = lesson.theory;
+        switchScreen('theory-screen');
+    }
+
+    function startQuiz() {
+        appState.currentQuestionIndex = 0;
+        renderQuestion();
+        switchScreen('quiz-screen');
+    }
+
+    function renderQuestion() {
+        appState.selectedAnswer = null;
+        const footer = document.getElementById('footer-bar');
+        footer.className = 'footer-bar';
+        document.getElementById('feedback-message').innerText = '';
+        document.getElementById('action-btn').innerText = 'Comprobar';
+        document.getElementById('action-btn').className = 'action-btn';
+
+        const lesson = lessonsData.find(l => l.id === appState.currentLessonId);
+        const q = lesson.questions[appState.currentQuestionIndex];
+        
+        // Progress bar
+        const progress = ((appState.currentQuestionIndex) / lesson.questions.length) * 100;
+        document.getElementById('progress-fill').style.width = `${progress}%`;
+
+        document.getElementById('question-title').innerText = q.text;
+        const container = document.getElementById('mc-container');
+        container.innerHTML = '';
+
+        q.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => {
+                appState.selectedAnswer = i;
+                document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                document.getElementById('action-btn').classList.add('active');
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    function handleAction() {
+        if (appState.selectedAnswer === null) return;
+        
+        const lesson = lessonsData.find(l => l.id === appState.currentLessonId);
+        const q = lesson.questions[appState.currentQuestionIndex];
+        const footer = document.getElementById('footer-bar');
+        const btn = document.getElementById('action-btn');
+
+        if (appState.selectedAnswer === q.answer) {
+            footer.classList.add('correct');
+            document.getElementById('feedback-message').innerText = '¡Excelente!';
+            btn.innerText = 'Continuar';
+            btn.onclick = nextStep;
+        } else {
+            footer.classList.add('incorrect');
+            document.getElementById('feedback-message').innerText = 'Incorrecto';
+            appState.hearts = Math.max(0, appState.hearts - 1);
+            document.getElementById('nav-hearts').innerText = appState.hearts;
+            btn.innerText = 'Continuar';
+            btn.onclick = nextStep;
+        }
+    }
+
+    function nextStep() {
+        const lesson = lessonsData.find(l => l.id === appState.currentLessonId);
+        appState.currentQuestionIndex++;
+        
+        if (appState.currentQuestionIndex < lesson.questions.length) {
+            renderQuestion();
+            document.getElementById('action-btn').onclick = handleAction;
+        } else {
+            appState.xp += 20;
+            document.getElementById('nav-xp').innerText = appState.xp;
+            document.getElementById('summary-xp').innerText = appState.xp;
+            switchScreen('summary-screen');
+        }
+    }
+
+    function returnToHome() {
+        renderHome();
+    }
+
     window.onload = renderHome;
 </script>
 </body>
